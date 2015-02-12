@@ -2,14 +2,10 @@ package com.noe.badger.aspect;
 
 import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.dao.CounterDao;
-import com.noe.badger.entity.CounterName;
+import javax.inject.Inject;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.ini4j.Profile;
-
-import javax.inject.Inject;
-import java.util.List;
 
 @Aspect
 public class AchievementAspect {
@@ -28,25 +24,25 @@ public class AchievementAspect {
     public void increment(AchievementCountIncrement achievementEvent) {
         final String counter = achievementEvent.counter();
         counterDao.increment(counter);
-        checkForAchievement(counter);
+//        checkForAchievement(counter);
     }
 
-    public void checkForAchievement(final String counter) {
-        List<Profile.Section> achievements = achievementBundle.getCounterAchievement( counter );
-        for (Profile.Section achievement : achievements) {
-            if (isFound(counter, achievement)) {
-                unlock(achievement);
-            }
-        }
-    }
+//    public void checkForAchievement(final String counter) {
+//        List<Profile.Section> achievements = achievementBundle.getCounterAchievement( counter );
+//        for (Profile.Section achievement : achievements) {
+//            if (isFound(counter, achievement)) {
+//                unlock(achievement);
+//            }
+//        }
+//    }
+//
+//    protected boolean isFound(String counterName, Profile.Section achievement) {
+//        Integer trigger = achievementBundle.getCounterValue(achievement);
+//        return !isUnlocked(achievement) && isEqual(counterName, trigger);
+//    }
 
-    protected boolean isFound(String counterName, Profile.Section achievement) {
-        Integer trigger = achievementBundle.getCounterValue(achievement);
-        return !isUnlocked(achievement) && isEqual(counterName, trigger);
-    }
-
-    private boolean isEqual(CounterName counterName, Integer achievementTriggerNumber) {
-        return achievementTriggerNumber.intValue() == counterDao.getValueOf(counterName);
-    }
+//    private boolean isEqual(CounterName counterName, Integer achievementTriggerNumber) {
+//        return achievementTriggerNumber.intValue() == counterDao.getValueOf(counterName);
+//    }
 
 }

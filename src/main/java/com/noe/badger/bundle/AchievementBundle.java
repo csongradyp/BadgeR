@@ -1,6 +1,7 @@
 package com.noe.badger.bundle;
 
 import com.noe.badger.AchievementType;
+import java.io.InputStream;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
 
@@ -23,8 +24,12 @@ public class AchievementBundle {
         achievements = new Ini(new File(achievementFileLocation));
     }
 
-    public void setSourcee(final URL achievementFile) throws IOException {
+    public void setSource(final URL achievementFile) throws IOException {
         achievements = new Ini(achievementFile);
+    }
+
+    public void setSource(final InputStream inputStream) throws IOException {
+        achievements = new Ini(inputStream);
     }
 
     public Profile.Section getAchievements(final AchievementType type) {

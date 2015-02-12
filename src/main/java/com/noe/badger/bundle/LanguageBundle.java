@@ -1,15 +1,17 @@
 package com.noe.badger.bundle;
 
 import java.util.List;
-import java.util.Properties;
+import java.util.ResourceBundle;
 import javax.inject.Named;
 
 @Named
 public class LanguageBundle {
 
-    private List<Properties> internationalizationFiles;
+    private List<ResourceBundle> internationalizationFiles;
 
-    public void setInternationalizationFiles(List<Properties> internationalizationFiles) {
+    public void setInternationalizationFiles(List<ResourceBundle> internationalizationFiles) {
         this.internationalizationFiles = internationalizationFiles;
     }
+
+//    public ResourceBundle getLanguageResource()
 }

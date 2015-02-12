@@ -1,14 +1,10 @@
 package com.noe.badger;
 
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Badger {
 
@@ -16,28 +12,28 @@ public class Badger {
 
     private final BadgerBean badger;
 
-    public Badger() {
+    private Badger() {
         final ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONTEXT_XML_PATH);
         applicationContext.registerShutdownHook();
         badger = applicationContext.getBean(BadgerBean.class);
     }
 
-    public Badger(final File achievementIni, final List<Properties> internationalizationFiles) {
+    public Badger(final InputStream inputStream, final String baseName) {
         this();
-        badger.setBundleSource(achievementIni);
+        badger.setBundleSource(inputStream);
+        badger.setInternationalizationBaseName(baseName);
     }
 
-    public Badger(final String achievementIniLocation, final List<String> internationalizationFileLocation) throws IOException {
+    public Badger(final File achievementIni, final String baseName) {
         this();
-        final List<Properties> internationalizationFiles = new ArrayList<>(internationalizationFileLocation.size());
-        for (String fileLocation : internationalizationFileLocation) {
-            final Properties properties = new Properties();
-            try (InputStream inputStream = Badger.class.getClassLoader().getResourceAsStream(fileLocation)) {
-                properties.load(inputStream);
-                internationalizationFiles.add(properties);
-            }
-        }
+        badger.setBundleSource(achievementIni);
+        badger.setInternationalizationBaseName(baseName);
+    }
+
+    public Badger(final String achievementIniLocation, final String baseName) throws IOException {
+        this();
         badger.setBundleSource(new File(achievementIniLocation));
+        badger.setInternationalizationBaseName(baseName);
     }
 
 }

@@ -18,7 +18,7 @@ public class CounterDao {
     private CounterRepository counterRepository;
 
     public Long increment(final String name) {
-        final Optional<Counter> counter = counterRepository.findByName();
+        final Optional<Counter> counter = counterRepository.findByName(name);
         if(counter.isPresent()) {
             final Counter counterEntity = counter.get();
             final Long newValue = counterEntity.incrementValue();
@@ -29,7 +29,7 @@ public class CounterDao {
     }
 
     public Long getValueOf(final String name) {
-         final Optional<Counter> counter = counterRepository.findByName();
+         final Optional<Counter> counter = counterRepository.findByName(name);
         if(counter.isPresent()) {
             return counter.get().getValue();
         }

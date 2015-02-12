@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface CounterRepository extends JpaRepository<Counter, Long> {
+public interface CounterRepository extends JpaRepository<Counter, String> {
 
-    Optional<Counter> findByName();
+    Optional<Counter> findByName(String name);
 
 }

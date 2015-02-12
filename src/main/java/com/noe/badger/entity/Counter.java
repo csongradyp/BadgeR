@@ -1,26 +1,31 @@
 package com.noe.badger.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * Entity class for counted events.
  */
 @Entity
-public class Counter extends AbstractEntity {
+public class Counter {
 
-    private String counterName;
+    @Id
+    private String name;
     private Long value;
+
+    public Counter() {
+    }
 
     public Long incrementValue() {
         return ++value;
     }
 
-    public String getCounterName() {
-        return counterName;
+    public String getName() {
+        return name;
     }
 
-    public void setCounterName(final String counterName) {
-        this.counterName = counterName;
+    public void setName(final String name) {
+        this.name = name;
     }
 
     public Long getValue() {

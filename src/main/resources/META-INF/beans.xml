@@ -22,8 +22,8 @@
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="manifestoPersistenceUnit"/>
-        <!--<property name="sharedCacheMode" value="ALL"/>-->
+        <property name="persistenceUnitName" value="badgerPersistenceUnit"/>
+        <property name="sharedCacheMode" value="ALL"/>
         <property name="packagesToScan" value="com.noe.badger.entity"/>
         <property name="loadTimeWeaver">
             <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
@@ -54,7 +54,7 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:file:./manifesto"/>
+        <property name="url" value="jdbc:h2:file:./achievements"/>
         <property name="username" value=""/>
         <property name="password" value=""/>
     </bean>

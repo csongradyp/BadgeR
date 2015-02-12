@@ -7,16 +7,33 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-public class Achievement {
+public class AchievementEntity {
 
     @Id
     private String id;
     private String title;
     @Temporal(TemporalType.TIMESTAMP)
     private Date acquireDate;
+    private Integer level;
     private Boolean unlocked;
 
-    public Achievement() {
+    public AchievementEntity() {
+    }
+
+    public AchievementEntity(final String id, final String title) {
+        this.id = id;
+        this.title = title;
+        level = 1;
+        acquireDate = new Date();
+        unlocked = true;
+    }
+
+    public AchievementEntity(final String id, final String title, final Integer level) {
+        this.id = id;
+        this.title = title;
+        this.level = level;
+        acquireDate = new Date();
+        unlocked = true;
     }
 
     /**
@@ -33,7 +50,7 @@ public class Achievement {
      *
      * @param id Value to set for property 'id'.
      */
-    public void setId( String id ) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -51,7 +68,7 @@ public class Achievement {
      *
      * @param title Value to set for property 'title'.
      */
-    public void setTitle( String title ) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -69,7 +86,7 @@ public class Achievement {
      *
      * @param acquireDate Value to set for property 'acquireDate'.
      */
-    public void setAcquireDate( Date acquireDate ) {
+    public void setAcquireDate(Date acquireDate) {
         this.acquireDate = acquireDate;
     }
 
@@ -87,7 +104,25 @@ public class Achievement {
      *
      * @param unlocked Value to set for property 'unlocked'.
      */
-    public void setUnlocked( Boolean unlocked ) {
+    public void setUnlocked(Boolean unlocked) {
         this.unlocked = unlocked;
+    }
+
+    /**
+     * Getter for property 'level'.
+     *
+     * @return Value for property 'level'.
+     */
+    public Integer getLevel() {
+        return level;
+    }
+
+    /**
+     * Setter for property 'level'.
+     *
+     * @param level Value to set for property 'level'.
+     */
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

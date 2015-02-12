@@ -1,16 +1,20 @@
 package com.noe.badger;
 
 public enum AchievementType {
-    
+
     DATE("date"),
     TIME("time"),
-    COUNTER("counter"), DATE_COUNTER("date-counter"), TIMED_COUNTER("timed-counter"),
-    SINGLE("event");
+    COUNTER("counter"), DATE_COUNTER("dateCounter"), TIMED_COUNTER("timedCounter"),
+    SINGLE("single");
 
     private final String type;
 
     AchievementType(final String type) {
         this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
     @Override

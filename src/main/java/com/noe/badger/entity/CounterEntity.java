@@ -7,13 +7,18 @@ import javax.persistence.Id;
  * Entity class for counted events.
  */
 @Entity
-public class Counter {
+public class CounterEntity {
 
     @Id
     private String name;
     private Long value;
 
-    public Counter() {
+    public CounterEntity() {
+    }
+
+    public CounterEntity(final String name) {
+        this.name = name;
+        value = 1L;
     }
 
     public Long incrementValue() {

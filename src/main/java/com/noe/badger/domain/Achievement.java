@@ -1,65 +1,58 @@
 package com.noe.badger.domain;
 
-public interface Achievement {
+import java.util.Date;
 
-    String PROP_ID = "id";
-    String PROP_FTITLE = "title";
-    String PROP_TEXT = "text";
-    String PROP_TRIGGER = "trigger";
+public class Achievement {
 
-    /**
-     * Getter for property 'id'.
-     *
-     * @return Value for property 'id'.
-     */
-    String getId();
+    private String title;
+    private String text;
+    private Date acquireDate;
+    private Integer level;
+    private Long triggerValue;
 
-    /**
-     * Setter for property 'id'.
-     *
-     * @param id Value to set for property 'id'.
-     */
-    void setId( String id );
+    public Achievement(final String title, final String text, final Date acquireDate, final Integer level) {
+        this.title = title;
+        this.text = text;
+        this.acquireDate = acquireDate;
+        this.level = level;
+    }
 
-    /**
-     * Getter for property 'title'.
-     *
-     * @return Value for property 'title'.
-     */
-    String getTitle();
+    public Achievement(final String title, final String text, final Date acquireDate) {
+        this.title = title;
+        this.text = text;
+        this.acquireDate = acquireDate;
+        this.level = 1;
+    }
 
-    /**
-     * Setter for property 'title'.
-     *
-     * @param title Value to set for property 'title'.
-     */
-    void setTitle( String title );
+    public String getTitle() {
+        return title;
+    }
 
-    /**
-     * Getter for property 'text'.
-     *
-     * @return Value for property 'text'.
-     */
-    String getText();
+    public void setTitle(final String title) {
+        this.title = title;
+    }
 
-    /**
-     * Setter for property 'text'.
-     *
-     * @param text Value to set for property 'text'.
-     */
-    void setText( String text );
+    public String getText() {
+        return text;
+    }
 
-    /**
-     * Getter for property 'trigger'.
-     *
-     * @return Value for property 'trigger'.
-     */
-    String[] getTrigger();
+    public void setText(final String text) {
+        this.text = text;
+    }
 
-    /**
-     * Setter for property 'trigger'.
-     *
-     * @param trigger Value to set for property 'trigger'.
-     */
-    void setTrigger( String[] trigger );
+    public Date getAcquireDate() {
+        return acquireDate;
+    }
+
+    public void setAcquireDate(final Date acquireDate) {
+        this.acquireDate = acquireDate;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(final Integer level) {
+        this.level = level;
+    }
 }

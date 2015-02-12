@@ -1,6 +1,6 @@
 package com.noe.badger.dao;
 
-import com.noe.badger.entity.Counter;
+import com.noe.badger.entity.CounterEntity;
 import com.noe.badger.repository.CounterRepository;
 
 import javax.inject.Inject;
@@ -9,6 +9,7 @@ import java.util.Optional;
 
 /**
  * Counter DAO for database communication.
+ *
  * @author Peter_Csongrady
  */
 @Named
@@ -18,19 +19,21 @@ public class CounterDao {
     private CounterRepository counterRepository;
 
     public Long increment(final String name) {
-        final Optional<Counter> counter = counterRepository.findByName(name);
-        if(counter.isPresent()) {
-            final Counter counterEntity = counter.get();
+        final Optional<CounterEntity> counter = counterRepository.findByName(name);
+        if (counter.isPresent()) {
+            final CounterEntity counterEntity = counter.get();
             final Long newValue = counterEntity.incrementValue();
             counterRepository.save(counterEntity);
             return newValue;
         }
-        throw new IllegalArgumentException("No counter registered with name: " + name);
+        final CounterEntity newCounter = new CounterEntity(name);
+        counterRepository.save(newCounter);
+        return newCounter.getValue();
     }
 
     public Long getValueOf(final String name) {
-         final Optional<Counter> counter = counterRepository.findByName(name);
-        if(counter.isPresent()) {
+        final Optional<CounterEntity> counter = counterRepository.findByName(name);
+        if (counter.isPresent()) {
             return counter.get().getValue();
         }
         throw new IllegalArgumentException("No counter registered with name: " + name);

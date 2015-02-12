@@ -1,5 +1,7 @@
 package com.noe.badger.aspect;
 
+import com.noe.badger.AchievementType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,9 +15,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface AchievementUnlock {
 
+    AchievementType type() default AchievementType.SINGLE;
+
     /**
-     * Name of achievement to unlock.
+     * ID of achievement to unlock.
      */
-    String achievementId();
+    String Id();
 
 }

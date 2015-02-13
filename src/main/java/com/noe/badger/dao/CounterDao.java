@@ -1,6 +1,6 @@
 package com.noe.badger.dao;
 
-import com.noe.badger.entity.CounterEntity;
+import com.noe.badger.entity.ScoreEntity;
 import com.noe.badger.repository.CounterRepository;
 
 import javax.inject.Inject;
@@ -9,7 +9,6 @@ import java.util.Optional;
 
 /**
  * Counter DAO for database communication.
- *
  * @author Peter_Csongrady
  */
 @Named
@@ -19,24 +18,37 @@ public class CounterDao {
     private CounterRepository counterRepository;
 
     public Long increment(final String name) {
-        final Optional<CounterEntity> counter = counterRepository.findByName(name);
-        if (counter.isPresent()) {
-            final CounterEntity counterEntity = counter.get();
-            final Long newValue = counterEntity.incrementValue();
-            counterRepository.save(counterEntity);
+        final Optional<ScoreEntity> counter = counterRepository.findByName(name);
+        if(counter.isPresent()) {
+            final ScoreEntity scoreEntity = counter.get();
+            final Long newValue = scoreEntity.incrementScore();
+            counterRepository.save( scoreEntity );
             return newValue;
         }
-        final CounterEntity newCounter = new CounterEntity(name);
+        final ScoreEntity newCounter = new ScoreEntity(name);
         counterRepository.save(newCounter);
-        return newCounter.getValue();
+        return newCounter.getScore();
     }
 
-    public Long getValueOf(final String name) {
-        final Optional<CounterEntity> counter = counterRepository.findByName(name);
-        if (counter.isPresent()) {
-            return counter.get().getValue();
+    public Long setScore(final String name, final Long newScore) {
+        final Optional<ScoreEntity> counter = counterRepository.findByName(name);
+        if(counter.isPresent()) {
+            final ScoreEntity scoreEntity = counter.get();
+            scoreEntity.setScore(newScore);
+            counterRepository.save( scoreEntity );
+            return scoreEntity.getScore();
         }
-        throw new IllegalArgumentException("No counter registered with name: " + name);
+        final ScoreEntity newCounter = new ScoreEntity(name, newScore);
+        counterRepository.save(newCounter);
+        return newCounter.getScore();
+    }
+
+    public Long getValueOf(final String id) {
+         final Optional<ScoreEntity> counter = counterRepository.findByName(id);
+        if(counter.isPresent()) {
+            return counter.get().getScore();
+        }
+        throw new IllegalArgumentException("No counter registered with id: " + id );
     }
 
 }

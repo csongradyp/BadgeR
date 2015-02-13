@@ -20,7 +20,7 @@ public class AchievementEntity {
     public AchievementEntity() {
     }
 
-    public AchievementEntity(final String id, final String title) {
+    public AchievementEntity( final String id, final String title ) {
         this.id = id;
         this.title = title;
         level = 1;
@@ -28,7 +28,7 @@ public class AchievementEntity {
         unlocked = true;
     }
 
-    public AchievementEntity(final String id, final String title, final Integer level) {
+    public AchievementEntity( final String id, final String title, final Integer level ) {
         this.id = id;
         this.title = title;
         this.level = level;
@@ -50,7 +50,7 @@ public class AchievementEntity {
      *
      * @param id Value to set for property 'id'.
      */
-    public void setId(String id) {
+    public void setId( String id ) {
         this.id = id;
     }
 
@@ -68,7 +68,7 @@ public class AchievementEntity {
      *
      * @param title Value to set for property 'title'.
      */
-    public void setTitle(String title) {
+    public void setTitle( String title ) {
         this.title = title;
     }
 
@@ -86,7 +86,7 @@ public class AchievementEntity {
      *
      * @param acquireDate Value to set for property 'acquireDate'.
      */
-    public void setAcquireDate(Date acquireDate) {
+    public void setAcquireDate( Date acquireDate ) {
         this.acquireDate = acquireDate;
     }
 
@@ -104,7 +104,7 @@ public class AchievementEntity {
      *
      * @param unlocked Value to set for property 'unlocked'.
      */
-    public void setUnlocked(Boolean unlocked) {
+    public void setUnlocked( Boolean unlocked ) {
         this.unlocked = unlocked;
     }
 
@@ -122,7 +122,7 @@ public class AchievementEntity {
      *
      * @param level Value to set for property 'level'.
      */
-    public void setLevel(Integer level) {
+    public void setLevel( Integer level ) {
         this.level = level;
     }
 }

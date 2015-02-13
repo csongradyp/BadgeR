@@ -14,8 +14,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 
-@Named
-public class AchievementBundle {
+@Named public class AchievementBundle {
 
     private Ini achievements;
 
@@ -23,7 +22,7 @@ public class AchievementBundle {
         try {
             achievements = new Ini(achievementFile);
             achievements.getConfig().setMultiOption(true);
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             throw new IllegalStateException("Ini file not found!");
         }
     }
@@ -31,7 +30,7 @@ public class AchievementBundle {
     public void setSource(final String achievementFileLocation) {
         try {
             achievements = new Ini(new File(achievementFileLocation));
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             throw new IllegalStateException("Ini file not found!");
         }
     }
@@ -39,7 +38,7 @@ public class AchievementBundle {
     public void setSource(final URL achievementFile) {
         try {
             achievements = new Ini(achievementFile);
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             throw new IllegalStateException("Ini file not found!");
         }
     }
@@ -47,7 +46,7 @@ public class AchievementBundle {
     public void setSource(final InputStream inputStream) {
         try {
             achievements = new Ini(inputStream);
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             throw new IllegalStateException("Ini file not found!");
         }
     }
@@ -61,7 +60,7 @@ public class AchievementBundle {
     }
 
     public IAchievementBean<Date> getDateAchievement(final String id) {
-        return getDateAchievement(AchievementType.DATE, id);
+        return getDateAchievement( AchievementType.DATE, id );
     }
 
     public IAchievementBean<Date> getTimeAchievement(final String id) {
@@ -88,29 +87,29 @@ public class AchievementBundle {
 
     public IAchievementBean getAchievement(final String id) {
         final AchievementType[] values = AchievementType.values();
-        for (AchievementType value : values) {
+        for ( AchievementType value : values ) {
             final Profile.Section section = achievements.get(value.getType());
-            if (section.keySet().contains(id)) {
-                switch (value) {
-                    case DATE:
-                        return parseSection(id, section, new DateAchievementBean());
-                    case TIME:
-                        return parseSection(id, section, new DateAchievementBean());
-                    case COUNTER:
-                        return parseSection(id, section, new CounterAchievementBean());
-                    case DATE_COUNTER:
-                        break;
-                    case TIMED_COUNTER:
-                        break;
-                    case SINGLE:
-                        break;
+            if( section.keySet().contains(id)) {
+                switch ( value ) {
+                case DATE:
+                    return parseSection(id, section, new DateAchievementBean());
+                case TIME:
+                    return parseSection(id, section, new DateAchievementBean());
+                case COUNTER:
+                    return parseSection(id, section, new CounterAchievementBean());
+                case DATE_COUNTER:
+                    break;
+                case TIMED_COUNTER:
+                    break;
+                case SINGLE:
+                    break;
                 }
             }
         }
         return null;
     }
 
-    private IAchievementBean parseSection(String id, Profile.Section section, IAchievementBean achievement) {
+    private IAchievementBean parseSection(String id, Profile.Section section, IAchievementBean achievement ) {
         section.to(achievement);
         achievement.setId(id);
         return achievement;

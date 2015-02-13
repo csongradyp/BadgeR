@@ -20,17 +20,17 @@ public class AchievementDao {
     @Inject
     private AchievementRepository achievementRepository;
 
-    public void unlock(final IAchievementBean achievementBean) {
-        final AchievementEntity achievement = new AchievementEntity(achievementBean.getId(), achievementBean.getTitleKey());
-        achievementRepository.save(achievement);
+     public void unlock(final IAchievementBean achievementBean) {
+         final AchievementEntity achievement = new AchievementEntity( achievementBean.getId(), achievementBean.getTitleKey());
+         achievementRepository.save(achievement);
     }
 
-    public void unlockLevel(final String id, final Integer level) {
-        final AchievementEntity achievement = achievementRepository.getOne(id);
-        if (achievement != null) {
-            achievement.setLevel(level);
-        }
-        achievementRepository.save(achievement);
+     public void unlockLevel(final String id, final Integer level) {
+         final AchievementEntity achievement = achievementRepository.getOne( id );
+         if(achievement != null) {
+             achievement.setLevel(level);
+         }
+         achievementRepository.save(achievement);
     }
 
     public Long getNumberOfUnlocked() {
@@ -51,6 +51,11 @@ public class AchievementDao {
         return achievementRepository.findOne(id) != null;
     }
 
+    public Boolean isUnlocked(final String id, final Integer level) {
+        final AchievementEntity achievementEntity = achievementRepository.findOne( id );
+        return achievementEntity != null && level <= achievementEntity.getLevel();
+    }
+
     /**
      * Returns the date when the achievement was acquired.
      *
@@ -64,5 +69,4 @@ public class AchievementDao {
         }
         return null;
     }
-
 }

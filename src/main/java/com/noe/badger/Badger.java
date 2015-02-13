@@ -1,5 +1,6 @@
 package com.noe.badger;
 
+import com.noe.badger.event.AchievementHandler;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -44,6 +45,14 @@ public class Badger {
 
     public void unlock(final String id) {
         controller.unlock(id);
+    }
+
+    public void subscribe(final AchievementHandler achievementHandler) {
+        controller.subscribe(achievementHandler);
+    }
+
+    public void unSubscribe(final AchievementHandler achievementHandler) {
+        controller.unSubscribe(achievementHandler);
     }
 
 }

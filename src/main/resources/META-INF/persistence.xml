@@ -4,8 +4,8 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
         <class>com.noe.badger.entity.AbstractEntity</class>
-        <class>com.noe.badger.entity.Achievement</class>
-        <class>com.noe.badger.entity.Counter</class>
+        <class>com.noe.badger.entity.AchievementEntity</class>
+        <class>com.noe.badger.entity.ScoreEntity</class>
 
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>

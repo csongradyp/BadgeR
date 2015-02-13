@@ -17,7 +17,7 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
     }
 
     @Override
-    public void setMaxLevel(Integer maxLevel) {
+    public void setMaxLevel( Integer maxLevel ) {
         this.maxLevel = maxLevel;
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
     }
 
     @Override
-    public void setTitleKey(String titleKey) {
+    public void setTitleKey( String titleKey ) {
         this.titleKey = titleKey;
     }
 
@@ -47,15 +47,14 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
     }
 
     @Override
-    public void setTextKey(String textKey) {
+    public void setTextKey( String textKey ) {
         this.textKey = textKey;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Achievement {" +
-                "id='" + id + '\'' +
-                ", titleKey='" + titleKey + '\'' +
-                ", textKey='" + textKey + '\'';
+               "id='" + id + '\'' +
+               ", titleKey='" + titleKey + '\'' +
+               ", textKey='" + textKey + '\'';
     }
 }

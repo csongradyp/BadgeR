@@ -15,7 +15,7 @@ public class DateAchievementBean extends AbstractAchievementBean<Date> {
         return trigger;
     }
 
-    public void setTrigger(String[] trigger) {
+    public void setTrigger( String[] trigger ) {
         Date[] triggers = new Date[trigger.length];
         for (int i = 0; i < trigger.length; i++) {
             final Date value = DateTimeFormat.forPattern(PATTERN).parseDateTime(trigger[i]).toDate();
@@ -27,7 +27,7 @@ public class DateAchievementBean extends AbstractAchievementBean<Date> {
     @Override
     public String toString() {
         return super.toString() +
-            "trigger=" + Arrays.toString(trigger) +
-            '}';
+               "trigger=" + Arrays.toString( trigger ) +
+               '}';
     }
 }

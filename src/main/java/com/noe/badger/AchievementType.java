@@ -1,7 +1,7 @@
 package com.noe.badger;
 
 public enum AchievementType {
-
+    
     DATE("date"),
     TIME("time"),
     COUNTER("counter"), DATE_COUNTER("dateCounter"), TIMED_COUNTER("timedCounter"),

@@ -11,7 +11,7 @@ public class CounterAchievementBean extends AbstractAchievementBean<Long> {
         return trigger;
     }
 
-    public void setTrigger(String[] trigger) {
+    public void setTrigger( String[] trigger ) {
         Long[] triggers = new Long[trigger.length];
         for (int i = 0; i < trigger.length; i++) {
             final Long value = Long.parseLong(trigger[i]);
@@ -23,7 +23,7 @@ public class CounterAchievementBean extends AbstractAchievementBean<Long> {
     @Override
     public String toString() {
         return super.toString() +
-                "trigger=" + Arrays.toString(trigger) +
-                '}';
+               "trigger=" + Arrays.toString( trigger ) +
+               '}';
     }
 }

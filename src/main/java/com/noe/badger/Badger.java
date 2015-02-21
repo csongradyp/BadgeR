@@ -1,6 +1,9 @@
 package com.noe.badger;
 
-import com.noe.badger.event.AchievementHandler;
+import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
+import com.noe.badger.event.handler.IAchievementUnlockedHandler;
+import com.noe.badger.event.handler.IAchievementUpdateHandler;
+import com.noe.badger.event.EventBus;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,12 +49,32 @@ public class Badger {
         controller.unlock(id);
     }
 
-    public void subscribe(final AchievementHandler achievementHandler) {
-        controller.subscribe(achievementHandler);
+    public void incrementCounter(final String id) {
+        controller.incrementAndCheck(id);
     }
 
-    public void unSubscribe(final AchievementHandler achievementHandler) {
-        controller.unSubscribe(achievementHandler);
+    public Long getCurrentScore(final String id) {
+        return controller.getCurrentScore(id);
     }
+
+    public void setScore(final String id, final Long score) {
+        controller.setScoreAndCheck(id, score);
+    }
+
+    public void subscribeOnUnlock(final IAchievementUnlockedHandler achievementUnlockedHandler) {
+        EventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(achievementUnlockedHandler));
+    }
+
+//    public void unSubscribeOnUnlock(final IAchievementUnlockedHandler achievementUnlockedHandler) {
+//        EventBus.unSubscribeOnUnlock(achievementUnlockedHandler);
+//    }
+
+    public void subscribeOnUnlock(final IAchievementUpdateHandler achievementUpdateHandler) {
+        EventBus.subscribeOnUpdate(achievementUpdateHandler);
+    }
+
+//    public void unSubscribeOnUpdate(final IAchievementUpdateHandler achievementUpdateHandler) {
+//        EventBus.unSubscribeOnUpdate(achievementUpdateHandler);
+//    }
 
 }

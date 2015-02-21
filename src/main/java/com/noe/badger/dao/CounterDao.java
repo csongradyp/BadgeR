@@ -3,6 +3,7 @@ package com.noe.badger.dao;
 import com.noe.badger.entity.ScoreEntity;
 import com.noe.badger.repository.CounterRepository;
 
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -17,8 +18,9 @@ public class CounterDao {
     private CounterRepository counterRepository;
 
     public Long increment(final String name) {
-        final ScoreEntity scoreEntity = counterRepository.findByName(name);
-        if(scoreEntity != null) {
+        final Optional<ScoreEntity> score = counterRepository.findById(name);
+        if(score.isPresent()) {
+            final ScoreEntity scoreEntity = score.get();
             final Long newValue = scoreEntity.incrementScore();
             counterRepository.save( scoreEntity );
             return newValue;
@@ -29,8 +31,9 @@ public class CounterDao {
     }
 
     public Long setScore(final String name, final Long newScore) {
-        final ScoreEntity scoreEntity = counterRepository.findByName(name);
-        if(scoreEntity != null) {
+        final Optional<ScoreEntity> score = counterRepository.findById(name);
+        if(score.isPresent()) {
+            final ScoreEntity scoreEntity = score.get();
             scoreEntity.setScore(newScore);
             counterRepository.save( scoreEntity );
             return scoreEntity.getScore();
@@ -41,14 +44,12 @@ public class CounterDao {
     }
 
     public Long getValueOf(final String id) {
-         final ScoreEntity scoreEntity = counterRepository.findByName(id);
-        if(scoreEntity != null) {
+        final Optional<ScoreEntity> score = counterRepository.findById(id);
+        if(score.isPresent()) {
+            final ScoreEntity scoreEntity = score.get();
             return scoreEntity.getScore();
         }
         return 0L;
     }
 
-    public void setCounterRepository( CounterRepository counterRepository ) {
-        this.counterRepository = counterRepository;
-    }
 }

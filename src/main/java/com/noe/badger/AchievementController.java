@@ -4,24 +4,20 @@ import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.bundle.domain.IAchievementBean;
 import com.noe.badger.dao.AchievementDao;
 import com.noe.badger.dao.CounterDao;
-import com.noe.badger.event.AchievementCheckHandler;
-import com.noe.badger.event.AchievementHandler;
 import com.noe.badger.event.EventBus;
 import com.noe.badger.event.domain.Achievement;
-import com.noe.badger.event.domain.CheckEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Named
-public class AchievementController implements AchievementCheckHandler {
+public class AchievementController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AchievementController.class);
 
@@ -37,7 +33,6 @@ public class AchievementController implements AchievementCheckHandler {
 
     public AchievementController() {
         EventBus.setController(this);
-        EventBus.subscribe(this);
     }
 
     public void setInternationalizationBaseName(final String internationalizationBaseName) {
@@ -59,22 +54,26 @@ public class AchievementController implements AchievementCheckHandler {
 
     public void incrementAndCheck(final String id) {
         final Long currentValue = counterDao.increment(id);
-        checkTrigger(id, currentValue);
+        checkCounterTrigger(id, currentValue);
     }
 
     public void setScoreAndCheck(final String id, final Long score) {
         final Long currentValue = counterDao.setScore(id, score);
-        checkTrigger(id, currentValue);
+        checkCounterTrigger(id, currentValue);
     }
 
-    private void checkTrigger(final String id, final Long currentValue) {
+    private void checkCounterTrigger(final String id, final Long currentValue) {
         final IAchievementBean<Long> counterAchievement = achievementBundle.getCounterAchievement(id);
-        final Long[] triggers = counterAchievement.getTrigger();
+        checkTrigger(id, currentValue, counterAchievement);
+    }
+
+    private void checkTrigger(String id, Long currentValue, IAchievementBean<Long> achievementBean) {
+        final Long[] triggers = achievementBean.getTrigger();
         for (int triggerIndex = 0; triggerIndex < triggers.length; triggerIndex++) {
             final Long triggerValue = triggers[triggerIndex];
-            if (isTriggered(currentValue, triggerValue) && isLevelValid(counterAchievement, triggerIndex) && !isLevelUnlocked(id, triggerIndex)) {
+            if (isTriggered(currentValue, triggerValue) && isLevelValid(achievementBean, triggerIndex) && !isLevelUnlocked(id, triggerIndex)) {
                 achievementDao.unlockLevel(id, triggerIndex);
-                final Achievement achievement = createAchievement(counterAchievement, triggerIndex, currentValue);
+                final Achievement achievement = createAchievement(achievementBean, triggerIndex, currentValue);
                 EventBus.publishUnlocked(achievement);
             }
         }
@@ -99,6 +98,10 @@ public class AchievementController implements AchievementCheckHandler {
         EventBus.publishUnlocked(achievement);
     }
 
+    public Long getCurrentScore(final String id) {
+        return counterDao.getValueOf(id);
+    }
+
     private Achievement createAchievement(final IAchievementBean achievementBean, final Integer level, final Long triggerWith) {
         final Achievement achievement = createAchievement(achievementBean, String.valueOf(triggerWith));
         achievement.setLevel(level);
@@ -111,16 +114,4 @@ public class AchievementController implements AchievementCheckHandler {
         return new Achievement(title, text, new Date(), triggerWith);
     }
 
-    public void subscribe(final AchievementHandler achievementHandler) {
-        EventBus.subscribe(achievementHandler);
-    }
-
-    public void unSubscribe(final AchievementHandler achievementHandler) {
-        EventBus.unSubscribe(achievementHandler);
-    }
-
-    @Override
-    public void onCheck(final CheckEvent event) {
-        checkTrigger(event.getId(), counterDao.getValueOf(event.getId()));
-    }
 }

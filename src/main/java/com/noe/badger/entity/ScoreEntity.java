@@ -10,19 +10,19 @@ import javax.persistence.Id;
 public class ScoreEntity {
 
     @Id
-    private String name;
+    private String id;
     private Long score;
 
     public ScoreEntity() {
     }
 
-    public ScoreEntity( final String name ) {
-        this.name = name;
+    public ScoreEntity( final String id) {
+        this.id = id;
         score = 1L;
     }
 
-    public ScoreEntity( final String name, final Long score ) {
-        this.name = name;
+    public ScoreEntity( final String id, final Long score ) {
+        this.id = id;
         this.score = score;
     }
 
@@ -30,12 +30,12 @@ public class ScoreEntity {
         return ++score;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setId(final String name) {
+        this.id = name;
     }
 
     public Long getScore() {

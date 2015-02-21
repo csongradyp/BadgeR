@@ -4,8 +4,10 @@ package com.noe.badger.event;
 import com.noe.badger.AchievementController;
 import com.noe.badger.event.domain.Achievement;
 import com.noe.badger.event.domain.AchievementEventType;
-import com.noe.badger.event.domain.CheckEvent;
 import com.noe.badger.event.domain.IncrementEvent;
+import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
+import com.noe.badger.event.handler.IAchievementUnlockedHandler;
+import com.noe.badger.event.handler.IAchievementUpdateHandler;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import org.slf4j.Logger;
@@ -18,14 +20,14 @@ public final class EventBus {
 
     private AchievementController controller;
 
-    private final MBassador<CheckEvent> checkers;
-    private final MBassador<Achievement> subscribers;
+    private final MBassador<Achievement> updateSubscribers;
+    private final MBassador<Achievement> unlockedSubscribers;
 
     private EventBus() {
-        checkers = new MBassador<>(BusConfiguration.SyncAsync());
-        subscribers = new MBassador<>(BusConfiguration.SyncAsync());
+        updateSubscribers = new MBassador<>(BusConfiguration.SyncAsync());
+        unlockedSubscribers = new MBassador<>(BusConfiguration.SyncAsync());
 
-        registerShutdownHook(checkers, subscribers);
+        registerShutdownHook(updateSubscribers, unlockedSubscribers);
     }
 
     private void registerShutdownHook(final MBassador<?>... mBassadors) {
@@ -36,30 +38,30 @@ public final class EventBus {
         }));
     }
 
-    public static void subscribe(final AchievementHandler handler) {
-        INSTANCE.subscribers.subscribe(handler);
+    public static void subscribeOnUnlock(final AchievementUnlockedHandlerWrapper handler) {
+        INSTANCE.unlockedSubscribers.subscribe(handler);
     }
 
-    public static void unSubscribe(final AchievementHandler handler) {
-        INSTANCE.subscribers.unsubscribe(handler);
+    public static void unSubscribeOnUnlock(final IAchievementUnlockedHandler handler) {
+        INSTANCE.unlockedSubscribers.unsubscribe(handler);
     }
 
     public static void publishUnlocked(final Achievement achievement) {
         achievement.setEventType(AchievementEventType.UNLOCK);
         LOG.info(achievement.getTitle() + " unlocked");
-        INSTANCE.subscribers.publish(achievement);
+        INSTANCE.unlockedSubscribers.publish(achievement);
     }
 
-    public static void subscribe(final AchievementCheckHandler handler) {
-        INSTANCE.checkers.subscribe(handler);
+    public static void subscribeOnUpdate(final AchievementUnlockedHandlerWrapper handler) {
+        INSTANCE.updateSubscribers.subscribe(handler);
     }
 
-    public static void unSubscribe(final AchievementCheckHandler handler) {
-        INSTANCE.checkers.unsubscribe(handler);
+    public static void unSubscribeOnUpdate(final IAchievementUpdateHandler handler) {
+        INSTANCE.updateSubscribers.unsubscribe(handler);
     }
 
-    public static void publishCheck(final CheckEvent achievement) {
-        INSTANCE.checkers.publish(achievement);
+    public static void publishCheck(final Achievement achievement) {
+        INSTANCE.updateSubscribers.publish(achievement);
     }
 
     public static void incrementAndCheck(final IncrementEvent event) {

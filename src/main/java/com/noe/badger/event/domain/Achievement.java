@@ -11,7 +11,7 @@ public class Achievement {
     private Integer level;
     private AchievementEventType eventType;
 
-    public Achievement( final String title, final String text, final Date acquireDate, final String triggerWith, final Integer level) {
+    public Achievement(final String title, final String text, final Date acquireDate, final String triggerWith, final Integer level) {
         this.title = title;
         this.text = text;
         this.acquireDate = acquireDate;
@@ -19,7 +19,7 @@ public class Achievement {
         this.level = level;
     }
 
-    public Achievement( final String title, final String text, final Date acquireDate, final String triggerWith) {
+    public Achievement(final String title, final String text, final Date acquireDate, final String triggerWith) {
         this.title = title;
         this.text = text;
         this.acquireDate = acquireDate;

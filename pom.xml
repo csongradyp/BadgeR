@@ -8,11 +8,22 @@
     <artifactId>badger</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>objectdb</id>
+            <name>ObjectDB Repository</name>
+            <url>http://m2.objectdb.com</url>
+        </repository>
+    </repositories>
+
 
     <properties>
         <spring.version>4.0.3.RELEASE</spring.version>
-        <spring.data.version>1.7.0.RELEASE</spring.data.version>
+        <spring.data.version>1.6.0.RELEASE</spring.data.version>
+        <aspectj.version>1.8.5</aspectj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -20,6 +31,11 @@
             <groupId>org.ini4j</groupId>
             <artifactId>ini4j</artifactId>
             <version>0.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>net.engio</groupId>
+            <artifactId>mbassador</artifactId>
+            <version>1.2.0</version>
         </dependency>
 
         <dependency>
@@ -49,41 +65,21 @@
             <version>${spring.data.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>2.5.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.182</version>
+            <groupId>com.objectdb</groupId>
+            <artifactId>objectdb</artifactId>
+            <version>2.5.7</version>
         </dependency>
 
-        <!-- Spring AOP + AspectJ -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.7.4</version>
+            <version>${aspectj.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.7.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>3.3.1</version>
+            <version>${aspectj.version}</version>
         </dependency>
         <!--LOG-->
         <dependency>
@@ -112,4 +108,35 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <complianceLevel>1.8</complianceLevel>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

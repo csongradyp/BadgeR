@@ -4,6 +4,7 @@ import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.CounterAchievementBean;
 import com.noe.badger.bundle.domain.DateAchievementBean;
 import com.noe.badger.bundle.domain.IAchievementBean;
+import org.ini4j.Config;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
 
@@ -14,14 +15,19 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 
-@Named public class AchievementBundle {
+@Named
+public class AchievementBundle {
 
     private Ini achievements;
 
     public void setSource(final File achievementFile) {
         try {
             achievements = new Ini(achievementFile);
+
             achievements.getConfig().setMultiOption(true);
+            final Config config = new Config();
+            config.setMultiOption(true);
+            achievements.setConfig(config);
         } catch ( IOException e ) {
             throw new IllegalStateException("Ini file not found!");
         }
@@ -112,6 +118,7 @@ import java.util.Date;
     private IAchievementBean parseSection(String id, Profile.Section section, IAchievementBean achievement ) {
         section.to(achievement);
         achievement.setId(id);
+        achievement.setTrigger(section.getAll("trigger", String[].class));
         return achievement;
     }
 }

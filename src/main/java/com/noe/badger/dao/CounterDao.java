@@ -5,7 +5,6 @@ import com.noe.badger.repository.CounterRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Optional;
 
 /**
  * Counter DAO for database communication.
@@ -18,9 +17,8 @@ public class CounterDao {
     private CounterRepository counterRepository;
 
     public Long increment(final String name) {
-        final Optional<ScoreEntity> counter = counterRepository.findByName(name);
-        if(counter.isPresent()) {
-            final ScoreEntity scoreEntity = counter.get();
+        final ScoreEntity scoreEntity = counterRepository.findByName(name);
+        if(scoreEntity != null) {
             final Long newValue = scoreEntity.incrementScore();
             counterRepository.save( scoreEntity );
             return newValue;
@@ -31,9 +29,8 @@ public class CounterDao {
     }
 
     public Long setScore(final String name, final Long newScore) {
-        final Optional<ScoreEntity> counter = counterRepository.findByName(name);
-        if(counter.isPresent()) {
-            final ScoreEntity scoreEntity = counter.get();
+        final ScoreEntity scoreEntity = counterRepository.findByName(name);
+        if(scoreEntity != null) {
             scoreEntity.setScore(newScore);
             counterRepository.save( scoreEntity );
             return scoreEntity.getScore();
@@ -44,11 +41,14 @@ public class CounterDao {
     }
 
     public Long getValueOf(final String id) {
-         final Optional<ScoreEntity> counter = counterRepository.findByName(id);
-        if(counter.isPresent()) {
-            return counter.get().getScore();
+         final ScoreEntity scoreEntity = counterRepository.findByName(id);
+        if(scoreEntity != null) {
+            return scoreEntity.getScore();
         }
-        throw new IllegalArgumentException("No counter registered with id: " + id );
+        return 0L;
     }
 
+    public void setCounterRepository( CounterRepository counterRepository ) {
+        this.counterRepository = counterRepository;
+    }
 }

@@ -1,13 +1,12 @@
 package com.noe.badger;
 
 import com.noe.badger.event.AchievementHandler;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Badger {
 

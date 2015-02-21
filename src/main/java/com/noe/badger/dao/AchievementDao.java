@@ -3,11 +3,11 @@ package com.noe.badger.dao;
 import com.noe.badger.bundle.domain.IAchievementBean;
 import com.noe.badger.entity.AchievementEntity;
 import com.noe.badger.repository.AchievementRepository;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * DAO for achievements to database communication.
@@ -20,17 +20,28 @@ public class AchievementDao {
     @Inject
     private AchievementRepository achievementRepository;
 
-     public void unlock(final IAchievementBean achievementBean) {
-         final AchievementEntity achievement = new AchievementEntity( achievementBean.getId(), achievementBean.getTitleKey());
-         achievementRepository.save(achievement);
+    public void unlock(final IAchievementBean achievementBean) {
+        final AchievementEntity achievement = new AchievementEntity(achievementBean.getId());
+        achievementRepository.save(achievement);
     }
 
-     public void unlockLevel(final String id, final Integer level) {
-         final AchievementEntity achievement = achievementRepository.getOne( id );
-         if(achievement != null) {
-             achievement.setLevel(level);
-         }
-         achievementRepository.save(achievement);
+//    public void unlockLevel(final String id, final Integer level) {
+//        final AchievementEntity achievement = achievementRepository.getOne(id);
+//        if (achievement != null) {
+//            achievement.setLevel(level);
+//        }
+//        achievementRepository.save(achievement);
+//    }
+
+    public void unlockLevel(final String id, final Integer level) {
+        final Optional<AchievementEntity> achievement = achievementRepository.findById(id);
+        if (achievement.isPresent()) {
+            final AchievementEntity achievementEntity = achievement.get();
+            achievementEntity.setLevel(level);
+            achievementRepository.save(achievementEntity);
+        } else {
+            achievementRepository.save(new AchievementEntity(id));
+        }
     }
 
     public Long getNumberOfUnlocked() {
@@ -52,7 +63,7 @@ public class AchievementDao {
     }
 
     public Boolean isUnlocked(final String id, final Integer level) {
-        final AchievementEntity achievementEntity = achievementRepository.findOne( id );
+        final AchievementEntity achievementEntity = achievementRepository.findOne(id);
         return achievementEntity != null && level <= achievementEntity.getLevel();
     }
 

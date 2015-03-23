@@ -4,12 +4,11 @@ package com.noe.badger.event;
 import com.noe.badger.AchievementController;
 import com.noe.badger.event.domain.Achievement;
 import com.noe.badger.event.domain.AchievementEventType;
-import com.noe.badger.event.domain.IncrementEvent;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
+import com.noe.badger.event.handler.AchievementUpdateHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
 import com.noe.badger.event.handler.IAchievementUpdateHandler;
 import net.engio.mbassy.bus.MBassador;
-import net.engio.mbassy.bus.config.BusConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +23,8 @@ public final class EventBus {
     private final MBassador<Achievement> unlockedSubscribers;
 
     private EventBus() {
-        updateSubscribers = new MBassador<>(BusConfiguration.SyncAsync());
-        unlockedSubscribers = new MBassador<>(BusConfiguration.SyncAsync());
+        updateSubscribers = new MBassador<>();
+        unlockedSubscribers = new MBassador<>();
 
         registerShutdownHook(updateSubscribers, unlockedSubscribers);
     }
@@ -52,7 +51,7 @@ public final class EventBus {
         INSTANCE.unlockedSubscribers.publish(achievement);
     }
 
-    public static void subscribeOnUpdate(final AchievementUnlockedHandlerWrapper handler) {
+    public static void subscribeOnUpdate(final AchievementUpdateHandlerWrapper handler) {
         INSTANCE.updateSubscribers.subscribe(handler);
     }
 
@@ -64,8 +63,12 @@ public final class EventBus {
         INSTANCE.updateSubscribers.publish(achievement);
     }
 
-    public static void incrementAndCheck(final IncrementEvent event) {
-        getController().incrementAndCheck(event.getId());
+    public static void triggerEvent(final String event) {
+        getController().triggerEvent(event);
+    }
+
+    public static void scoreAndCheck(final String id, final Long score) {
+        getController().setScoreAndCheck(id, score);
     }
 
     public static void setController(final AchievementController controller) {
@@ -74,5 +77,9 @@ public final class EventBus {
 
     public static AchievementController getController() {
         return INSTANCE.controller;
+    }
+
+    public static void unlock(String id) {
+        getController().unlock(id);
     }
 }

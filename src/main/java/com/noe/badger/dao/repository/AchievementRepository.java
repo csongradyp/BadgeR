@@ -1,4 +1,4 @@
-package com.noe.badger.repository;
+package com.noe.badger.dao.repository;
 
 import com.noe.badger.entity.AchievementEntity;
 import java.util.Optional;

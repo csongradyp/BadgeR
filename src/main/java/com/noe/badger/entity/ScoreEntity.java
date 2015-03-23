@@ -16,12 +16,12 @@ public class ScoreEntity {
     public ScoreEntity() {
     }
 
-    public ScoreEntity( final String id) {
+    public ScoreEntity(final String id) {
         this.id = id;
         score = 1L;
     }
 
-    public ScoreEntity( final String id, final Long score ) {
+    public ScoreEntity(final String id, final Long score) {
         this.id = id;
         this.score = score;
     }

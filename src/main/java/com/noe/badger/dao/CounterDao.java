@@ -1,7 +1,7 @@
 package com.noe.badger.dao;
 
 import com.noe.badger.entity.ScoreEntity;
-import com.noe.badger.repository.CounterRepository;
+import com.noe.badger.dao.repository.CounterRepository;
 
 import java.util.Optional;
 import javax.inject.Inject;

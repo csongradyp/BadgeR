@@ -1,13 +1,19 @@
 package com.noe.badger.bundle.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> {
 
     private String id;
+    private List<String> event;
     private String titleKey;
     private String textKey;
     private Integer maxLevel;
 
     public AbstractAchievementBean() {
+        event = new ArrayList<>();
         maxLevel = 1;
     }
 
@@ -29,6 +35,16 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public List<String> getEvent() {
+        return event;
+    }
+
+    @Override
+    public void setEvent(String[] event) {
+        Collections.addAll(this.event, event);
     }
 
     @Override

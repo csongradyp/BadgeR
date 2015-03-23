@@ -10,11 +10,11 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface AchievementCounterIncrement {
+public @interface AchievementEventTrigger {
 
     /**
-     * Name of counter to increment.
+     * Name of counter to increment. An event is also a counter
      */
-    String counter();
+    String name();
 
 }

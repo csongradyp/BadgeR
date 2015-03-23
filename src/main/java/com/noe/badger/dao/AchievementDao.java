@@ -2,7 +2,7 @@ package com.noe.badger.dao;
 
 import com.noe.badger.bundle.domain.IAchievementBean;
 import com.noe.badger.entity.AchievementEntity;
-import com.noe.badger.repository.AchievementRepository;
+import com.noe.badger.dao.repository.AchievementRepository;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;

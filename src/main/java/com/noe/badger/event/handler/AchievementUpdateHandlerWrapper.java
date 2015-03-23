@@ -5,14 +5,14 @@ import net.engio.mbassy.listener.Handler;
 
 public class AchievementUpdateHandlerWrapper {
 
-    private final IAchievementUnlockedHandler wrapped;
+    private final IAchievementUpdateHandler wrapped;
 
-    public AchievementUpdateHandlerWrapper(final IAchievementUnlockedHandler wrapped) {
+    public AchievementUpdateHandlerWrapper(final IAchievementUpdateHandler wrapped) {
         this.wrapped = wrapped;
     }
 
     @Handler(rejectSubtypes = true)
-    public void onUnlocked(final Achievement achievement) {
-        wrapped.onUnlocked(achievement);
+    public void onUpdate(final Achievement achievement) {
+        wrapped.onUpdate(achievement);
     }
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Achievement {
 
+    private final String id;
     private final String title;
     private final String text;
     private final Date acquireDate;
@@ -11,7 +12,8 @@ public class Achievement {
     private Integer level;
     private AchievementEventType eventType;
 
-    public Achievement(final String title, final String text, final Date acquireDate, final String triggerWith, final Integer level) {
+    public Achievement(final String id, final String title, final String text, final Date acquireDate, final String triggerWith, final Integer level) {
+        this.id = id;
         this.title = title;
         this.text = text;
         this.acquireDate = acquireDate;
@@ -19,12 +21,17 @@ public class Achievement {
         this.level = level;
     }
 
-    public Achievement(final String title, final String text, final Date acquireDate, final String triggerWith) {
+    public Achievement(final String id, final String title, final String text, final Date acquireDate, final String triggerWith) {
+        this.id = id;
         this.title = title;
         this.text = text;
         this.acquireDate = acquireDate;
         this.triggerWith = triggerWith;
         this.level = 1;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getTitle() {

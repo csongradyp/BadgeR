@@ -1,4 +1,4 @@
-package com.noe.badger.event.domain;
+package com.noe.badger.event.message;
 
 import com.noe.badger.AchievementType;
 

@@ -2,6 +2,7 @@ package com.noe.badger.bundle;
 
 import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.*;
+import com.noe.badger.bundle.trigger.NumberTrigger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,7 +66,7 @@ public class AchievementBundle {
             if (typeSection != null && typeSection.childrenNames() != null) {
                 final String[] AchievementIds = typeSection.childrenNames();
                 for (String achievementId : AchievementIds) {
-                    final IAchievementBean achievementBean = getAchievement(achievementId, type, typeSection.getChild(achievementId));
+                    final IAchievementBean achievementBean = get(achievementId, type, typeSection.getChild(achievementId));
                     final List<String> achievementEventSubscriptions = achievementBean.getEvent();
                     if(achievementEventSubscriptions != null && !achievementEventSubscriptions.isEmpty()) {
                         achievementEventSubscriptions.forEach(achievementEventSubscription -> achievementEventMap.get(achievementEventSubscription).add(achievementBean));
@@ -97,7 +98,7 @@ public class AchievementBundle {
         if (dateSection != null && dateSection.childrenNames() != null) {
             final String[] AchievementIds = dateSection.childrenNames();
             for (String achievementId : AchievementIds) {
-                final DateAchievementBean achievementBean = (DateAchievementBean) getAchievement(achievementId, AchievementType.DATE, dateSection.getChild(achievementId));
+                final DateAchievementBean achievementBean = (DateAchievementBean) get(achievementId, AchievementType.DATE, dateSection.getChild(achievementId));
                 if(achievementBean.getEvent() == null || achievementBean.getEvent().isEmpty()) {
                     dateAchievementBeans.add(achievementBean);
                 }
@@ -110,15 +111,15 @@ public class AchievementBundle {
         return getCounterAchievement(AchievementType.COUNTER, id);
     }
 
-    public List<IAchievementBean<Long>> getCounterAchievementForCounter(final String counter) {
+    public List<IAchievementBean<NumberTrigger>> getCounterAchievementForCounter(final String counter) {
         return getCounterAchievements(counter);
     }
 
-    private List<IAchievementBean<Long>> getCounterAchievements(String counter) {
-        List<IAchievementBean<Long>> achievementList = new ArrayList<>();
+    private List<IAchievementBean<NumberTrigger>> getCounterAchievements(String counter) {
+        List<IAchievementBean<NumberTrigger>> achievementList = new ArrayList<>();
         final String[] childrenNames = achievements.get(AchievementType.COUNTER.getType()).childrenNames();
         for (String childName : childrenNames) {
-            final IAchievementBean achievement = getAchievement(childName);
+            final IAchievementBean achievement = get(childName);
         }
         return achievementList;
     }
@@ -138,7 +139,7 @@ public class AchievementBundle {
     public IAchievementBean<Long> getCounterAchievement(final AchievementType type, final String id) {
         Ini.Section section = achievements.get(type.getType()).getChild(id);
         if (section != null) {
-            final IAchievementBean<Long> counterAchievement = new CounterAchievementBean();
+            final IAchievementBean<NumberTrigger> counterAchievement = new CounterAchievementBean();
             return parseSection(id, section, counterAchievement);
         }
         return null;
@@ -162,16 +163,26 @@ public class AchievementBundle {
         return null;
     }
 
-    public IAchievementBean getAchievement(final String id) {
+    public Collection<IAchievementBean> getAll() {
+        Collection<IAchievementBean> allAchievements = new HashSet<>();
+        achievementEventMap.values().forEach(allAchievements::addAll);
+        return allAchievements;
+    }
+
+    public Map<String, Set<IAchievementBean>> getAllByEvents() {
+        return achievementEventMap;
+    }
+
+    public IAchievementBean get(final String id) {
         final AchievementType[] types = AchievementType.values();
         for (AchievementType type : types) {
             final Profile.Section section = achievements.get(type.getType()).getChild(id);
-            getAchievement(id, type, section);
+            return get(id, type, section);
         }
         return null;
     }
 
-    private IAchievementBean getAchievement(final String id, final AchievementType type, final Profile.Section section) {
+    private IAchievementBean get(final String id, final AchievementType type, final Profile.Section section) {
         if (section != null) {
             IAchievementBean achievementBean = null;
             switch (type) {

@@ -1,6 +1,6 @@
 package com.noe.badger.event.handler;
 
-import com.noe.badger.event.domain.Achievement;
+import com.noe.badger.event.message.Achievement;
 import net.engio.mbassy.listener.Handler;
 
 public class AchievementUpdateHandlerWrapper {

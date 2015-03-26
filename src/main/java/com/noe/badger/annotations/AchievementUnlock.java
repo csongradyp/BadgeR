@@ -1,4 +1,4 @@
-package com.noe.badger.aop;
+package com.noe.badger.annotations;
 
 import com.noe.badger.AchievementType;
 
@@ -15,11 +15,17 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface AchievementUnlock {
 
+    /**
+     * Type of the achievement.
+     * @return {@link com.noe.badger.AchievementType}
+     */
     AchievementType type() default AchievementType.SINGLE;
 
     /**
      * ID of achievement to unlock.
      */
     String Id();
+
+    String triggerValue() default "";
 
 }

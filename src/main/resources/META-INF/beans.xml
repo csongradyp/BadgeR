@@ -42,6 +42,4 @@
         <property name="defaultPersistenceUnitName" value="badgerPersistenceUnit"/>
     </bean>
 
-    <!--<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>-->
-
 </beans>

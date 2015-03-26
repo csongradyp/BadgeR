@@ -1,29 +1,55 @@
 package com.noe.badger.bundle.domain;
 
+import com.noe.badger.bundle.trigger.NumberTrigger;
+import com.noe.badger.exception.MalformedAchievementDefinition;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class CounterAchievementBean extends AbstractAchievementBean<Long> {
+public class CounterAchievementBean extends AbstractAchievementBean<NumberTrigger> {
 
-    private List<Long> trigger;
+    public static final String NUMBER_TRIGGER_PATTERN = "(^\\d+$)|(^\\d+(\\+|-)$)";
+    private List<NumberTrigger> trigger;
 
     public CounterAchievementBean() {
         trigger = new ArrayList<>();
     }
 
     @Override
-    public List<Long> getTrigger() {
+    public List<NumberTrigger> getTrigger() {
         return trigger;
     }
 
     public void setTrigger(final String[] trigger) {
-        Long[] triggers = new Long[trigger.length];
-        for (int i = 0; i < trigger.length; i++) {
-            final Long value = Long.parseLong(trigger[i]);
-            triggers[i] = value;
+        this.trigger = new ArrayList<>(trigger.length);
+        for (String triggerDefinition : trigger) {
+            if(triggerDefinition.matches(NUMBER_TRIGGER_PATTERN)) {
+                final NumberTrigger numberTrigger;
+                if(triggerDefinition.endsWith("+")) {
+                    final long triggerValue = Long.parseLong( triggerDefinition.substring( 0, triggerDefinition.length() - 1));
+                    numberTrigger = new NumberTrigger(triggerValue, NumberTrigger.Operation.GREATER_THAN );
+                } else if(triggerDefinition.endsWith("-")) {
+                    final long triggerValue = Long.parseLong( triggerDefinition.substring( 0, triggerDefinition.length() - 1));
+                    numberTrigger = new NumberTrigger(triggerValue, NumberTrigger.Operation.LESS_THAN );
+                } else {
+                    final long triggerValue = Long.parseLong(triggerDefinition);
+                    numberTrigger = new NumberTrigger(triggerValue);
+                }
+                this.trigger.add(numberTrigger);
+            }
         }
-        Collections.addAll(this.trigger, triggers);
+        validateTriggers();
+        setMaxLevel(this.trigger.size());
+    }
+
+    private void validateTriggers() {
+        for (int i = 0; i < this.trigger.size()-1; i++) {
+            NumberTrigger first = this.trigger.get(i);
+            NumberTrigger second = this.trigger.get(i+1);
+            if (first.getTrigger() > second.getTrigger()) {
+                throw new MalformedAchievementDefinition("Triggers are not properly set for achievement: " + getId() + ". Nr. " + i + ". trigger should be less than the next one");
+            }
+        }
     }
 
     @Override

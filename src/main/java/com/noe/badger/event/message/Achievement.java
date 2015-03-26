@@ -1,4 +1,4 @@
-package com.noe.badger.event.domain;
+package com.noe.badger.event.message;
 
 import java.util.Date;
 
@@ -12,12 +12,12 @@ public class Achievement {
     private Integer level;
     private AchievementEventType eventType;
 
-    public Achievement(final String id, final String title, final String text, final Date acquireDate, final String triggerWith, final Integer level) {
+    public Achievement(final String id, final String title, final String text, final Date acquireDate, final String triggerScore, final Integer level) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.acquireDate = acquireDate;
-        this.triggerWith = triggerWith;
+        this.triggerWith = triggerScore;
         this.level = level;
     }
 

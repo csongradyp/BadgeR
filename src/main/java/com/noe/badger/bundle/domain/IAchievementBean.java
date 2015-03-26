@@ -6,8 +6,6 @@ public interface IAchievementBean<T> {
 
     String PROP_ID = "id";
     String PROP_EVENT = "event";
-    String PROP_TITLE_KEY = "titleKey";
-    String PROP_TEXT_KEY = "textKey";
     String PROP_TRIGGER = "trigger";
     String PROP_MAX_LEVEL = "maxLevel";
 
@@ -21,11 +19,7 @@ public interface IAchievementBean<T> {
 
     String getTitleKey();
 
-    void setTitleKey(String title);
-
     String getTextKey();
-
-    void setTextKey(String text);
 
     List<T> getTrigger();
 

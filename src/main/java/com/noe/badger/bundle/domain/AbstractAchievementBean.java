@@ -8,8 +8,6 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
 
     private String id;
     private List<String> event;
-    private String titleKey;
-    private String textKey;
     private Integer maxLevel;
 
     public AbstractAchievementBean() {
@@ -49,28 +47,18 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
 
     @Override
     public String getTitleKey() {
-        return titleKey;
-    }
-
-    @Override
-    public void setTitleKey( String titleKey ) {
-        this.titleKey = titleKey;
+        return String.format("%s.%s", id, "title");
     }
 
     @Override
     public String getTextKey() {
-        return textKey;
+        return String.format("%s.%s", id, "text");
     }
 
-    @Override
-    public void setTextKey( String textKey ) {
-        this.textKey = textKey;
-    }
-
-    @Override public String toString() {
+     @Override public String toString() {
         return "Achievement {" +
                "id='" + id + '\'' +
-               ", titleKey='" + titleKey + '\'' +
-               ", textKey='" + textKey + '\'';
+               ", titleKey='" + getTitleKey() + '\'' +
+               ", textKey='" + getTextKey() + '\'';
     }
 }

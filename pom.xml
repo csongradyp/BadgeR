@@ -118,7 +118,6 @@
                     <execution>
                         <goals>
                             <goal>compile</goal>
-                            <!--<goal>test-compile</goal>-->
                         </goals>
                     </execution>
                 </executions>
@@ -126,47 +125,11 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <complianceLevel>1.8</complianceLevel>
-                    <!--<sources>-->
-                        <!--<source>-->
-                            <!--<basedir>src/main/aspects</basedir>-->
-                            <!--<includes>-->
-                                <!--<include>**/*.aj</include>-->
-                                <!--<include>**/*.java</include>-->
-                            <!--</includes>-->
-                        <!--</source>-->
-                    <!--</sources>-->
                     <aspectDirectory>src/main/aspects</aspectDirectory>
                     <showWeaveInfo>true</showWeaveInfo>
                     <verbose>false</verbose>
                 </configuration>
             </plugin>
-
-            <!--<plugin>-->
-                <!--<groupId>com.jcabi</groupId>-->
-                <!--<artifactId>jcabi-maven-plugin</artifactId>-->
-                <!--<version>0.9.3</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>ajc</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-compiler-plugin</artifactId>-->
-                <!--<version>3.2</version>-->
-                <!--<configuration>-->
-                    <!--<source>${maven.compiler.source}</source>-->
-                    <!--<target>${maven.compiler.target}</target>-->
-                    <!--<encoding>utf-8</encoding>-->
-                    <!--<forceAjcCompile>true</forceAjcCompile>-->
-                    <!--<verbose>true</verbose>-->
-                    <!--<debug>true</debug>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 </project>

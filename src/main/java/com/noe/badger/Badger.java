@@ -1,16 +1,21 @@
 package com.noe.badger;
 
+import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.event.EventBus;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
 import com.noe.badger.event.handler.AchievementUpdateHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
 import com.noe.badger.event.handler.IAchievementUpdateHandler;
-import com.noe.badger.event.EventBus;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Locale;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import java.util.Map;
+import java.util.Set;
 
 public class Badger {
 
@@ -46,24 +51,28 @@ public class Badger {
         controller.setLocale(locale);
     }
 
-    public void check(final String... ids) {
-        controller.check(ids);
+     public void unlock(final String id, final String triggeredWith) {
+        controller.unlock(id, triggeredWith);
     }
 
-    public void unlock(final String id) {
-        controller.unlock(id);
+    public Collection<IAchievementBean> getAllAchivement() {
+        return controller.getAll();
+    }
+
+    public Map<String, Set<IAchievementBean>> getAllAchievementByEvent() {
+        return controller.getAllByEvents();
     }
 
     public void triggerEvent(final String event) {
         controller.triggerEvent(event);
     }
 
-    public Long getCurrentScore(final String id) {
-        return controller.getCurrentScore(id);
+    public void triggerEvent(final String id, final Long score) {
+        controller.triggerEvent( id, score);
     }
 
-    public void setScore(final String id, final Long score) {
-        controller.setScoreAndCheck(id, score);
+    public Long getCurrentScore(final String id) {
+        return controller.getCurrentScore(id);
     }
 
     public void subscribeOnUnlock(final IAchievementUnlockedHandler achievementUnlockedHandler) {

@@ -26,13 +26,6 @@ public class AchievementEntity {
         unlocked = true;
     }
 
-    public AchievementEntity(final String id, final Integer level) {
-        this.id = id;
-        this.level = level;
-        acquireDate = new Date();
-        unlocked = true;
-    }
-
     public String getId() {
         return id;
     }

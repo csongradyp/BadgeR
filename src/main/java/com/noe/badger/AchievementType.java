@@ -2,7 +2,7 @@ package com.noe.badger;
 
 public enum AchievementType {
     
-    DATE("date"),
+    DATE("date"), //DATE_RANGE("dateRange"),
     TIME("time"), TIME_RANGE("timeRange"),
     COUNTER("counter"),
     SINGLE("single");

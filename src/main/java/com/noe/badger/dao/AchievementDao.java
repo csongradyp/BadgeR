@@ -1,13 +1,14 @@
 package com.noe.badger.dao;
 
 import com.noe.badger.bundle.domain.IAchievementBean;
-import com.noe.badger.entity.AchievementEntity;
 import com.noe.badger.dao.repository.AchievementRepository;
+import com.noe.badger.entity.AchievementEntity;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * DAO for achievements to database communication.
@@ -24,14 +25,6 @@ public class AchievementDao {
         final AchievementEntity achievement = new AchievementEntity(achievementBean.getId());
         achievementRepository.save(achievement);
     }
-
-//    public void unlockLevel(final String id, final Integer level) {
-//        final AchievementEntity achievement = achievementRepository.getOne(id);
-//        if (achievement != null) {
-//            achievement.setLevel(level);
-//        }
-//        achievementRepository.save(achievement);
-//    }
 
     public void unlockLevel(final String id, final Integer level) {
         final Optional<AchievementEntity> achievement = achievementRepository.findById(id);

@@ -2,12 +2,12 @@ package com.noe.badger.event;
 
 
 import com.noe.badger.AchievementController;
-import com.noe.badger.event.domain.Achievement;
-import com.noe.badger.event.domain.AchievementEventType;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
 import com.noe.badger.event.handler.AchievementUpdateHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
 import com.noe.badger.event.handler.IAchievementUpdateHandler;
+import com.noe.badger.event.message.Achievement;
+import com.noe.badger.event.message.AchievementEventType;
 import net.engio.mbassy.bus.MBassador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +67,8 @@ public final class EventBus {
         getController().triggerEvent(event);
     }
 
-    public static void scoreAndCheck(final String id, final Long score) {
-        getController().setScoreAndCheck(id, score);
+    public static void triggerEvent(final String id, final Long score) {
+        getController().triggerEvent(id, score);
     }
 
     public static void setController(final AchievementController controller) {
@@ -79,7 +79,11 @@ public final class EventBus {
         return INSTANCE.controller;
     }
 
-    public static void unlock(String id) {
-        getController().unlock(id);
+    public static void unlock(final String id, final String triggeredWith) {
+        getController().unlock(id, triggeredWith);
+    }
+
+    public static void checkAll() {
+        INSTANCE.controller.checkAll();
     }
 }

@@ -1,9 +1,11 @@
 package com.noe.badger.bundle.domain;
 
+import com.noe.badger.exception.MalformedAchievementDefinition;
+import org.joda.time.format.DateTimeFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.joda.time.format.DateTimeFormat;
 
 public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeRangeAchievementBean.TimeTriggerPair> {
 
@@ -18,7 +20,7 @@ public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeRangeA
     public void setTrigger(String[] trigger) {
         this.triggers = new ArrayList<>();
         if(trigger.length % 2 != 0) {
-            throw new RuntimeException("Time range does not properly set. One of the triggers does not have an end time");
+            throw new MalformedAchievementDefinition("Time range does not properly set for achievement " + getId() +". One of the triggers does not have an end time");
         }
         for (int i = 0; i < trigger.length - 1; i = i+2) {
             final Date start = DateTimeFormat.forPattern(PATTERN).parseDateTime(trigger[i]).toDate();

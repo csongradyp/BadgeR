@@ -166,9 +166,9 @@ public class AchievementController {
         return achievementDao.isUnlocked(id, level);
     }
 
-    public void unlock(final String id, String triggeredValue) {
-        if (!achievementDao.isUnlocked(id)) {
-            final IAchievementBean achievementBean = achievementBundle.get(id);
+    public void unlock(final String achievementId, final String triggeredValue) {
+        if (!achievementDao.isUnlocked(achievementId)) {
+            final IAchievementBean achievementBean = achievementBundle.get(achievementId);
             achievementDao.unlock(achievementBean);
             final Achievement achievement = createAchievement(achievementBean, triggeredValue);
             EventBus.publishUnlocked(achievement);

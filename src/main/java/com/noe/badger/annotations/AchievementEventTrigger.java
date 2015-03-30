@@ -17,6 +17,6 @@ public @interface AchievementEventTrigger {
     /**
      * Name of event to trigger.
      */
-    String name();
+    String[] name();
 
 }

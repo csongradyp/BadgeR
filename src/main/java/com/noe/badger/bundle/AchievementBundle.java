@@ -23,7 +23,7 @@ public class AchievementBundle {
             achievements = new Ini(achievementFile);
             achievements.getConfig().setMultiOption(true);
         } catch (IOException e) {
-            throw new IllegalStateException("Ini file not found!");
+            throw new IllegalStateException("Achievement ini file error!", e);
         }
         sortAchievementsByEvents();
     }
@@ -33,7 +33,7 @@ public class AchievementBundle {
             achievements = new Ini(new File(achievementFileLocation));
             achievements.getConfig().setMultiOption(true);
         } catch (IOException e) {
-            throw new IllegalStateException("Ini file not found!");
+            throw new IllegalStateException("Achievement ini file error!", e);
         }
         sortAchievementsByEvents();
     }
@@ -43,7 +43,7 @@ public class AchievementBundle {
             achievements = new Ini(achievementFile);
             achievements.getConfig().setMultiOption(true);
         } catch (IOException e) {
-            throw new IllegalStateException("Ini file not found!");
+            throw new IllegalStateException("Achievement ini file error!", e);
         }
         sortAchievementsByEvents();
     }
@@ -53,7 +53,7 @@ public class AchievementBundle {
             achievements = new Ini(inputStream);
             achievements.getConfig().setMultiOption(true);
         } catch (IOException e) {
-            throw new IllegalStateException("Ini file not found!");
+            throw new IllegalStateException("Achievement ini file error!", e);
         }
         sortAchievementsByEvents();
     }
@@ -201,7 +201,7 @@ public class AchievementBundle {
             }
             return achievementBean;
         }
-        throw new RuntimeException("Achievement not found with type:" + type.getType() + " id:" + id);
+        throw new RuntimeException("Achievement not found within type:" + type.getType() + " with id:" + id);
     }
 
     private IAchievementBean parseSection(String id, Profile.Section section, IAchievementBean achievement) {

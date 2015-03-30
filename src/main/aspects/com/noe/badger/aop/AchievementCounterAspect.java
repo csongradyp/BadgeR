@@ -1,4 +1,4 @@
-package com.noe.badger.aop;//package com.noe.badger.aop;
+package com.noe.badger.aop;
 
 import com.noe.badger.annotations.AchievementCheck;
 import com.noe.badger.annotations.AchievementEventTrigger;
@@ -32,12 +32,23 @@ public class AchievementCounterAspect {
     public void unlockEntryPoint(final AchievementUnlock achievementUnlock) {
     }
 
-    @After(value = "unlockEntryPoint(achievementUnlock)", argNames = "achievementUnlock")
-    public void unlock(final AchievementUnlock achievementUnlock) {
-        final String id = achievementUnlock.Id();
-        final String triggerValue = achievementUnlock.triggerValue();
-        LOG.debug("Achievement unlock: {}", id);
-        EventBus.unlock(id, triggerValue);
+    @After(value = "unlockEntryPoint(achievementUnlock)", argNames = "joinPoint, achievementUnlock")
+    public void unlock(final JoinPoint joinPoint, final AchievementUnlock achievementUnlock) {
+        final String achievement = achievementUnlock.achievement();
+        final String scoreParam = achievementUnlock.scoreParam();
+        String triggerValue = "";
+        if (!scoreParam.isEmpty()) {
+            final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+            final String[] parameterNames = signature.getParameterNames();
+            final Object[] parameterValues = joinPoint.getArgs();
+            for (int i = 0, parameterNamesLength = parameterNames.length; i < parameterNamesLength; i++) {
+                if (scoreParam.equals(parameterNames[i])) {
+                    triggerValue = String.valueOf(parameterValues[i]);
+                }
+            }
+        }
+        LOG.debug("Achievement {} unlocked with value: {}", achievement, triggerValue);
+        EventBus.unlock(achievement, triggerValue);
     }
 
     @Pointcut(value = "execution(* *(..)) && @annotation(achievementEventTrigger)", argNames = "achievementEventTrigger")
@@ -46,9 +57,11 @@ public class AchievementCounterAspect {
 
     @After(value = "triggerEntryPoint(achievementEventTrigger)", argNames = "achievementEventTrigger")
     public void trigger(final AchievementEventTrigger achievementEventTrigger) {
-        final String event = achievementEventTrigger.name();
-        LOG.debug("Achievement event triggered: {}", event);
-        EventBus.triggerEvent(event);
+        final String[] events = achievementEventTrigger.name();
+        for (String event : events) {
+            LOG.debug("Achievement event triggered: {}", event);
+            EventBus.triggerEvent(event);
+        }
     }
 
     @Pointcut(value = "execution(* *(..)) && @annotation(achievementScore)", argNames = "achievementScore")

@@ -1,6 +1,5 @@
 package com.noe.badger.dao;
 
-import com.noe.badger.bundle.domain.IAchievementBean;
 import com.noe.badger.dao.repository.AchievementRepository;
 import com.noe.badger.entity.AchievementEntity;
 
@@ -21,8 +20,8 @@ public class AchievementDao {
     @Inject
     private AchievementRepository achievementRepository;
 
-    public void unlock(final IAchievementBean achievementBean) {
-        final AchievementEntity achievement = new AchievementEntity(achievementBean.getId());
+     public void unlock(final String achievementId) {
+        final AchievementEntity achievement = new AchievementEntity(achievementId);
         achievementRepository.save(achievement);
     }
 

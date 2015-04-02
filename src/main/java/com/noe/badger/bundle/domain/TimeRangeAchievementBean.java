@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeRangeAchievementBean.TimeTriggerPair> {
 
-    public static final String PATTERN = "hh:mm";
+    public static final String PATTERN = "HH:mm";
     private List<TimeTriggerPair> triggers;
 
     @Override

@@ -79,8 +79,8 @@ public final class EventBus {
         return INSTANCE.controller;
     }
 
-    public static void unlock(final String achievement, final String triggerValue) {
-        getController().unlock(achievement, triggerValue);
+    public static void unlock(final String achievementId, final String triggerValue) {
+        getController().unlock(achievementId, triggerValue);
     }
 
     public static void checkAll() {

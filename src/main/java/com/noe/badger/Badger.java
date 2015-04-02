@@ -51,8 +51,8 @@ public class Badger {
         controller.setLocale(locale);
     }
 
-     public void unlock(final String id, final String triggeredWith) {
-        controller.unlock(id, triggeredWith);
+     public void unlock(final AchievementType type, final String id, final String triggeredValue) {
+        controller.unlock(type, id, triggeredValue);
     }
 
     public Collection<IAchievementBean> getAllAchivement() {

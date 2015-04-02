@@ -2,7 +2,7 @@ package com.noe.badger;
 
 public enum AchievementType {
     
-    DATE("date"), //DATE_RANGE("dateRange"),
+    DATE("date"),
     TIME("time"), TIME_RANGE("timeRange"),
     COUNTER("counter"),
     SINGLE("single");
@@ -11,6 +11,15 @@ public enum AchievementType {
 
     AchievementType(final String type) {
         this.type = type;
+    }
+
+    public static AchievementType parse(final String type) {
+        for ( AchievementType achievementType : values() ) {
+            if(achievementType.getType().toLowerCase().equals(type)) {
+                return achievementType;
+            }
+        }
+        return null;
     }
 
     public String getType() {

@@ -5,6 +5,7 @@ import java.util.List;
 public interface IAchievementBean<T> {
 
     String PROP_ID = "id";
+    String PROP_CATEGORY = "category";
     String PROP_EVENT = "event";
     String PROP_TRIGGER = "trigger";
     String PROP_MAX_LEVEL = "maxLevel";
@@ -12,6 +13,10 @@ public interface IAchievementBean<T> {
     String getId();
 
     void setId(String id);
+
+    String getCategory();
+
+    void setCategory(String category);
 
     List<String> getEvent();
 

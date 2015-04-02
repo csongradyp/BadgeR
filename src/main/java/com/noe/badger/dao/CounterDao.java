@@ -43,7 +43,7 @@ public class CounterDao {
         return newCounter.getScore();
     }
 
-    public Long getValueOf(final String id) {
+    public Long scoreOf( final String id ) {
         final Optional<ScoreEntity> score = counterRepository.findById(id);
         if(score.isPresent()) {
             final ScoreEntity scoreEntity = score.get();

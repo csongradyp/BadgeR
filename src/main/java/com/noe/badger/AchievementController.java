@@ -1,7 +1,9 @@
 package com.noe.badger;
 
 import com.noe.badger.bundle.AchievementBundle;
-import com.noe.badger.bundle.domain.*;
+import com.noe.badger.bundle.domain.IAchievement;
+import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.bundle.domain.achievement.*;
 import com.noe.badger.bundle.trigger.NumberTrigger;
 import com.noe.badger.dao.AchievementDao;
 import com.noe.badger.dao.CounterDao;
@@ -52,16 +54,16 @@ public class AchievementController {
         achievementBundle.setSource(achievementIni);
     }
 
-    public Collection<IAchievementBean> getAll() {
+    public Collection<IAchievement> getAll() {
         return achievementBundle.getAll();
     }
 
-    public IAchievementBean get(final AchievementType type, final String id) {
+    public IAchievement get(final AchievementType type, final String id) {
         return achievementBundle.get(type, id);
     }
 
 
-    public Map<String, Set<IAchievementBean>> getAllByEvents() {
+    public Map<String, Set<IAchievement>> getAllByEvents() {
         return achievementBundle.getAllByEvents();
     }
 
@@ -70,9 +72,9 @@ public class AchievementController {
         unlockableAchievements.forEach(this::unlock);
     }
 
-    public void triggerEvent(final String event, final Long newScore) {
-        LOG.debug("Achievement event triggered: {} with score {} ", event, newScore);
-        final Long currentValue = counterDao.setScore(event, newScore);
+    public void triggerEvent(final String event, final Long score) {
+        LOG.debug("Achievement event triggered: {} with score {} ", event, score);
+        final Long currentValue = counterDao.setScore(event, score);
         final Collection<Achievement> unlockables = getUnlockables(event, currentValue);
         unlockables.forEach(this::unlock);
     }
@@ -86,8 +88,8 @@ public class AchievementController {
 
     private Collection<Achievement> getUnlockables(final String event, final Long currentValue) {
         final Collection<Achievement> unlockables = new ArrayList<>();
-        final Collection<IAchievementBean> achievementBeans = achievementBundle.getAchievementsSubscribedFor(event);
-        for (IAchievementBean achievementBean : achievementBeans) {
+        final Collection<IAchievement> achievementBeans = achievementBundle.getAchievementsSubscribedFor(event);
+        for (IAchievement achievementBean : achievementBeans) {
             final Optional<Achievement> achievement = unlockable(currentValue, achievementBean);
             if (achievement.isPresent()) {
                 unlockables.add(achievement.get());
@@ -96,10 +98,10 @@ public class AchievementController {
         return unlockables;
     }
 
-    private Collection<Achievement> check(final Collection<IAchievementBean> achievementBeans) {
+    private Collection<Achievement> check(final Collection<IAchievement> achievementBeans) {
         final Collection<Achievement> unlockables = new ArrayList<>();
-        for (IAchievementBean achievementBean : achievementBeans) {
-            final Optional<Achievement> achievement = unlockable(counterDao.getValueOf(achievementBean.getId()), achievementBean);
+        for (IAchievement achievementBean : achievementBeans) {
+            final Optional<Achievement> achievement = unlockable(counterDao.scoreOf(achievementBean.getId()), achievementBean);
             if (achievement.isPresent()) {
                 unlockables.add(achievement.get());
             }
@@ -107,7 +109,7 @@ public class AchievementController {
         return unlockables;
     }
 
-    public Optional<Achievement> unlockable(final Long currentValue, final IAchievementBean achievementBean) {
+    public Optional<Achievement> unlockable(final Long currentValue, final IAchievement achievementBean) {
         if (CounterAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
             return checkCounterTrigger(currentValue, (CounterAchievementBean) achievementBean);
         } else if (DateAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
@@ -204,7 +206,7 @@ public class AchievementController {
 
     public void unlock(final AchievementType type, final String achievementId, String triggeredValue) {
         if (!achievementDao.isUnlocked(achievementId)) {
-            final IAchievementBean achievementBean = achievementBundle.get(type, achievementId);
+            final IAchievement achievementBean = achievementBundle.get(type, achievementId);
             achievementDao.unlock(achievementId);
             final Achievement achievement = createAchievement(achievementBean, triggeredValue);
             EventBus.publishUnlocked(achievement);
@@ -212,7 +214,7 @@ public class AchievementController {
     }
 
     public void unlock(final String achievementId, final String triggerValue) {
-        final Optional<IAchievementBean> matchingAchievement = achievementBundle.getAll().parallelStream().filter(achievement -> achievement.getId().equals(achievementId)).findFirst();
+        final Optional<IAchievement> matchingAchievement = achievementBundle.getAll().parallelStream().filter(achievement -> achievement.getId().equals(achievementId)).findFirst();
         if (matchingAchievement.isPresent()) {
             final Achievement achievement = createAchievement(matchingAchievement.get(), triggerValue);
             unlock(achievement);
@@ -221,7 +223,7 @@ public class AchievementController {
 
     public void unlock(final Achievement achievement) {
         if (!isUnlocked(achievement.getId())) {
-            achievementDao.unlock(achievement.getId());
+            achievementDao.unlockLevel(achievement.getId(), achievement.getLevel());
             EventBus.publishUnlocked(achievement);
         }
     }
@@ -231,7 +233,7 @@ public class AchievementController {
     }
 
     public Long getCurrentScore(final String id) {
-        return counterDao.getValueOf(id);
+        return counterDao.scoreOf(id);
     }
 
     private Achievement createAchievement(final IAchievementBean achievementBean, final Integer level, final Long triggeredValue) {
@@ -240,7 +242,7 @@ public class AchievementController {
         return achievement;
     }
 
-    private Achievement createAchievement(final IAchievementBean achievementBean, final String triggeredValue) {
+    private Achievement createAchievement(final IAchievement achievementBean, final String triggeredValue) {
         final String title = resourceBundle.getString(achievementBean.getTitleKey());
         final String text = resourceBundle.getString(achievementBean.getTextKey());
         return new Achievement(achievementBean.getId(), achievementBean.getCategory(), title, text, triggeredValue);

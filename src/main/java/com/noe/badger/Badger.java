@@ -1,14 +1,11 @@
 package com.noe.badger;
 
-import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.bundle.domain.IAchievement;
 import com.noe.badger.event.EventBus;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
 import com.noe.badger.event.handler.AchievementUpdateHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
 import com.noe.badger.event.handler.IAchievementUpdateHandler;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +13,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Badger {
 
@@ -51,15 +50,15 @@ public class Badger {
         controller.setLocale(locale);
     }
 
-     public void unlock(final AchievementType type, final String id, final String triggeredValue) {
+    public void unlock(final AchievementType type, final String id, final String triggeredValue) {
         controller.unlock(type, id, triggeredValue);
     }
 
-    public Collection<IAchievementBean> getAllAchivement() {
+    public Collection<IAchievement> getAllAchivement() {
         return controller.getAll();
     }
 
-    public Map<String, Set<IAchievementBean>> getAllAchievementByEvent() {
+    public Map<String, Set<IAchievement>> getAllAchievementByEvent() {
         return controller.getAllByEvents();
     }
 
@@ -68,7 +67,7 @@ public class Badger {
     }
 
     public void triggerEvent(final String id, final Long score) {
-        controller.triggerEvent( id, score);
+        controller.triggerEvent(id, score);
     }
 
     public Long getCurrentScore(final String id) {

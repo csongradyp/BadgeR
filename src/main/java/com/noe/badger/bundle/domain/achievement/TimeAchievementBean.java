@@ -1,14 +1,16 @@
-package com.noe.badger.bundle.domain;
+package com.noe.badger.bundle.domain.achievement;
 
+import com.noe.badger.bundle.domain.AbstractAchievementBean;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DateAchievementBean extends AbstractAchievementBean<String> {
+public class TimeAchievementBean extends AbstractAchievementBean<String> {
 
+    public static final String PATTERN = "hh:mm";
     private List<String> trigger;
 
-    public DateAchievementBean() {
+    public TimeAchievementBean() {
         trigger = new ArrayList<>();
     }
 

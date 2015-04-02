@@ -1,7 +1,11 @@
 package com.noe.badger.bundle;
 
 import com.noe.badger.AchievementType;
-import com.noe.badger.bundle.domain.*;
+import com.noe.badger.bundle.domain.IAchievement;
+import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.bundle.domain.achievement.*;
+import com.noe.badger.bundle.relation.Relation;
+import com.noe.badger.bundle.relation.RelationParser;
 import com.noe.badger.exception.AchievementNotFoundException;
 import com.noe.badger.exception.MalformedAchievementDefinition;
 import java.io.File;
@@ -10,6 +14,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
@@ -17,10 +22,13 @@ import org.ini4j.Profile;
 @Named
 public class AchievementBundle {
 
+    @Inject
+    private RelationParser relationParser;
+
     private Ini achievements;
-    private final Map<AchievementType, Map<String, IAchievementBean>> achievementTypeMap;
-    private final Map<String, Set<IAchievementBean>> achievementEventMap;
-    private final Map<String, Set<IAchievementBean>> achievementCategoryMap;
+    private final Map<AchievementType, Map<String, IAchievement>> achievementTypeMap;
+    private final Map<String, Set<IAchievement>> achievementEventMap;
+    private final Map<String, Set<IAchievement>> achievementCategoryMap;
     private final Map<String, CompositeAchievementBean> relationMap;
 
     public AchievementBundle() {
@@ -86,11 +94,11 @@ public class AchievementBundle {
             if (typeSection != null && typeSection.childrenNames() != null) {
                 final String[] AchievementIds = typeSection.childrenNames();
                 for (String achievementId : AchievementIds) {
-                    IAchievementBean achievementBean;
+                    IAchievement achievementBean = parse(achievementId, type, typeSection.getChild(achievementId));
                     if (!relationMap.containsKey(achievementId)) {
-                        achievementBean = parse(achievementId, type, typeSection.getChild(achievementId));
                         addToTypeMap(type, achievementBean);
                     } else {
+                        relationMap.get(achievementId).addWrappedElement(type, achievementBean);
                         achievementBean = relationMap.get(achievementId);
                     }
                     addToCategoryMap(achievementBean);
@@ -104,7 +112,8 @@ public class AchievementBundle {
         final Profile.Section relationSection = achievements.get("relations");
         if (relationSection != null) {
             for (Map.Entry<String, String> relationEntry : relationSection.entrySet()) {
-                final CompositeAchievementBean compositeAchievementBean = new CompositeAchievementBean(relationEntry.getKey(), relationEntry.getValue(), this);
+                final Relation relation = relationParser.parse(relationEntry.getKey(), relationEntry.getValue());
+                final CompositeAchievementBean compositeAchievementBean = new CompositeAchievementBean(relationEntry.getKey(), relation);
                 relationMap.put(compositeAchievementBean.getId(), compositeAchievementBean);
             }
         }
@@ -164,14 +173,14 @@ public class AchievementBundle {
         return achievement;
     }
 
-    private void addToEventMap(final IAchievementBean achievementBean) {
+    private void addToEventMap(final IAchievement achievementBean) {
         final List<String> achievementEventSubscriptions = achievementBean.getEvent();
         if (achievementEventSubscriptions != null && !achievementEventSubscriptions.isEmpty()) {
             achievementEventSubscriptions.forEach(achievementEventSubscription -> achievementEventMap.get(achievementEventSubscription).add(achievementBean));
         }
     }
 
-    private void addToCategoryMap(final IAchievementBean achievementBean) {
+    private void addToCategoryMap(final IAchievement achievementBean) {
         final String category = achievementBean.getCategory();
         if (achievementCategoryMap.get(category) == null) {
             achievementCategoryMap.put(category, new HashSet<>());
@@ -179,39 +188,39 @@ public class AchievementBundle {
         achievementCategoryMap.get(category).add(achievementBean);
     }
 
-    private void addToTypeMap(final AchievementType type, final IAchievementBean achievementBean) {
+    private void addToTypeMap(final AchievementType type, final IAchievement achievementBean) {
         achievementTypeMap.get(type).put(achievementBean.getId(), achievementBean);
     }
 
-    public Collection<IAchievementBean> getAchievementsSubscribedFor(final String event) {
+    public Collection<IAchievement> getAchievementsSubscribedFor(final String event) {
         return achievementEventMap.get(event);
     }
 
-    public Collection<IAchievementBean> getAchievementsForCategory(final String category) {
+    public Collection<IAchievement> getAchievementsForCategory(final String category) {
         return achievementCategoryMap.get(category);
     }
 
     public Collection<DateAchievementBean> getDateAchievementsWithoutEvents() {
-        final Map<String, IAchievementBean> dateAchievements = achievementTypeMap.get(AchievementType.DATE);
+        final Map<String, IAchievement> dateAchievements = achievementTypeMap.get(AchievementType.DATE);
         return (dateAchievements.values().stream()
                 .filter(achievementBean -> achievementBean.getEvent() == null || achievementBean.getEvent().isEmpty())
                 .map(achievementBean -> (DateAchievementBean) achievementBean)
                 .collect(Collectors.toList()));
     }
 
-    public Collection<IAchievementBean> getAll() {
-        Collection<IAchievementBean> allAchievements = new HashSet<>();
+    public Collection<IAchievement> getAll() {
+        Collection<IAchievement> allAchievements = new HashSet<>();
         achievementEventMap.values().forEach(allAchievements::addAll);
         relationMap.values().forEach(allAchievements::add);
         return allAchievements;
     }
 
-    public Map<String, Set<IAchievementBean>> getAllByEvents() {
+    public Map<String, Set<IAchievement>> getAllByEvents() {
         return achievementEventMap;
     }
 
-    public IAchievementBean get(final AchievementType type, final String id) {
-        final Map<String, IAchievementBean> achievementBeanMap = achievementTypeMap.get(type);
+    public IAchievement get(final AchievementType type, final String id) {
+        final Map<String, IAchievement> achievementBeanMap = achievementTypeMap.get(type);
         if (achievementBeanMap.containsKey(id)) {
             return achievementBeanMap.get(id);
         }

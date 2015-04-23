@@ -3,20 +3,35 @@ package com.noe.badger;
 import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.bundle.domain.IAchievement;
 import com.noe.badger.bundle.domain.IAchievementBean;
-import com.noe.badger.bundle.domain.achievement.*;
+import com.noe.badger.bundle.domain.achievement.CompositeAchievementBean;
+import com.noe.badger.bundle.domain.achievement.CounterAchievementBean;
+import com.noe.badger.bundle.domain.achievement.DateAchievementBean;
+import com.noe.badger.bundle.domain.achievement.TimeAchievementBean;
+import com.noe.badger.bundle.domain.achievement.TimeRangeAchievementBean;
 import com.noe.badger.bundle.trigger.NumberTrigger;
 import com.noe.badger.dao.AchievementDao;
 import com.noe.badger.dao.CounterDao;
+import com.noe.badger.entity.AchievementEntity;
 import com.noe.badger.event.EventBus;
 import com.noe.badger.event.message.Achievement;
 import com.noe.badger.util.DateFormatUtil;
-import java.io.File;
-import java.io.InputStream;
-import java.util.*;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 @Named
 public class AchievementController {
@@ -58,6 +73,16 @@ public class AchievementController {
         return achievementBundle.getAll();
     }
 
+    public Collection<IAchievement> getByOwner(final String owner) {
+        final Collection<IAchievement> achievementsByOwner = new ArrayList<>();
+        final Collection<AchievementEntity> achievementEntities = achievementDao.getByOwner(owner);
+        for (AchievementEntity achievementEntity : achievementEntities) {
+            final IAchievement achievement = achievementBundle.get(achievementEntity.getId());
+            achievementsByOwner.add(achievement);
+        }
+        return achievementsByOwner;
+    }
+
     public IAchievement get(final AchievementType type, final String id) {
         return achievementBundle.get(type, id);
     }
@@ -79,6 +104,17 @@ public class AchievementController {
         unlockables.forEach(this::unlock);
     }
 
+    public void triggerEvent(final String event, final String... owners) {
+        triggerEvent(event, Arrays.asList(owners));
+    }
+
+    public void triggerEvent(final String event, final Collection<String> owners) {
+        LOG.debug("Achievement event triggered: {} with owners {} ", event, owners);
+        final Long currentValue = counterDao.increment(event);
+        final Collection<Achievement> unlockables = getUnlockables(event, currentValue, owners);
+        unlockables.forEach(this::unlock);
+    }
+
     public void triggerEvent(final String event) {
         LOG.info("Achievement event triggered: {}", event);
         final Long currentValue = counterDao.increment(event);
@@ -93,6 +129,20 @@ public class AchievementController {
             final Optional<Achievement> achievement = unlockable(currentValue, achievementBean);
             if (achievement.isPresent()) {
                 unlockables.add(achievement.get());
+            }
+        }
+        return unlockables;
+    }
+
+    private Collection<Achievement> getUnlockables(final String event, final Long currentValue, final Collection<String> owners) {
+        final Collection<Achievement> unlockables = new ArrayList<>();
+        final Collection<IAchievement> achievementBeans = achievementBundle.getAchievementsSubscribedFor(event);
+        for (IAchievement achievementBean : achievementBeans) {
+            final Optional<Achievement> achievement = unlockable(currentValue, achievementBean);
+            if (achievement.isPresent()) {
+                final Achievement toUnlock = achievement.get();
+                toUnlock.addOwners(owners);
+                unlockables.add(toUnlock);
             }
         }
         return unlockables;
@@ -207,9 +257,26 @@ public class AchievementController {
     public void unlock(final AchievementType type, final String achievementId, String triggeredValue) {
         if (!achievementDao.isUnlocked(achievementId)) {
             final IAchievement achievementBean = achievementBundle.get(type, achievementId);
-            achievementDao.unlock(achievementId);
             final Achievement achievement = createAchievement(achievementBean, triggeredValue);
-            EventBus.publishUnlocked(achievement);
+            unlock(achievement);
+        }
+    }
+
+    public void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners) {
+        if (!achievementDao.isUnlocked(achievementId)) {
+            final IAchievement achievementBean = achievementBundle.get(type, achievementId);
+            final Achievement achievement = createAchievement(achievementBean, triggeredValue);
+            achievement.addOwners(owners);
+            unlock(achievement);
+        }
+    }
+
+    public void unlock(final String achievementId, final String triggerValue, final Collection<String> owners) {
+        final Optional<IAchievement> matchingAchievement = achievementBundle.getAll().parallelStream().filter(achievement -> achievement.getId().equals(achievementId)).findFirst();
+        if (matchingAchievement.isPresent()) {
+            final Achievement achievement = createAchievement(matchingAchievement.get(), triggerValue);
+            achievement.addOwners(owners);
+            unlock(achievement);
         }
     }
 
@@ -223,7 +290,7 @@ public class AchievementController {
 
     public void unlock(final Achievement achievement) {
         if (!isUnlocked(achievement.getId())) {
-            achievementDao.unlockLevel(achievement.getId(), achievement.getLevel());
+            achievementDao.unlockLevel(achievement.getId(), achievement.getLevel(), achievement.getOwners());
             EventBus.publishUnlocked(achievement);
         }
     }

@@ -1,10 +1,14 @@
 package com.noe.badger.entity;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class AchievementEntity {
@@ -15,11 +19,15 @@ public class AchievementEntity {
     private Date acquireDate;
     private Integer level;
     private Boolean unlocked;
+    @ElementCollection
+    private Set<String> owners;
 
     public AchievementEntity() {
+        owners = new HashSet<>();
     }
 
     public AchievementEntity(final String id) {
+        this();
         this.id = id;
         level = 1;
         acquireDate = new Date();
@@ -56,5 +64,17 @@ public class AchievementEntity {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public Set<String> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(final Set<String> owners ) {
+        this.owners = owners;
+    }
+
+    public void addOwners(final Collection<String> owners) {
+        this.owners.addAll(owners);
     }
 }

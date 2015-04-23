@@ -210,7 +210,7 @@ public class AchievementBundle {
 
     public Collection<IAchievement> getAll() {
         Collection<IAchievement> allAchievements = new HashSet<>();
-        achievementEventMap.values().forEach(allAchievements::addAll);
+        achievementTypeMap.values().forEach(achievementMap -> allAchievements.addAll(achievementMap.values()));
         relationMap.values().forEach(allAchievements::add);
         return allAchievements;
     }
@@ -225,6 +225,16 @@ public class AchievementBundle {
             return achievementBeanMap.get(id);
         }
         throw new AchievementNotFoundException(type, id);
+    }
+
+    public IAchievement get(final String id) {
+        final Collection<IAchievement> achievements = getAll();
+        for (IAchievement achievementBean : achievements) {
+            if (achievementBean.getId().equals(id)) {
+                return achievementBean;
+            }
+        }
+        throw new AchievementNotFoundException(id);
     }
 
 }

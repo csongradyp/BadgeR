@@ -18,11 +18,11 @@ public @interface AchievementUnlock {
      */
     String achievement();
 
-
     /**
      * Value the achievement unlock with.
      * @return The value for the achievement for record.
      */
     String scoreParam() default "";
 
+    String[] owners() default {};
 }

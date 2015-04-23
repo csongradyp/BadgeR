@@ -6,6 +6,9 @@ import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
 import com.noe.badger.event.handler.AchievementUpdateHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
 import com.noe.badger.event.handler.IAchievementUpdateHandler;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +16,6 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Badger {
 
@@ -30,7 +31,7 @@ public class Badger {
 
     public Badger(final InputStream inputStream, final String baseName) {
         this();
-        controller.setSource(inputStream);
+        controller.setSource( inputStream );
         controller.setInternationalizationBaseName(baseName);
     }
 
@@ -47,15 +48,23 @@ public class Badger {
     }
 
     public void setLocale(final Locale locale) {
-        controller.setLocale(locale);
+        controller.setLocale( locale );
     }
 
     public void unlock(final AchievementType type, final String id, final String triggeredValue) {
-        controller.unlock(type, id, triggeredValue);
+        controller.unlock( type, id, triggeredValue );
+    }
+
+    public void unlock(final AchievementType type, final String id, final String triggeredValue, final String... owners) {
+        controller.unlock(type, id, triggeredValue, owners);
     }
 
     public Collection<IAchievement> getAllAchivement() {
         return controller.getAll();
+    }
+
+    public Collection<IAchievement> getAchievementsByOwner(final String owner) {
+        return controller.getByOwner( owner );
     }
 
     public Map<String, Set<IAchievement>> getAllAchievementByEvent() {
@@ -68,6 +77,14 @@ public class Badger {
 
     public void triggerEvent(final String id, final Long score) {
         controller.triggerEvent(id, score);
+    }
+
+    public void triggerEvent(final String event, final Collection<String> owners) {
+        controller.triggerEvent(event, owners);
+    }
+
+    public void triggerEvent(final String event, final String... owners) {
+        controller.triggerEvent(event, owners);
     }
 
     public Long getCurrentScore(final String id) {

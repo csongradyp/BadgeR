@@ -1,6 +1,10 @@
 package com.noe.badger.event.message;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Achievement {
 
@@ -12,6 +16,7 @@ public class Achievement {
     private String category;
     private Integer level;
     private AchievementEventType eventType;
+    private Set<String> owners;
 
     public Achievement(final String id, final String title, final String text, final String triggerWith) {
         this.id = id;
@@ -20,6 +25,7 @@ public class Achievement {
         this.acquireDate = new Date();
         this.triggerWith = triggerWith;
         this.level = 1;
+        owners = new HashSet<>();
     }
 
     public Achievement(final String id, final String category, final String title, final String text, final String triggerScore) {
@@ -75,5 +81,21 @@ public class Achievement {
 
     public void setEventType(final AchievementEventType eventType) {
         this.eventType = eventType;
+    }
+
+    public Set<String> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(final Set<String> owners) {
+        this.owners = owners;
+    }
+
+    public void addOwners(final Collection<String> owners) {
+        this.owners.addAll(owners);
+    }
+
+    public void addOwners(final String... owners) {
+        Collections.addAll(this.owners, owners);
     }
 }

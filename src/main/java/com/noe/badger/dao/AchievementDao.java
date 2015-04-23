@@ -5,9 +5,12 @@ import com.noe.badger.entity.AchievementEntity;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * DAO for achievements to database communication.
@@ -25,15 +28,30 @@ public class AchievementDao {
         achievementRepository.save(achievement);
     }
 
-    public void unlockLevel(final String id, final Integer level) {
+     public void unlock(final String achievementId, final String... owners) {
+        final AchievementEntity achievement = new AchievementEntity(achievementId);
+         achievement.addOwners(Arrays.asList(owners));
+        achievementRepository.save(achievement);
+    }
+
+    public void unlockLevel(final String id, final Integer level, final Set<String> owners) {
         final Optional<AchievementEntity> achievement = achievementRepository.findById(id);
         if (achievement.isPresent()) {
             final AchievementEntity achievementEntity = achievement.get();
             achievementEntity.setLevel(level);
+            achievementEntity.addOwners( owners );
             achievementRepository.save(achievementEntity);
         } else {
-            achievementRepository.save(new AchievementEntity(id));
+            final AchievementEntity achievementEntity = new AchievementEntity(id);
+            achievementEntity.setOwners( owners );
+            achievementRepository.save( achievementEntity );
         }
+    }
+
+    public Collection<AchievementEntity> getByOwner(final String owner) {
+        final Set<String> owners = new HashSet<>();
+        owners.add(owner);
+        return achievementRepository.findByOwnersIn(owners);
     }
 
     public Long getNumberOfUnlocked() {

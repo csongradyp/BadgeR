@@ -66,4 +66,12 @@ public class RelationParser {
         final int close = normalizedRelation.contains(")") ? normalizedRelation.indexOf(")") : normalizedRelation.length();
         return Collections.min( Arrays.asList( and, or, open, close ) );
     }
+
+    public void setRelationValidator( RelationValidator relationValidator ) {
+        this.relationValidator = relationValidator;
+    }
+
+    public void setAchievementBundle( AchievementBundle achievementBundle ) {
+        this.achievementBundle = achievementBundle;
+    }
 }

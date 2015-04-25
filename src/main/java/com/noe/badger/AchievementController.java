@@ -14,6 +14,7 @@ import com.noe.badger.dao.CounterDao;
 import com.noe.badger.entity.AchievementEntity;
 import com.noe.badger.event.EventBus;
 import com.noe.badger.event.message.Achievement;
+import com.noe.badger.event.message.Score;
 import com.noe.badger.util.DateFormatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,10 @@ public class AchievementController {
     public void setInternationalizationBaseName(final String internationalizationBaseName) {
         this.internationalizationBaseName = internationalizationBaseName;
         resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, Locale.ENGLISH);
+    }
+
+    public void setResourceBundle(final ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
     public void setLocale(final Locale locale) {
@@ -100,6 +105,7 @@ public class AchievementController {
     public void triggerEvent(final String event, final Long score) {
         LOG.debug("Achievement event triggered: {} with score {} ", event, score);
         final Long currentValue = counterDao.setScore(event, score);
+        EventBus.publishScoreChanged(new Score(event, currentValue));
         final Collection<Achievement> unlockables = getUnlockables(event, currentValue);
         unlockables.forEach(this::unlock);
     }
@@ -111,6 +117,7 @@ public class AchievementController {
     public void triggerEvent(final String event, final Collection<String> owners) {
         LOG.debug("Achievement event triggered: {} with owners {} ", event, owners);
         final Long currentValue = counterDao.increment(event);
+        EventBus.publishScoreChanged(new Score(event, currentValue));
         final Collection<Achievement> unlockables = getUnlockables(event, currentValue, owners);
         unlockables.forEach(this::unlock);
     }
@@ -118,6 +125,7 @@ public class AchievementController {
     public void triggerEvent(final String event) {
         LOG.info("Achievement event triggered: {}", event);
         final Long currentValue = counterDao.increment(event);
+        EventBus.publishScoreChanged(new Score(event, currentValue));
         final Collection<Achievement> unlockables = getUnlockables(event, currentValue);
         unlockables.forEach(this::unlock);
     }
@@ -290,7 +298,7 @@ public class AchievementController {
 
     public void unlock(final Achievement achievement) {
         if (!isUnlocked(achievement.getId())) {
-            achievementDao.unlockLevel(achievement.getId(), achievement.getLevel(), achievement.getOwners());
+            achievementDao.unlock( achievement.getId(), achievement.getLevel(), achievement.getOwners() );
             EventBus.publishUnlocked(achievement);
         }
     }

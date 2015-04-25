@@ -1,17 +1,19 @@
 package com.noe.badger.bundle.relation;
 
 import com.noe.badger.AchievementController;
+
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class Relation implements IRelation {
 
     private RelationOperator operator;
-    private Set<IRelation> children;
+    private Collection<IRelation> children;
 
     public Relation() {
-        children = new HashSet<>();
+        children = new LinkedHashSet<>();
     }
 
     public Relation(final RelationOperator operator) {
@@ -33,16 +35,16 @@ public class Relation implements IRelation {
         return operator;
     }
 
-    public void setOperator(final String operator) {
-        this.operator = RelationOperator.parse(operator);
-    }
-
     public void setOperator(final RelationOperator operator) {
         this.operator = operator;
     }
 
     public void addChild(final IRelation child) {
         children.add(child);
+    }
+
+    public Collection<IRelation> getChildren() {
+        return children;
     }
 
     @Override

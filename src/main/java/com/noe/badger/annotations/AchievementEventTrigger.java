@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * of the given event and will check for achievements that may have triggered.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target(ElementType.METHOD)
 public @interface AchievementEventTrigger {
 
     /**

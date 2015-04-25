@@ -26,16 +26,21 @@ public class Achievement {
         this.triggerWith = triggerWith;
         this.level = 1;
         owners = new HashSet<>();
+        eventType = AchievementEventType.UNLOCK;
     }
 
     public Achievement(final String id, final String category, final String title, final String text, final String triggerScore) {
         this(id, title, text, triggerScore);
         this.category = category;
+        eventType = AchievementEventType.UNLOCK;
     }
 
     public Achievement(final String id, final String title, final String text, final String triggerScore, final Integer level) {
         this(id, title, text, triggerScore);
         this.level = level;
+        if(level > 1) {
+            eventType = AchievementEventType.LEVEL_UP;
+        }
     }
 
     public Achievement(final String id, final String category, final String title, final String text, final String triggerScore, final Integer level) {

@@ -3,17 +3,16 @@ package com.noe.badger.event;
 
 import com.noe.badger.AchievementController;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
-import com.noe.badger.event.handler.AchievementUpdateHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
-import com.noe.badger.event.handler.IAchievementUpdateHandler;
+import com.noe.badger.event.handler.IScoreUpdateHandler;
+import com.noe.badger.event.handler.ScoreUpdateHandlerWrapper;
 import com.noe.badger.event.message.Achievement;
-import com.noe.badger.event.message.AchievementEventType;
+import com.noe.badger.event.message.Score;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.engio.mbassy.bus.MBassador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public final class EventBus {
 
@@ -22,7 +21,7 @@ public final class EventBus {
 
     private AchievementController controller;
 
-    private final MBassador<Achievement> updateSubscribers;
+    private final MBassador<Score> updateSubscribers;
     private final MBassador<Achievement> unlockedSubscribers;
 
     private EventBus() {
@@ -33,61 +32,57 @@ public final class EventBus {
     }
 
     private void registerShutdownHook(final MBassador<?>... mBassadors) {
-        Runtime.getRuntime().addShutdownHook( new Thread( () -> {
-            for ( MBassador<?> eventBus : mBassadors ) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (MBassador<?> eventBus : mBassadors) {
                 eventBus.shutdown();
             }
-        } ) );
+        }));
     }
 
     public static void subscribeOnUnlock(final AchievementUnlockedHandlerWrapper handler) {
-        INSTANCE.unlockedSubscribers.subscribe( handler );
+        INSTANCE.unlockedSubscribers.subscribe(handler);
     }
 
     public static void unSubscribeOnUnlock(final IAchievementUnlockedHandler handler) {
-        INSTANCE.unlockedSubscribers.unsubscribe( handler );
+        INSTANCE.unlockedSubscribers.unsubscribe(handler);
     }
 
     public static void publishUnlocked(final Achievement achievement) {
-        achievement.setEventType(AchievementEventType.UNLOCK);
-        LOG.info(achievement.getTitle() + " unlocked");
-        INSTANCE.unlockedSubscribers.publish( achievement );
+        LOG.info("{} unlocked", achievement.getTitle());
+        INSTANCE.unlockedSubscribers.publish(achievement);
     }
 
-    public static void subscribeOnUpdate(final AchievementUpdateHandlerWrapper handler) {
-        INSTANCE.updateSubscribers.subscribe( handler );
+    public static void subscribeOnScoreChanged(final ScoreUpdateHandlerWrapper handler) {
+        INSTANCE.updateSubscribers.subscribe(handler);
     }
 
-    public static void unSubscribeOnUpdate(final IAchievementUpdateHandler handler) {
-        INSTANCE.updateSubscribers.unsubscribe( handler );
+    public static void unSubscribeOnScoreChanged(final IScoreUpdateHandler handler) {
+        INSTANCE.updateSubscribers.unsubscribe(handler);
     }
 
-    public static void publishCheck(final Achievement achievement) {
-        INSTANCE.updateSubscribers.publish( achievement );
+    public static void publishScoreChanged(final Score score) {
+        LOG.info("Achievement score {} updated with value {}", score.getEvent(), score.getValue());
+        INSTANCE.updateSubscribers.publish(score);
     }
 
     public static void triggerEvent(final String id, final Long score) {
-        getController().triggerEvent(id, score);
+        INSTANCE.controller.triggerEvent(id, score);
     }
 
     public static void triggerEvent(final String id, final ArrayList<String> owners) {
-        getController().triggerEvent(id, owners);
+        INSTANCE.controller.triggerEvent(id, owners);
     }
 
     public static void setController(final AchievementController controller) {
         INSTANCE.controller = controller;
     }
 
-    public static AchievementController getController() {
-        return INSTANCE.controller;
-    }
-
     public static void unlock(final String achievementId, final String triggerValue) {
-        getController().unlock(achievementId, triggerValue);
+        INSTANCE.controller.unlock(achievementId, triggerValue);
     }
 
     public static void unlock(final String achievementId, final String triggerValue, final Collection<String> owners) {
-        getController().unlock(achievementId, triggerValue, owners);
+        INSTANCE.controller.unlock(achievementId, triggerValue, owners);
     }
 
     public static void checkAll() {

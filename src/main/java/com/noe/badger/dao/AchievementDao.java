@@ -34,17 +34,17 @@ public class AchievementDao {
         achievementRepository.save(achievement);
     }
 
-    public void unlockLevel(final String id, final Integer level, final Set<String> owners) {
-        final Optional<AchievementEntity> achievement = achievementRepository.findById(id);
+    public void unlock(final String achievementId, final Integer level, final Set<String> owners) {
+        final Optional<AchievementEntity> achievement = achievementRepository.findById(achievementId);
         if (achievement.isPresent()) {
             final AchievementEntity achievementEntity = achievement.get();
             achievementEntity.setLevel(level);
-            achievementEntity.addOwners( owners );
+            achievementEntity.addOwners(owners);
             achievementRepository.save(achievementEntity);
         } else {
-            final AchievementEntity achievementEntity = new AchievementEntity(id);
-            achievementEntity.setOwners( owners );
-            achievementRepository.save( achievementEntity );
+            final AchievementEntity achievementEntity = new AchievementEntity(achievementId);
+            achievementEntity.setOwners(owners);
+            achievementRepository.save(achievementEntity);
         }
     }
 

@@ -6,11 +6,4 @@ public class MalformedAchievementRelationDefinition extends RuntimeException {
         super(message);
     }
 
-    public MalformedAchievementRelationDefinition( final String message, Throwable cause ) {
-        super(message, cause);
-    }
-
-    public MalformedAchievementRelationDefinition( final Throwable cause ) {
-        super(cause);
-    }
 }

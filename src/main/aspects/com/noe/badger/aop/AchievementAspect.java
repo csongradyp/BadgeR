@@ -61,7 +61,7 @@ public class AchievementAspect {
         EventBus.unlock(achievement, triggerValue);
     }
 
-    @Pointcut(value = "(execution(* *(..)) || execution(*.new(..))) && @annotation(achievementEventTrigger)", argNames = "achievementEventTrigger")
+    @Pointcut(value = "execution(* *(..)) && @annotation(achievementEventTrigger)", argNames = "achievementEventTrigger")
     public void triggerEntryPoint(final AchievementEventTrigger achievementEventTrigger) {
     }
 
@@ -127,7 +127,7 @@ public class AchievementAspect {
         return owner;
     }
 
-    @Pointcut(value = "(execution(* *(..)) || execution(*.new(..))) && @annotation(achievementScore)", argNames = "achievementScore")
+    @Pointcut(value = "execution(* *(..)) && @annotation(achievementScore)", argNames = "achievementScore")
     public void scoreEntryPoint(final AchievementScore achievementScore) {
     }
 

@@ -14,12 +14,4 @@ public enum RelationOperator {
         return operator;
     }
 
-    public static RelationOperator parse(final String operator) {
-        for ( RelationOperator registeredOperator : values() ) {
-            if(registeredOperator.getOperator().equals(operator)) {
-                return registeredOperator;
-            }
-        }
-        throw new RuntimeException("not a valid operator: " + operator + " valid operators are '&' and '|'");
-    }
 }

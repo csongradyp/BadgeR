@@ -3,12 +3,9 @@ package com.noe.badger;
 import com.noe.badger.bundle.domain.IAchievement;
 import com.noe.badger.event.EventBus;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
-import com.noe.badger.event.handler.AchievementUpdateHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
-import com.noe.badger.event.handler.IAchievementUpdateHandler;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
+import com.noe.badger.event.handler.IScoreUpdateHandler;
+import com.noe.badger.event.handler.ScoreUpdateHandlerWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +13,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Badger {
 
@@ -31,7 +30,7 @@ public class Badger {
 
     public Badger(final InputStream inputStream, final String baseName) {
         this();
-        controller.setSource( inputStream );
+        controller.setSource(inputStream);
         controller.setInternationalizationBaseName(baseName);
     }
 
@@ -48,11 +47,11 @@ public class Badger {
     }
 
     public void setLocale(final Locale locale) {
-        controller.setLocale( locale );
+        controller.setLocale(locale);
     }
 
     public void unlock(final AchievementType type, final String id, final String triggeredValue) {
-        controller.unlock( type, id, triggeredValue );
+        controller.unlock(type, id, triggeredValue);
     }
 
     public void unlock(final AchievementType type, final String id, final String triggeredValue, final String... owners) {
@@ -64,7 +63,7 @@ public class Badger {
     }
 
     public Collection<IAchievement> getAchievementsByOwner(final String owner) {
-        return controller.getByOwner( owner );
+        return controller.getByOwner(owner);
     }
 
     public Map<String, Set<IAchievement>> getAllAchievementByEvent() {
@@ -99,12 +98,12 @@ public class Badger {
         EventBus.unSubscribeOnUnlock(achievementUnlockedHandler);
     }
 
-    public void subscribeOnUnlock(final IAchievementUpdateHandler achievementUpdateHandler) {
-        EventBus.subscribeOnUpdate(new AchievementUpdateHandlerWrapper(achievementUpdateHandler));
+    public void subscribeOnScoreChanged(final IScoreUpdateHandler achievementUpdateHandler) {
+        EventBus.subscribeOnScoreChanged(new ScoreUpdateHandlerWrapper(achievementUpdateHandler));
     }
 
-    public void unSubscribeOnUpdate(final IAchievementUpdateHandler achievementUpdateHandler) {
-        EventBus.unSubscribeOnUpdate(achievementUpdateHandler);
+    public void unSubscribeOnScoreChanged(final IScoreUpdateHandler achievementUpdateHandler) {
+        EventBus.unSubscribeOnScoreChanged(achievementUpdateHandler);
     }
 
 }

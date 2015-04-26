@@ -10,6 +10,8 @@ BadgeR is a java based achievement engine.
 
 * **Annotation driven**
 
+You can avoid mixing the achievement related codes with the real functional codes.
+
 |Annotation|Function|
 |:-----|:-----|
 |`@AchievementEventTrigger`|Triggers a defined event by incrementing the event counter by one and checks for possible unlocked achievements|
@@ -35,6 +37,11 @@ There are 5 predefined achievement types which can be used to define a the unloc
 |**date**|Achievements with date trigger. These achievements are bonded with the defined events. If one of the given events are triggered within (one of) the given day(s), the achievement will be unlocked.|
 |**time**|Achievements with time trigger. These achievements are bonded with the defined events. If one of the given events are triggered within (one of) the given minutes(s), the achievement will be unlocked.|
 |**timeRange**|Achievements with time trigger. These achievements are bonded with the defined events. If one of the given events are triggered within the given time ranges the achievement will be unlocked.|
+
+* **Get notified of unlocked achivements or updated events**
+Badger will notify every time when an achievement is unlocked or a counter is updated.
+
+To subscribe just implement a handler and pass is to Badger. See more at usage section.
 
 # Usage #
 
@@ -346,6 +353,63 @@ equivalent with
 #!java
 badger.check();
 ```
+
+# Make it work #
+
+To enable annotation driven features make sure you use AspectJ veawing.
+
+Here is my maven example from my other project where I use BadgeR:
+
+```
+#!xml
+
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>aspectj-maven-plugin</artifactId>
+    <version>1.7</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.8.5</version>
+        </dependency>
+    </dependencies>
+    <executions>
+        <execution>
+            <phase>process-classes</phase>
+            <goals>
+                <goal>compile</goal>
+                <goal>test-compile</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <showWeaveInfo>false</showWeaveInfo>
+        <verbose>true</verbose>
+        <complianceLevel>1.8</complianceLevel>
+        <weaveDependencies>
+            <weaveDependency>
+                <groupId>badger</groupId>
+                <artifactId>badger</artifactId>
+            </weaveDependency>
+        </weaveDependencies>
+        <aspectLibraries>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+            </dependency>
+        </aspectLibraries>
+        <source>1.8</source>
+        <target>1.8</target>
+    </configuration>
+</plugin>
+```
+
 
 ## Author ##
 

@@ -46,6 +46,11 @@ public class Badger {
         controller.setInternationalizationBaseName(baseName);
     }
 
+    public Badger(final String achievementIniLocation) throws IOException {
+        this();
+        controller.setSource(new File(achievementIniLocation));
+    }
+
     public void setLocale(final Locale locale) {
         controller.setLocale(locale);
     }

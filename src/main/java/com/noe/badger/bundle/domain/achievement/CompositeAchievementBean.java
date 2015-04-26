@@ -13,20 +13,20 @@ public class CompositeAchievementBean implements IAchievement {
 
     private Relation relation;
     private final String id;
-    private Map<AchievementType, IAchievement> wrappedAchievements;
+    private Map<AchievementType, IAchievement> children;
 
     public CompositeAchievementBean(final String id, final Relation relation) {
         this.id = id;
         this.relation = relation;
-        wrappedAchievements = new HashMap<>();
+        children = new HashMap<>();
     }
 
-    public Map<AchievementType, IAchievement> getWrappedAchievements() {
-        return wrappedAchievements;
+    public Map<AchievementType, IAchievement> getChildren() {
+        return children;
     }
 
     public void addWrappedElement(final AchievementType type, final IAchievement achievement) {
-        wrappedAchievements.put(type, achievement);
+        children.put(type, achievement);
     }
 
     @Override
@@ -42,25 +42,25 @@ public class CompositeAchievementBean implements IAchievement {
     @Override
     public List<String> getEvent() {
         List<String> events = new ArrayList<>();
-        wrappedAchievements.values().forEach(achievement -> events.addAll(achievement.getEvent()));
+        children.values().forEach(achievement -> events.addAll(achievement.getEvent()));
         return events;
     }
 
     @Override
     public String getTitleKey() {
-        return wrappedAchievements.values().iterator().next().getTitleKey();
+        return children.values().iterator().next().getTitleKey();
     }
 
     @Override
     public String getTextKey() {
-        return wrappedAchievements.values().iterator().next().getTextKey();
+        return children.values().iterator().next().getTextKey();
     }
 
     @Override
     public Integer getMaxLevel() {
         Integer maxLevel = 1;
-        if (wrappedAchievements.containsKey(AchievementType.COUNTER)) {
-            maxLevel = wrappedAchievements.get(AchievementType.COUNTER).getMaxLevel();
+        if (children.containsKey(AchievementType.COUNTER)) {
+            maxLevel = children.get(AchievementType.COUNTER).getMaxLevel();
         }
         return maxLevel;
     }

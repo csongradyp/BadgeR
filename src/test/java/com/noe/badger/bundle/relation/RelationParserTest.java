@@ -4,22 +4,18 @@ import com.noe.badger.AchievementController;
 import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.bundle.domain.IAchievementBean;
-import com.noe.badger.bundle.domain.TestAchievementBean;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,6 +27,8 @@ public class RelationParserTest {
     private AchievementBundle mockAchievementBundle;
     @Mock
     private AchievementController mockController;
+    @Mock
+    private IAchievementBean mockAchievementBean;
 
     private RelationParser underTest;
 
@@ -40,7 +38,7 @@ public class RelationParserTest {
         underTest.setAchievementBundle(mockAchievementBundle);
         underTest.setRelationValidator(mockRelationValidator);
 
-        when(mockAchievementBundle.get(any(AchievementType.class), anyString())).thenReturn(new TestAchievementBean());
+        when(mockAchievementBundle.get(any(AchievementType.class), anyString())).thenReturn(mockAchievementBean);
         when(mockController.unlockable(anyLong(), any(IAchievementBean.class))).thenReturn(Optional.empty());
     }
 

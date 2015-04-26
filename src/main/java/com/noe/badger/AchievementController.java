@@ -3,11 +3,7 @@ package com.noe.badger;
 import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.bundle.domain.IAchievement;
 import com.noe.badger.bundle.domain.IAchievementBean;
-import com.noe.badger.bundle.domain.achievement.CompositeAchievementBean;
-import com.noe.badger.bundle.domain.achievement.CounterAchievementBean;
-import com.noe.badger.bundle.domain.achievement.DateAchievementBean;
-import com.noe.badger.bundle.domain.achievement.TimeAchievementBean;
-import com.noe.badger.bundle.domain.achievement.TimeRangeAchievementBean;
+import com.noe.badger.bundle.domain.achievement.*;
 import com.noe.badger.bundle.trigger.NumberTrigger;
 import com.noe.badger.dao.AchievementDao;
 import com.noe.badger.dao.CounterDao;
@@ -16,23 +12,13 @@ import com.noe.badger.event.EventBus;
 import com.noe.badger.event.message.Achievement;
 import com.noe.badger.event.message.Score;
 import com.noe.badger.util.DateFormatUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Named
 public class AchievementController {
@@ -298,7 +284,7 @@ public class AchievementController {
 
     public void unlock(final Achievement achievement) {
         if (!isUnlocked(achievement.getId())) {
-            achievementDao.unlock( achievement.getId(), achievement.getLevel(), achievement.getOwners() );
+            achievementDao.unlock(achievement.getId(), achievement.getLevel(), achievement.getOwners());
             EventBus.publishUnlocked(achievement);
         }
     }
@@ -318,8 +304,15 @@ public class AchievementController {
     }
 
     private Achievement createAchievement(final IAchievement achievementBean, final String triggeredValue) {
-        final String title = resourceBundle.getString(achievementBean.getTitleKey());
-        final String text = resourceBundle.getString(achievementBean.getTextKey());
+        final String title;
+        final String text;
+        if (resourceBundle != null) {
+            title = resourceBundle.getString(achievementBean.getTitleKey());
+            text = resourceBundle.getString(achievementBean.getTextKey());
+        } else {
+            title = achievementBean.getTitleKey();
+            text = achievementBean.getTextKey();
+        }
         return new Achievement(achievementBean.getId(), achievementBean.getCategory(), title, text, triggeredValue);
     }
 }

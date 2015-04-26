@@ -54,8 +54,6 @@ There are Two sections which are not directly defining the achievement but the e
 Most of the achievements (single achievements not) should be subscribe one or more events. If an event is triggered all BadgeR will check for unlock from all the subscribed achievements
 All the events are also a counter. They can be triggered with a concrete value.
 ```
-#!ini
-
 [events]
 event=level completed
 event=earned score per level
@@ -68,8 +66,6 @@ There is an option to create complex achievements by making multiple diffferent 
 Allowed oprators are **&** (and) **|** (or) and simple brackets **(** and **)**. Make shure to use brackets for proper precedency evaluation.
 
 ```
-#!ini
-
 [relations]
 achievementId= timeRange & counter
 otherAchievementId= counter & (time | date)
@@ -87,8 +83,6 @@ An achievement can subscribe for one or more events. By following the ini strucu
 Make sure that all event is defined in the **[events]** section!
 
 ```
-#!ini
-
 [counter/sample]
 event=event one
 event=event two
@@ -113,8 +107,6 @@ Note: Single achievements does not have any triggers.
 
 **Counter achievement examples**
 ```
-#!ini
-
 [counter/sample]
 event=my event
 trigger=3
@@ -124,8 +116,6 @@ trigger=5
 A counter achievement is defined with id "sample". Badger will check whether it can be unlocked or not if "my event" event is triggered. Achievement (level 1) will be unlocked if 'my event' was triggered 3 times all together. (Level 2 when it was triggered 5 times all together)
 
 ```
-#!ini
-
 [counter/postfixsample]
 event=my event
 trigger=10-
@@ -138,8 +128,6 @@ A counter achievement is defined with id "postfixsample". Badger will check whet
 **Date achievement examples**
 
 ```
-#!ini
-
 [date/dateExample]
 event=event1
 event=event2
@@ -152,8 +140,6 @@ A date achievement is defined with id "dateExample". It will be unlocked if one 
 **Time achievement examples**
 
 ```
-#!ini
-
 [date/timeExample]
 event=event1
 event=event2
@@ -166,8 +152,6 @@ A time achievement is defined with id "timeExample". It will be unlocked if one 
 **Time range achievement examples**
 
 ```
-#!ini
-
 [date/timeRangeExample]
 event=event1
 event=event2
@@ -196,8 +180,6 @@ Create only** one instance** of BadgeR
 The following example requires an achievement definition file 'achievements.ini' and i18n messages properties files starting with achievementsMsg (e.g.: achievementsMsg_en.properties)
 
 ```
-#!java
-
 final InputStream inStream = getClass().getClassLoader().getResourceAsStream("achievements.ini");
 final Badger badger = new Badger(inStream, "achievementsMsg");
 ```
@@ -207,8 +189,6 @@ final Badger badger = new Badger(inStream, "achievementsMsg");
 Subscribe for unlock events with a simple callback method.
 
 ```
-#!java
-
 badger.subscribeOnUnlock(new IAchievementUnlockedHandler() {
     @Override
     public void onUnlocked(final Achievement achievement) {
@@ -227,8 +207,6 @@ with lambda expression
 
 
 ```
-#!java
-
 badger.subscribeOnUnlock((IAchievementUnlockedHandler) achievement -> {
     final String title = achievement.getTitle(); // localized title
     final String text = achievement.getText();  // localized description
@@ -247,7 +225,6 @@ badger.subscribeOnUnlock((IAchievementUnlockedHandler) achievement -> {
 Trigger an event and increment its counter by one.
 
 ```
-#!java
 @AchievementEventTrigger( name = "myEvent")
 public void myMethod() {
     // doesn't matter what the method do, only that it is called.
@@ -257,7 +234,6 @@ public void myMethod() {
 equivalent with 
 
 ```
-#!java
 badger.triggerEvent("myEvent");
 ```
 
@@ -266,7 +242,6 @@ badger.triggerEvent("myEvent");
 Trigger an event and set the counter score.
 
 ```
-#!java
 @AchievementScore(counter = "myEvent", scoreParam = "newScore")
 public void myMethod(final Long newScore) {
     // doesn't matter what the method do, only that it is called.
@@ -276,7 +251,6 @@ public void myMethod(final Long newScore) {
 equivalent with 
 
 ```
-#!java
 final Long newScore = 100L; // the new score to be set
 badger.triggerEvent("myEvent", newScore);
 ```
@@ -290,7 +264,6 @@ The type, id of the achievement should be given and optionally a trigger/score v
 Achievements without trigger can be only unlocked with the following way:
 
 ```
-#!java
 // unlock single achievement with id 'achievementId' that has no triggers
 @AchievementUnlock(type = AchievementType.SINGLE, achievement = "achievementId")
 public void myMethod1() {
@@ -319,7 +292,6 @@ public void myMethod4() {
 equivalent with 
 
 ```
-#!java
 // unlock single achievement with id 'achievementId' that has no triggers
 badger.unlock(AchievementType.SINGLE, "achievementId");
 
@@ -338,8 +310,6 @@ badger.unlock(AchievementType.DATE, "achievementId", "01-30");
 Achievement check runs every time when an event is triggered. Nevertheless the checking can be done directly.
 
 ```
-#!java
-
 @AchievementCheck
 public void myMethod() {
     // doesn't matter what the method do, only that it is called.
@@ -350,7 +320,6 @@ equivalent with
 
 
 ```
-#!java
 badger.check();
 ```
 
@@ -361,8 +330,6 @@ To enable annotation driven features make sure you use AspectJ veawing.
 Here is my maven example from my other project where I use BadgeR:
 
 ```
-#!xml
-
 <plugin>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>aspectj-maven-plugin</artifactId>

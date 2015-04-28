@@ -225,7 +225,7 @@ badger.subscribeOnUnlock((IAchievementUnlockedHandler) achievement -> {
 Trigger an event and increment its counter by one.
 
 ```
-@AchievementEventTrigger( name = "myEvent")
+@AchievementEventTrigger(name = "myEvent")
 public void myMethod() {
     // doesn't matter what the method do, only that it is called.
 }
@@ -242,8 +242,8 @@ badger.triggerEvent("myEvent");
 Trigger an event and set the counter score.
 
 ```
-@AchievementScore(counter = "myEvent", scoreParam = "newScore")
-public void myMethod(final Long newScore) {
+@AchievementScore(counter = "myEvent")
+public void myMethod(final @AchievementScoreParam Long newScore) {
     // doesn't matter what the method do, only that it is called.
 }
 ```
@@ -255,6 +255,20 @@ final Long newScore = 100L; // the new score to be set
 badger.triggerEvent("myEvent", newScore);
 ```
 
+You can retrieve score value from an Object argument by telling the getter method for it. It can be useful when the annotated methods are event receivers or some other methods with complex type arguments.
+
+```
+@AchievementScore(counter = "myEvent")
+public void myMethod(final @AchievementScoreParam(getter = "getHighscore") Player player) {
+    // doesn't matter what the method do, only that it is called.
+}
+```
+
+equivalent with 
+
+```
+badger.triggerEvent("myEvent", player.getHighscore());
+```
 **Unlock achievement directly**
 
 Achievements can be unlocked directly.

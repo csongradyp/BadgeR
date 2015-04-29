@@ -10,6 +10,7 @@ import com.noe.badger.event.message.Achievement;
 import com.noe.badger.event.message.Score;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import net.engio.mbassy.bus.MBassador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +22,19 @@ public final class EventBus {
 
     private AchievementController controller;
 
-    private final MBassador<Score> updateSubscribers;
-    private final MBassador<Achievement> unlockedSubscribers;
+    private final MBassador<Score> scoreUpdateBus;
+    private final MBassador<Achievement> unlockedBus;
+    private final Collection<AchievementUnlockedHandlerWrapper> unlockedSubscribers;
+    private final Collection<ScoreUpdateHandlerWrapper> scoreUpdateSubscribers;
 
     private EventBus() {
-        updateSubscribers = new MBassador<>();
-        unlockedSubscribers = new MBassador<>();
+        scoreUpdateBus = new MBassador<>();
+        unlockedBus = new MBassador<>();
 
-        registerShutdownHook(updateSubscribers, unlockedSubscribers);
+        unlockedSubscribers = new ArrayList<>();
+        scoreUpdateSubscribers = new ArrayList<>();
+
+        registerShutdownHook(scoreUpdateBus, unlockedBus);
     }
 
     private void registerShutdownHook(final MBassador<?>... mBassadors) {
@@ -40,29 +46,38 @@ public final class EventBus {
     }
 
     public static void subscribeOnUnlock(final AchievementUnlockedHandlerWrapper handler) {
-        INSTANCE.unlockedSubscribers.subscribe(handler);
+        INSTANCE.unlockedSubscribers.add(handler);
+        INSTANCE.unlockedBus.subscribe(handler);
     }
 
     public static void unSubscribeOnUnlock(final IAchievementUnlockedHandler handler) {
-        INSTANCE.unlockedSubscribers.unsubscribe(handler);
+        final Optional<AchievementUnlockedHandlerWrapper> registeredHandler = INSTANCE.unlockedSubscribers.stream().filter(
+                achievementUnlockedHandlerWrapper -> achievementUnlockedHandlerWrapper.getWrapped().equals(handler)).findFirst();
+        if(registeredHandler.isPresent()) {
+            INSTANCE.unlockedBus.unsubscribe(registeredHandler.get());
+        }
     }
 
     public static void publishUnlocked(final Achievement achievement) {
         LOG.info("{} unlocked", achievement.getTitle());
-        INSTANCE.unlockedSubscribers.publish(achievement);
+        INSTANCE.unlockedBus.publishAsync(achievement);
     }
 
     public static void subscribeOnScoreChanged(final ScoreUpdateHandlerWrapper handler) {
-        INSTANCE.updateSubscribers.subscribe(handler);
+        INSTANCE.scoreUpdateSubscribers.add(handler);
+        INSTANCE.scoreUpdateBus.subscribe(handler);
     }
 
     public static void unSubscribeOnScoreChanged(final IScoreUpdateHandler handler) {
-        INSTANCE.updateSubscribers.unsubscribe(handler);
+        final Optional<ScoreUpdateHandlerWrapper> registeredHandler = INSTANCE.scoreUpdateSubscribers.stream().filter(wrapper -> wrapper.getWrapped().equals(handler)).findFirst();
+        if(registeredHandler.isPresent()) {
+            INSTANCE.scoreUpdateBus.unsubscribe(registeredHandler.get());
+        }
     }
 
     public static void publishScoreChanged(final Score score) {
         LOG.info("Achievement score {} updated with value {}", score.getEvent(), score.getValue());
-        INSTANCE.updateSubscribers.publish(score);
+        INSTANCE.scoreUpdateBus.publishAsync( score );
     }
 
     public static void triggerEvent(final String id, final Long score) {

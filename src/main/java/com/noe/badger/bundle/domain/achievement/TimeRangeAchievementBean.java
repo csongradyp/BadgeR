@@ -1,5 +1,6 @@
 package com.noe.badger.bundle.domain.achievement;
 
+import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.AbstractAchievementBean;
 import com.noe.badger.exception.MalformedAchievementDefinition;
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeRangeA
         return super.toString() +
                 "trigger=" + triggers +
                 '}';
+    }
+
+    @Override
+    public AchievementType getType() {
+        return AchievementType.TIME_RANGE;
     }
 
     public class TimeTriggerPair {

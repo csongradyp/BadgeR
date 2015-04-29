@@ -6,7 +6,7 @@ import net.engio.mbassy.listener.Listener;
 import net.engio.mbassy.listener.References;
 
 @Listener(references = References.Strong)
-public class ScoreUpdateHandlerWrapper {
+public class ScoreUpdateHandlerWrapper implements IScoreUpdateHandler {
 
     private final IScoreUpdateHandler wrapped;
 
@@ -14,8 +14,13 @@ public class ScoreUpdateHandlerWrapper {
         this.wrapped = wrapped;
     }
 
+    @Override
     @Handler(rejectSubtypes = true)
     public void onUpdate(final Score score) {
         wrapped.onUpdate(score);
+    }
+
+    public IScoreUpdateHandler getWrapped() {
+        return wrapped;
     }
 }

@@ -2,8 +2,8 @@ package com.noe.badger.bundle.relation;
 
 import com.noe.badger.AchievementController;
 import com.noe.badger.AchievementType;
-import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.bundle.parser.AchievementIniParser;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class RelationParserTest {
     @Mock
     private RelationValidator mockRelationValidator;
     @Mock
-    private AchievementBundle mockAchievementBundle;
+    private AchievementIniParser mockAchievementIniParser;
     @Mock
     private AchievementController mockController;
     @Mock
@@ -35,10 +35,10 @@ public class RelationParserTest {
     @Before
     public void setUp() throws Exception {
         underTest = new RelationParser();
-        underTest.setAchievementBundle(mockAchievementBundle);
+        underTest.setAchievementParser(mockAchievementIniParser);
         underTest.setRelationValidator(mockRelationValidator);
 
-        when(mockAchievementBundle.get(any(AchievementType.class), anyString())).thenReturn(mockAchievementBean);
+        when(mockAchievementIniParser.parse(any(AchievementType.class), anyString())).thenReturn(mockAchievementBean);
         when(mockController.unlockable(anyLong(), any(IAchievementBean.class))).thenReturn(Optional.empty());
     }
 

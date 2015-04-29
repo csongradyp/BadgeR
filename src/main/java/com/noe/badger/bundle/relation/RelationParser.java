@@ -1,15 +1,14 @@
 package com.noe.badger.bundle.relation;
 
 import com.noe.badger.AchievementType;
-import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.bundle.parser.AchievementIniParser;
 import com.noe.badger.exception.MalformedAchievementRelationDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Stack;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named
 public class RelationParser {
@@ -17,7 +16,7 @@ public class RelationParser {
     @Inject
     private RelationValidator relationValidator;
     @Inject
-    private  AchievementBundle achievementBundle;
+    private AchievementIniParser achievementParser;
 
     public Relation parse(final String id, final String relation) {
         String normalizedRelation = relation.toLowerCase().replaceAll("\\s", "");
@@ -44,8 +43,8 @@ public class RelationParser {
                 Integer nextIndex = getNextElementStartIndex(normalizedRelation);
                 final String achievementTypeString = normalizedRelation.substring(0, nextIndex);
                 final AchievementType achievementType = AchievementType.parse(achievementTypeString);
-                final IAchievementBean achievementBean = achievementBundle.parse(achievementType, id);
-                relationStack.peek().addChild( new RelatedAchievement(achievementBean) );
+                final IAchievementBean achievementBean = achievementParser.parse(achievementType, id);
+                relationStack.peek().addChild(new RelatedAchievement(achievementBean));
                 normalizedRelation = normalizedRelation.substring(nextIndex);
             }
         }
@@ -67,11 +66,11 @@ public class RelationParser {
         return Collections.min( Arrays.asList( and, or, open, close ) );
     }
 
-    public void setRelationValidator( RelationValidator relationValidator ) {
+    public void setRelationValidator(final RelationValidator relationValidator) {
         this.relationValidator = relationValidator;
     }
 
-    public void setAchievementBundle( AchievementBundle achievementBundle ) {
-        this.achievementBundle = achievementBundle;
+    public void setAchievementParser(final AchievementIniParser achievementParser) {
+        this.achievementParser = achievementParser;
     }
 }

@@ -6,7 +6,7 @@ import net.engio.mbassy.listener.Listener;
 import net.engio.mbassy.listener.References;
 
 @Listener(references = References.Strong)
-public class AchievementUnlockedHandlerWrapper {
+public class AchievementUnlockedHandlerWrapper implements IAchievementUnlockedHandler {
 
     private final IAchievementUnlockedHandler wrapped;
 
@@ -14,8 +14,13 @@ public class AchievementUnlockedHandlerWrapper {
         this.wrapped = wrapped;
     }
 
+    @Override
     @Handler(rejectSubtypes = true)
     public void onUnlocked(final Achievement achievement) {
         wrapped.onUnlocked(achievement);
+    }
+
+    public IAchievementUnlockedHandler getWrapped() {
+        return wrapped;
     }
 }

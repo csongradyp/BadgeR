@@ -1,5 +1,6 @@
 package com.noe.badger.bundle.domain.achievement;
 
+import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.AbstractAchievementBean;
 import com.noe.badger.bundle.trigger.NumberTrigger;
 import com.noe.badger.exception.MalformedAchievementDefinition;
@@ -57,5 +58,10 @@ public class CounterAchievementBean extends AbstractAchievementBean<NumberTrigge
         return super.toString() +
                 "trigger=" + trigger +
                 '}';
+    }
+
+    @Override
+    public AchievementType getType() {
+        return AchievementType.COUNTER;
     }
 }

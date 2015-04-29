@@ -65,6 +65,11 @@ public class CompositeAchievementBean implements IAchievement {
         return maxLevel;
     }
 
+    @Override
+    public AchievementType getType() {
+        return AchievementType.COMPOSITE;
+    }
+
     public Boolean evaluate(AchievementController controller) {
         return relation.evaluate(controller);
     }

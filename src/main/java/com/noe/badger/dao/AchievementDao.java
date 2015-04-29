@@ -2,15 +2,9 @@ package com.noe.badger.dao;
 
 import com.noe.badger.dao.repository.AchievementRepository;
 import com.noe.badger.entity.AchievementEntity;
-
+import java.util.*;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * DAO for achievements to database communication.
@@ -46,6 +40,10 @@ public class AchievementDao {
             achievementEntity.setOwners(owners);
             achievementRepository.save(achievementEntity);
         }
+    }
+
+    public void deleteAll() {
+        achievementRepository.deleteAll();
     }
 
     public Collection<AchievementEntity> getByOwner(final String owner) {

@@ -1,5 +1,6 @@
 package com.noe.badger.bundle.domain;
 
+import com.noe.badger.AchievementType;
 import java.util.List;
 
 public interface IAchievement {
@@ -15,5 +16,7 @@ public interface IAchievement {
     String getTextKey();
 
     Integer getMaxLevel();
+
+    AchievementType getType();
 
 }

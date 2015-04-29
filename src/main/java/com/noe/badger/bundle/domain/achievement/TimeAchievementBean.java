@@ -1,5 +1,6 @@
 package com.noe.badger.bundle.domain.achievement;
 
+import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.AbstractAchievementBean;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,5 +29,10 @@ public class TimeAchievementBean extends AbstractAchievementBean<String> {
         return super.toString() +
                 "trigger=" + trigger +
                 '}';
+    }
+
+    @Override
+    public AchievementType getType() {
+        return AchievementType.TIME;
     }
 }

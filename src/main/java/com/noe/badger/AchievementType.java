@@ -5,7 +5,8 @@ public enum AchievementType {
     DATE("date"),
     TIME("time"), TIME_RANGE("timeRange"),
     COUNTER("counter"),
-    SINGLE("single");
+    SINGLE("single"),
+    COMPOSITE("composite");
 
     private final String type;
 

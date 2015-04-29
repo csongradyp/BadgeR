@@ -1,11 +1,12 @@
 package com.noe.badger.aop;
 
-import com.noe.badger.annotations.AchievementCheck;
-import com.noe.badger.annotations.AchievementEventTrigger;
-import com.noe.badger.annotations.AchievementScore;
-import com.noe.badger.annotations.AchievementUnlock;
-import com.noe.badger.annotations.AchievementOwnerParam;
+import com.noe.badger.annotations.*;
 import com.noe.badger.event.EventBus;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,12 +14,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
 
 @Aspect
 public class AchievementAspect {
@@ -93,7 +88,7 @@ public class AchievementAspect {
                         owners.add(owner);
                     }
                 } else {
-                    final String owner = callOwnerGetter(parameterValues[i], paramAnnotation.getter());
+                    final String owner = callGetter(parameterValues[i], paramAnnotation.getter(), String.class);
                     owners.add(owner);
                 }
             }
@@ -113,18 +108,19 @@ public class AchievementAspect {
         return result;
     }
 
-    private String callOwnerGetter(final Object ownerObject, final String methodNameToCall ) {
-        String owner = null;
+    @SuppressWarnings("unchecked")
+    private <T> T callGetter(final Object target, final String methodNameToCall, final Class<T> resultClass) {
+        T result = null;
         try {
-            final Method ownerResolverMethod = ownerObject.getClass().getDeclaredMethod(methodNameToCall);
-            if(String.class.equals(ownerResolverMethod.getReturnType())) {
-                owner = (String) ownerResolverMethod.invoke(ownerObject, null);
+            final Method ownerResolverMethod = target.getClass().getDeclaredMethod(methodNameToCall);
+            if(resultClass.equals(ownerResolverMethod.getReturnType())) {
+                result = (T) ownerResolverMethod.invoke(target, null);
             }
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            LOG.error("Could not call getter method: {} for given Owner object: {}", methodNameToCall, ownerObject);
+            LOG.error("Could not call getter method: {} for given object: {}", methodNameToCall, target);
             LOG.error("Could not call getter method", e);
         }
-        return owner;
+        return result;
     }
 
     @Pointcut(value = "execution(* *(..)) && @annotation(achievementScore)", argNames = "achievementScore")
@@ -137,17 +133,31 @@ public class AchievementAspect {
         Collections.addAll(owners, achievementScore.owners());
 
         final String id = achievementScore.counter();
+        final Long score = getScore(joinPoint);
+        LOG.debug("Achievement event triggered: {} by owners {} with score: {}", id, owners, score);
+        EventBus.triggerEvent(id, score);
+    }
+
+    private Long getScore(final JoinPoint joinPoint) {
+        Long score = Long.MIN_VALUE;
         final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        final String[] parameterNames = signature.getParameterNames();
         final Object[] parameterValues = joinPoint.getArgs();
         final Class[] parameterTypes = signature.getParameterTypes();
-        for (int i = 0, parameterNamesLength = parameterNames.length; i < parameterNamesLength; i++) {
-            if (achievementScore.scoreParam().equals(parameterNames[i]) && (long.class.equals(parameterTypes[i]) || Long.class.equals(parameterTypes[i]))) {
-                final Long score = (Long) parameterValues[i];
-                LOG.debug("Achievement event triggered: {} by {} with score: {}", id, owners, score);
-                EventBus.triggerEvent(id, score);
+
+        final Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
+        for(int i = 0; i < parameterAnnotations.length; i++){
+            final AchievementScoreParam paramAnnotation = getAnnotationByType(parameterAnnotations[i], AchievementScoreParam.class);
+            if(paramAnnotation != null){
+                if(paramAnnotation.getter().isEmpty()) {
+                    if(Long.class.equals(parameterTypes[i])) {
+                        score = (Long) parameterValues[i];
+                    }
+                } else {
+                    score = callGetter(parameterValues[i], paramAnnotation.getter(), Long.class);
+                }
             }
         }
+        return score;
     }
 
 }

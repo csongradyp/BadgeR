@@ -19,12 +19,6 @@ public @interface AchievementScore {
      */
     String counter();
 
-    String scoreParam();
-
-    String[] ownerParams() default {};
-
     String[] owners() default {};
-
-    String[] attachParam() default {};
 
 }

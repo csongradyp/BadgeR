@@ -84,7 +84,7 @@ public final class EventBus {
         INSTANCE.controller.triggerEvent(id, score);
     }
 
-    public static void triggerEvent(final String id, final ArrayList<String> owners) {
+    public static void triggerEvent(final String id, final Collection<String> owners) {
         INSTANCE.controller.triggerEvent(id, owners);
     }
 

@@ -37,28 +37,28 @@ public class AchievementController {
         EventBus.setController(this);
     }
 
-    public void setDefinition(final AchievementBundle definition) {
+    void setDefinition(final AchievementBundle definition) {
         this.achievementBundle = definition;
     }
 
-    public void setInternationalizationBaseName(final String internationalizationBaseName) {
+    void setInternationalizationBaseName(final String internationalizationBaseName) {
         this.internationalizationBaseName = internationalizationBaseName;
         resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, Locale.ENGLISH);
     }
 
-    public void setResourceBundle(final ResourceBundle resourceBundle) {
+    void setResourceBundle(final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
     }
 
-    public void setLocale(final Locale locale) {
+    void setLocale(final Locale locale) {
         resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, locale);
     }
 
-    public Collection<IAchievement> getAll() {
+    Collection<IAchievement> getAll() {
         return achievementBundle.getAll();
     }
 
-    public Collection<IAchievement> getByOwner(final String owner) {
+    Collection<IAchievement> getByOwner(final String owner) {
         final Collection<IAchievement> achievementsByOwner = new ArrayList<>();
         final Collection<AchievementEntity> achievementEntities = achievementDao.getByOwner(owner);
         for (AchievementEntity achievementEntity : achievementEntities) {
@@ -70,11 +70,11 @@ public class AchievementController {
         return achievementsByOwner;
     }
 
-    public IAchievement get(final AchievementType type, final String id) {
+    IAchievement get(final AchievementType type, final String id) {
         return achievementBundle.get(type, id);
     }
 
-    public Map<String, Set<IAchievement>> getAllByEvents() {
+    Map<String, Set<IAchievement>> getAllByEvents() {
         return achievementBundle.getAllByEvents();
     }
 
@@ -91,7 +91,7 @@ public class AchievementController {
         unlockables.forEach(this::unlock);
     }
 
-    public void triggerEvent(final String event, final String... owners) {
+    void triggerEvent(final String event, final String... owners) {
         triggerEvent(event, Arrays.asList(owners));
     }
 
@@ -148,7 +148,7 @@ public class AchievementController {
         return unlockables;
     }
 
-    public Optional<Achievement> unlockable(final Long currentValue, final IAchievement achievementBean) {
+    Optional<Achievement> unlockable(final Long currentValue, final IAchievement achievementBean) {
         if (CounterAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
             return checkCounterTrigger(currentValue, (CounterAchievementBean) achievementBean);
         } else if (DateAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
@@ -243,7 +243,7 @@ public class AchievementController {
         return achievementDao.isUnlocked(id, level);
     }
 
-    public void unlock(final AchievementType type, final String achievementId, String triggeredValue) {
+    void unlock(final AchievementType type, final String achievementId, String triggeredValue) {
         if (!isUnlocked(achievementId)) {
             final IAchievement achievementBean = achievementBundle.get(type, achievementId);
             final Achievement achievement = createAchievement(achievementBean, triggeredValue);
@@ -251,7 +251,7 @@ public class AchievementController {
         }
     }
 
-    public void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners) {
+    void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners) {
         if (!isUnlocked(achievementId)) {
             final IAchievement achievementBean = achievementBundle.get(type, achievementId);
             final Achievement achievement = createAchievement(achievementBean, triggeredValue);
@@ -284,11 +284,11 @@ public class AchievementController {
         }
     }
 
-    public Boolean isUnlocked(final String achievementId) {
+    Boolean isUnlocked(final String achievementId) {
         return achievementDao.isUnlocked(achievementId);
     }
 
-    public Long getCurrentScore(final String id) {
+    Long getCurrentScore(final String id) {
         return counterDao.scoreOf(id);
     }
 
@@ -317,16 +317,16 @@ public class AchievementController {
         return new Achievement(achievementBean.getId(), achievementBean.getCategory(), title, text, triggeredValue);
     }
 
-    public void reset() {
+    void reset() {
         counterDao.deleteAll();
         achievementDao.deleteAll();
     }
 
-    public void setCounterDao(final CounterDao counterDao) {
+    void setCounterDao(final CounterDao counterDao) {
         this.counterDao = counterDao;
     }
 
-    public void setAchievementDao(final AchievementDao achievementDao) {
+    void setAchievementDao(final AchievementDao achievementDao) {
         this.achievementDao = achievementDao;
     }
 }

@@ -1,10 +1,6 @@
 package com.noe.badger.event.message;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Achievement {
 
@@ -27,6 +23,7 @@ public class Achievement {
         this.level = 1;
         owners = new HashSet<>();
         eventType = AchievementEventType.UNLOCK;
+        category = "default";
     }
 
     public Achievement(final String id, final String category, final String title, final String text, final String triggerScore) {
@@ -38,7 +35,8 @@ public class Achievement {
     public Achievement(final String id, final String title, final String text, final String triggerScore, final Integer level) {
         this(id, title, text, triggerScore);
         this.level = level;
-        if(level > 1) {
+        category = "default";
+        if (level > 1) {
             eventType = AchievementEventType.LEVEL_UP;
         }
     }
@@ -48,18 +46,40 @@ public class Achievement {
         this.category = category;
     }
 
+    /**
+     * Returns the ID of the unlocked achievement.
+     *
+     * @return Unique ID of the achievement defined in the achievement definition file.
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Returns the category of the achievement. Default value is {@code "default"}.
+     *
+     * @return Category of the unlocked achievement.
+     */
     public String getCategory() {
         return category;
     }
 
+    /**
+     * Returns the localized title of the achievement.
+     * If no internationalization file is given it will return the localization key ({@code ACHIEVEMENT_ID.title}).
+     *
+     * @return Localized message or the i18n key of the achievement title.
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Returns the localized description of the achievement.
+     * If no internationalization file is given it will return the localization key ({@code ACHIEVEMENT_ID.text}).
+     *
+     * @return Localized message or the i18n key of the achievement description.
+     */
     public String getText() {
         return text;
     }
@@ -72,6 +92,11 @@ public class Achievement {
         return triggerWith;
     }
 
+    /**
+     * Returns the current unlocked level of the achievement.
+     *
+     * @return Unlocked level of the achievement.
+     */
     public Integer getLevel() {
         return level;
     }

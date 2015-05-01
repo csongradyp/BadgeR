@@ -23,6 +23,9 @@ public class Badger {
     private final AchievementParser parser;
     private final AchievementController controller;
 
+    /**
+     * Default constructor to set up Spring environment.
+     */
     private Badger() {
         final ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONTEXT_XML_PATH);
         applicationContext.registerShutdownHook();
@@ -30,103 +33,221 @@ public class Badger {
         controller = applicationContext.getBean(AchievementController.class);
     }
 
+    /**
+     * Starts the BadgeR achievement engine without i18n support.
+     *
+     * @param inputStream {@link InputStream} instance which opened for the achievement definition file.
+     * @param baseName    i18n properties file base name for internationalization support.<br/>
+     *                    See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
+     */
     public Badger(final InputStream inputStream, final String baseName) {
         this();
         controller.setDefinition(parser.parse(inputStream));
         controller.setInternationalizationBaseName(baseName);
     }
 
-    public Badger(final File achievementIni, final String baseName) {
+    /**
+     * Starts the BadgeR achievement engine without i18n support.
+     *
+     * @param definitionFilePath Absolute path of the achievement definition file location.
+     * @param baseName           i18n properties file base name for internationalization support.<br/>
+     *                           See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
+     */
+    public Badger(final String definitionFilePath, final String baseName) {
+        this(new File(definitionFilePath), baseName);
+    }
+
+    /**
+     * Starts the BadgeR achievement engine without i18n support.
+     *
+     * @param definitionFile {@link File} instance which represents the achievement definition file.
+     * @param baseName       i18n properties file base name for internationalization support.<br/>
+     *                       See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
+     */
+    public Badger(final File definitionFile, final String baseName) {
         this();
-        controller.setDefinition(parser.parse(achievementIni));
+        controller.setDefinition(parser.parse(definitionFile));
         controller.setInternationalizationBaseName(baseName);
     }
 
-    public Badger(final String achievementIniLocation, final String baseName) {
-        this();
-        controller.setDefinition(parser.parse(new File(achievementIniLocation)));
-        controller.setInternationalizationBaseName(baseName);
-    }
-
+    /**
+     * Starts the BadgeR achievement engine without i18n support.
+     *
+     * @param inputStream {@link InputStream} instance which opened for the achievement definition file.
+     */
     public Badger(final InputStream inputStream) {
         this();
         controller.setDefinition(parser.parse(inputStream));
     }
 
-    public Badger(final File achievementIni) {
-        this();
-        controller.setDefinition(parser.parse(achievementIni));
+    /**
+     * Starts the BadgeR achievement engine without i18n support.
+     *
+     * @param definitionFilePath Absolute path of the achievement definition file location.
+     */
+    public Badger(final String definitionFilePath) {
+        this(new File(definitionFilePath));
     }
 
-    public Badger(final String achievementIniLocation) {
+    /**
+     * Starts the BadgeR achievement engine without i18n support.
+     *
+     * @param definitionFile {@link File} instance which represents the achievement definition file.
+     */
+    public Badger(final File definitionFile) {
         this();
-        controller.setDefinition(parser.parse(new File(achievementIniLocation)));
+        controller.setDefinition(parser.parse(definitionFile));
     }
 
     /**
      * Set the language to use for resolving unlocked achievements title and description.
-     * @param locale {@link java.util.Locale} instance.
+     *
+     * @param locale {@link java.util.Locale} instance. Default locale is {@code Locale.ENGLISH} (en)
      */
     public void setLocale(final Locale locale) {
         controller.setLocale(locale);
     }
 
+    /**
+     * Unlock achievement directly without triggering any events.
+     *
+     * @param type           Type of the achievement: Single, Counter, Time, Time range, Date or Composite. See more at {@link AchievementType}
+     * @param id             Defined unique id of the achievement.
+     * @param triggeredValue Optional attribute to provide more information of the unlock.
+     */
     public void unlock(final AchievementType type, final String id, final String triggeredValue) {
         controller.unlock(type, id, triggeredValue);
     }
 
+    /**
+     * Unlock achievement directly without triggering any events.
+     *
+     * @param type           Type of the achievement: Single, Counter, Time, Time range, Date or Composite. See more at {@link AchievementType}
+     * @param id             Defined unique id of the achievement.
+     * @param triggeredValue Optional attribute to provide more information of the unlock.
+     * @param owners         Owners of the unlocked achievement. Basically the source of the event, the player, the newly created thing ...
+     */
     public void unlock(final AchievementType type, final String id, final String triggeredValue, final String... owners) {
         controller.unlock(type, id, triggeredValue, owners);
     }
 
+    /**
+     * Returns all defined achievements without any sorting.
+     *
+     * @return {@link Collection} of {@link IAchievement} instances.
+     */
     public Collection<IAchievement> getAllAchivement() {
         return controller.getAll();
     }
 
+    /**
+     * Returns all defined achievements belong to the given owner.
+     *
+     * @param owner Owners of the unlocked achievement.
+     * @return {@link Collection} of {@link IAchievement} instances.
+     */
     public Collection<IAchievement> getAchievementsByOwner(final String owner) {
         return controller.getByOwner(owner);
     }
 
+    /**
+     * Returns all defined achievements sorted by event subsciprions.
+     *
+     * @return {@link Map} of event name and {@link IAchievement} pairs.
+     */
     public Map<String, Set<IAchievement>> getAllAchievementByEvent() {
         return controller.getAllByEvents();
     }
 
+    /**
+     * Triggers the given event and increment its counter by one.
+     *
+     * @param event Previously defined event in the achievement definition file.
+     */
     public void triggerEvent(final String event) {
         controller.triggerEvent(event);
     }
 
-    public void triggerEvent(final String id, final Long score) {
-        controller.triggerEvent(id, score);
+    /**
+     * Triggers the given event and sets its counter by the given score.
+     *
+     * @param event Previously defined event in the achievement definition file.
+     * @param score new value of the event counter.
+     */
+    public void triggerEvent(final String event, final Long score) {
+        controller.triggerEvent(event, score);
     }
 
+    /**
+     * Triggers the given event and increment its counter by one.
+     *
+     * @param event  Previously defined event in the achievement definition file.
+     * @param owners Owners of the unlocked achievement. Basically the source of the event, the player, the newly created thing ...
+     */
     public void triggerEvent(final String event, final Collection<String> owners) {
         controller.triggerEvent(event, owners);
     }
 
+    /**
+     * Triggers the given event and increment its counter by one.
+     *
+     * @param event  Previously defined event in the achievement definition file.
+     * @param owners Owners of the unlocked achievement. Basically the source of the event, the player, the newly created thing ...
+     */
     public void triggerEvent(final String event, final String... owners) {
         controller.triggerEvent(event, owners);
     }
 
-    public Long getCurrentScore(final String id) {
-        return controller.getCurrentScore(id);
+    /**
+     * Returns the current value of the event counter.
+     *
+     * @param event Previously defined event in the achievement definition file.
+     * @return current value of event counter.
+     */
+    public Long getCurrentScore(final String event) {
+        return controller.getCurrentScore(event);
     }
 
+    /**
+     * Subscribe a handler to receive achievement unlocked events.
+     *
+     * @param achievementUnlockedHandler {@link IAchievementUnlockedHandler} implementation to be register.
+     */
     public void subscribeOnUnlock(final IAchievementUnlockedHandler achievementUnlockedHandler) {
         EventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(achievementUnlockedHandler));
     }
 
+    /**
+     * Unsubscribe registered unlocked event handler.
+     *
+     * @param achievementUnlockedHandler previously registered {@link IAchievementUnlockedHandler} implementation.
+     */
     public void unSubscribeOnUnlock(final IAchievementUnlockedHandler achievementUnlockedHandler) {
         EventBus.unSubscribeOnUnlock(achievementUnlockedHandler);
     }
 
+    /**
+     * Subscribe a handler to receive achievement event counter or score update events.
+     *
+     * @param achievementUpdateHandler {@link IScoreUpdateHandler} implementation to be register.
+     */
     public void subscribeOnScoreChanged(final IScoreUpdateHandler achievementUpdateHandler) {
         EventBus.subscribeOnScoreChanged(new ScoreUpdateHandlerWrapper(achievementUpdateHandler));
     }
 
+    /**
+     * Unsubscribe registered score update event handler.
+     *
+     * @param achievementUpdateHandler previously registered {@link IScoreUpdateHandler} implementation.
+     */
     public void unSubscribeOnScoreChanged(final IScoreUpdateHandler achievementUpdateHandler) {
         EventBus.unSubscribeOnScoreChanged(achievementUpdateHandler);
     }
 
+    /**
+     * Clears all unlocked achievements and counter/event states.
+     * Data deletion after calling this method cannot be undone.
+     */
     public void reset() {
         controller.reset();
     }

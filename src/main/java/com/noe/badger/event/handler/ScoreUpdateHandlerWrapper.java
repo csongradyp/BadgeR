@@ -5,6 +5,9 @@ import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.Listener;
 import net.engio.mbassy.listener.References;
 
+/**
+ * Wrapper implementation for proper registration of handlers to {@link net.engio.mbassy.bus.MBassador} event bus.
+ */
 @Listener(references = References.Strong)
 public class ScoreUpdateHandlerWrapper implements IScoreUpdateHandler {
 
@@ -20,6 +23,11 @@ public class ScoreUpdateHandlerWrapper implements IScoreUpdateHandler {
         wrapped.onUpdate(score);
     }
 
+    /**
+     * Returns the originally registered handler which was wrapped.
+     *
+     * @return originally registered handler.
+     */
     public IScoreUpdateHandler getWrapped() {
         return wrapped;
     }

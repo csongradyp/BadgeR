@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * Annotation for Achievement AOP Pointcut.
+ * Annotation to unlock the given achievement and trigger achievement unlocked event.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

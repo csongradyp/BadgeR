@@ -1,7 +1,7 @@
 package com.noe.badger;
 
 import com.noe.badger.bundle.domain.IAchievement;
-import com.noe.badger.bundle.parser.AchievementParser;
+import com.noe.badger.bundle.parser.AchievementDefinitionFileParser;
 import com.noe.badger.event.EventBus;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;
 import com.noe.badger.event.handler.IAchievementUnlockedHandler;
@@ -20,7 +20,7 @@ public class Badger {
 
     private static final String CONTEXT_XML_PATH = "META-INF/beans.xml";
 
-    private final AchievementParser parser;
+    private final AchievementDefinitionFileParser parser;
     private final AchievementController controller;
 
     /**
@@ -29,7 +29,7 @@ public class Badger {
     private Badger() {
         final ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONTEXT_XML_PATH);
         applicationContext.registerShutdownHook();
-        parser = applicationContext.getBean(AchievementParser.class);
+        parser = applicationContext.getBean(AchievementDefinitionFileParser.class);
         controller = applicationContext.getBean(AchievementController.class);
     }
 

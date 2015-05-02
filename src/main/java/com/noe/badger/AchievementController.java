@@ -148,7 +148,7 @@ public class AchievementController {
         return unlockables;
     }
 
-    Optional<Achievement> unlockable(final Long currentValue, final IAchievement achievementBean) {
+    public Optional<Achievement> unlockable(final Long currentValue, final IAchievement achievementBean) {
         if (CounterAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
             return checkCounterTrigger(currentValue, (CounterAchievementBean) achievementBean);
         } else if (DateAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {

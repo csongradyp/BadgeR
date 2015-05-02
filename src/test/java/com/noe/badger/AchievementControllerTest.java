@@ -6,7 +6,7 @@ import com.noe.badger.bundle.domain.IAchievementBean;
 import com.noe.badger.bundle.domain.TestAchievementBean;
 import com.noe.badger.bundle.domain.achievement.DateAchievementBean;
 import com.noe.badger.bundle.domain.achievement.TimeAchievementBean;
-import com.noe.badger.bundle.parser.AchievementParser;
+import com.noe.badger.bundle.parser.IAchievementDefinitionFileParser;
 import com.noe.badger.dao.AchievementDao;
 import com.noe.badger.dao.CounterDao;
 import com.noe.badger.event.EventBus;
@@ -35,7 +35,7 @@ public class AchievementControllerTest {
     private static final String ACHIEVEMENT_ID = "test";
 
     @Mock
-    private AchievementParser mockAchievementParser;
+    private IAchievementDefinitionFileParser mockAchievementParser;
     @Mock
     private AchievementBundle mockAchievementBundle;
     @Mock

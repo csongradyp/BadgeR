@@ -22,14 +22,15 @@ import org.ini4j.Ini;
 import org.ini4j.Profile;
 
 @Named
-public class AchievementIniParser {
+public class AchievementIniParser implements IAchievementDefinitionFileParser {
 
     @Inject
     private RelationParser relationParser;
 
     private Ini ini;
 
-    public AchievementBundle parseSource(final File achievementFile) {
+    @Override
+    public AchievementBundle parse(final File achievementFile) {
         try {
             ini = new Ini(achievementFile);
             ini.getConfig().setMultiOption(true);
@@ -40,7 +41,8 @@ public class AchievementIniParser {
         return createDefinitions();
     }
 
-    public AchievementBundle parseSource(final String achievementFileLocation) {
+    @Override
+    public AchievementBundle parse(final String achievementFileLocation) {
         try {
             ini = new Ini(new File(achievementFileLocation));
             ini.getConfig().setMultiOption(true);
@@ -51,7 +53,8 @@ public class AchievementIniParser {
         return createDefinitions();
     }
 
-    public AchievementBundle parseSource(final URL achievementFile) {
+    @Override
+    public AchievementBundle parse(final URL achievementFile) {
         try {
             ini = new Ini(achievementFile);
             ini.getConfig().setMultiOption(true);
@@ -62,7 +65,8 @@ public class AchievementIniParser {
         return createDefinitions();
     }
 
-    public AchievementBundle parseSource(final InputStream inputStream) {
+    @Override
+    public AchievementBundle parse(final InputStream inputStream) {
         try {
             ini = new Ini(inputStream);
             ini.getConfig().setMultiOption(true);

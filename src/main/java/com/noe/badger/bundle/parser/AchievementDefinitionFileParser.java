@@ -8,28 +8,32 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
-public class AchievementParser {
+public class AchievementDefinitionFileParser implements IAchievementDefinitionFileParser {
 
     @Inject
     private AchievementIniParser iniParser;
 
-    public AchievementParser() {
+    public AchievementDefinitionFileParser() {
     }
 
+    @Override
     public AchievementBundle parse(final File achievementFile) {
-        return iniParser.parseSource(achievementFile);
+        return iniParser.parse(achievementFile);
     }
 
+    @Override
     public AchievementBundle parse(final String achievementFileLocation) {
-        return iniParser.parseSource(achievementFileLocation);
-    }
-    
-    public AchievementBundle parse(final URL achievementFile) {
-        return iniParser.parseSource(achievementFile);
+        return iniParser.parse(achievementFileLocation);
     }
 
+    @Override
+    public AchievementBundle parse(final URL achievementFile) {
+        return iniParser.parse(achievementFile);
+    }
+
+    @Override
     public AchievementBundle parse(final InputStream inputStream) {
-        return iniParser.parseSource(inputStream);
+        return iniParser.parse(inputStream);
     }
     
 }

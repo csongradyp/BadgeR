@@ -1,6 +1,5 @@
 package com.noe.badger.bundle.domain.achievement;
 
-import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.AbstractAchievementBean;
 import com.noe.badger.exception.MalformedAchievementDefinition;
 import java.util.ArrayList;

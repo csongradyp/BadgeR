@@ -1,6 +1,6 @@
 package com.noe.badger.bundle.domain;
 
-import com.noe.badger.AchievementType;
+import com.noe.badger.bundle.domain.achievement.AchievementType;
 import java.util.List;
 
 public interface IAchievement {

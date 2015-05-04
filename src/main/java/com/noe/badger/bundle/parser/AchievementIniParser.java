@@ -1,12 +1,16 @@
 package com.noe.badger.bundle.parser;
 
-import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.AchievementBundle;
 import com.noe.badger.bundle.domain.IAchievement;
 import com.noe.badger.bundle.domain.IAchievementBean;
-import com.noe.badger.bundle.domain.achievement.*;
-import com.noe.badger.bundle.relation.Relation;
-import com.noe.badger.bundle.relation.RelationParser;
+import com.noe.badger.bundle.domain.achievement.AchievementType;
+import com.noe.badger.bundle.domain.achievement.CompositeAchievementBean;
+import com.noe.badger.bundle.domain.achievement.CounterAchievementBean;
+import com.noe.badger.bundle.domain.achievement.DateAchievementBean;
+import com.noe.badger.bundle.domain.achievement.TimeAchievementBean;
+import com.noe.badger.bundle.domain.achievement.TimeRangeAchievementBean;
+import com.noe.badger.bundle.domain.achievement.relation.Relation;
+import com.noe.badger.bundle.domain.achievement.relation.RelationParser;
 import com.noe.badger.exception.AchievementNotFoundException;
 import com.noe.badger.exception.MalformedAchievementDefinition;
 import java.io.File;

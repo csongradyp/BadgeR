@@ -1,6 +1,6 @@
 package com.noe.badger.exception;
 
-import com.noe.badger.AchievementType;
+import com.noe.badger.bundle.domain.achievement.AchievementType;
 
 public class AchievementNotFoundException extends RuntimeException {
 

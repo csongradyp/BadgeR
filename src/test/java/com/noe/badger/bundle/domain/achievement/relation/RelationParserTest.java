@@ -1,8 +1,8 @@
-package com.noe.badger.bundle.relation;
+package com.noe.badger.bundle.domain.achievement.relation;
 
 import com.noe.badger.AchievementController;
-import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.bundle.domain.achievement.AchievementType;
 import com.noe.badger.bundle.parser.AchievementIniParser;
 import java.util.Optional;
 import org.junit.Before;
@@ -15,7 +15,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

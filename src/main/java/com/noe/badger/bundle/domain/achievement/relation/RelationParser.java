@@ -1,7 +1,7 @@
-package com.noe.badger.bundle.relation;
+package com.noe.badger.bundle.domain.achievement.relation;
 
-import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.IAchievementBean;
+import com.noe.badger.bundle.domain.achievement.AchievementType;
 import com.noe.badger.bundle.parser.AchievementIniParser;
 import com.noe.badger.exception.MalformedAchievementRelationDefinition;
 import java.util.Arrays;

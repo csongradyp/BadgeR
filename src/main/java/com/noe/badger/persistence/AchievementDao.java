@@ -1,8 +1,13 @@
-package com.noe.badger.dao;
+package com.noe.badger.persistence;
 
-import com.noe.badger.dao.repository.AchievementRepository;
-import com.noe.badger.entity.AchievementEntity;
-import java.util.*;
+import com.noe.badger.persistence.entity.AchievementEntity;
+import com.noe.badger.persistence.repository.AchievementRepository;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 

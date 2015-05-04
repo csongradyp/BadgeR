@@ -1,6 +1,7 @@
 package com.noe.badger;
 
 import com.noe.badger.bundle.domain.IAchievement;
+import com.noe.badger.bundle.domain.achievement.AchievementType;
 import com.noe.badger.bundle.parser.AchievementDefinitionFileParser;
 import com.noe.badger.event.EventBus;
 import com.noe.badger.event.handler.AchievementUnlockedHandlerWrapper;

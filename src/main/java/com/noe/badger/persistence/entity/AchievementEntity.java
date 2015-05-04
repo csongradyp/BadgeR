@@ -1,14 +1,14 @@
-package com.noe.badger.entity;
+package com.noe.badger.persistence.entity;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class AchievementEntity {

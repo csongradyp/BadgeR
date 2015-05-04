@@ -1,11 +1,17 @@
 package com.noe.badger.bundle;
 
-import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.IAchievement;
+import com.noe.badger.bundle.domain.achievement.AchievementType;
 import com.noe.badger.bundle.domain.achievement.CompositeAchievementBean;
 import com.noe.badger.bundle.domain.achievement.DateAchievementBean;
 import com.noe.badger.exception.AchievementNotFoundException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AchievementBundle {

@@ -1,7 +1,6 @@
-package com.noe.badger.bundle.relation;
+package com.noe.badger.bundle.domain.achievement.relation;
 
 import com.noe.badger.AchievementController;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;

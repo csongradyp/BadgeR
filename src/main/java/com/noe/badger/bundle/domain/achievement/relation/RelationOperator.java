@@ -1,4 +1,4 @@
-package com.noe.badger.bundle.relation;
+package com.noe.badger.bundle.domain.achievement.relation;
 
 public enum RelationOperator {
 

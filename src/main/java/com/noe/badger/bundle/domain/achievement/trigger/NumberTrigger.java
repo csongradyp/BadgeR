@@ -1,4 +1,4 @@
-package com.noe.badger.bundle.trigger;
+package com.noe.badger.bundle.domain.achievement.trigger;
 
 public class NumberTrigger {
 

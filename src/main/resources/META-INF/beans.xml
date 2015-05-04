@@ -16,7 +16,7 @@
     <context:annotation-config/>
     <context:component-scan base-package="com.noe.badger" />
     <tx:annotation-driven transaction-manager="transactionManager"/>
-    <jpa:repositories base-package="com.noe.badger.dao.repository"/>
+    <jpa:repositories base-package="com.noe.badger.persistence.repository"/>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
@@ -24,7 +24,7 @@
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="badgerPersistenceUnit"/>
-        <property name="packagesToScan" value="com.noe.badger.entity" />
+        <property name="packagesToScan" value="com.noe.badger.persistence.entity"/>
         <property name="persistenceUnitManager" ref="persistenceUnitManager"/>
         <property name="jpaPropertyMap">
             <map>

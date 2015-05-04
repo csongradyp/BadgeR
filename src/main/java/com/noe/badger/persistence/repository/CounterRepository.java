@@ -1,6 +1,6 @@
-package com.noe.badger.dao.repository;
+package com.noe.badger.persistence.repository;
 
-import com.noe.badger.entity.ScoreEntity;
+import com.noe.badger.persistence.entity.ScoreEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

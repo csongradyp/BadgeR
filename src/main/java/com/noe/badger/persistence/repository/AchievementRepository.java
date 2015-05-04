@@ -1,11 +1,10 @@
-package com.noe.badger.dao.repository;
+package com.noe.badger.persistence.repository;
 
-import com.noe.badger.entity.AchievementEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-
+import com.noe.badger.persistence.entity.AchievementEntity;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AchievementRepository extends JpaRepository<AchievementEntity, String> {
 

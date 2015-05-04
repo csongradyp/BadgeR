@@ -1,4 +1,4 @@
-package com.noe.badger.bundle.relation;
+package com.noe.badger.bundle.domain.achievement.relation;
 
 import com.noe.badger.exception.MalformedAchievementRelationDefinition;
 import org.junit.Before;

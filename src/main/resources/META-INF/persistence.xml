@@ -3,9 +3,9 @@
     <persistence-unit name="badgerPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>com.objectdb.jpa.Provider</provider>
 
-        <class>com.noe.badger.entity.AbstractEntity</class>
-        <class>com.noe.badger.entity.AchievementEntity</class>
-        <class>com.noe.badger.entity.ScoreEntity</class>
+        <class>com.noe.badger.persistence.entity.AbstractEntity</class>
+        <class>com.noe.badger.persistence.entity.AchievementEntity</class>
+        <class>com.noe.badger.persistence.entity.ScoreEntity</class>
 
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 

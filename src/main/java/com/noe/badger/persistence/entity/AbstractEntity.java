@@ -1,4 +1,4 @@
-package com.noe.badger.entity;
+package com.noe.badger.persistence.entity;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

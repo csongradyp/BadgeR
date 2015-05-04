@@ -1,4 +1,4 @@
-package com.noe.badger;
+package com.noe.badger.bundle.domain.achievement;
 
 public enum AchievementType {
     

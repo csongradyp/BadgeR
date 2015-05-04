@@ -1,9 +1,8 @@
 package com.noe.badger.bundle.domain.achievement;
 
 import com.noe.badger.AchievementController;
-import com.noe.badger.AchievementType;
 import com.noe.badger.bundle.domain.IAchievement;
-import com.noe.badger.bundle.relation.Relation;
+import com.noe.badger.bundle.domain.achievement.relation.Relation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

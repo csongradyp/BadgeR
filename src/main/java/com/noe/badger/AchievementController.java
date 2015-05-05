@@ -226,10 +226,11 @@ public class AchievementController {
 
     private Optional<Achievement> checkCounterTrigger(final Long currentValue, final IAchievementBean<NumberTrigger> achievementBean) {
         final List<NumberTrigger> triggers = achievementBean.getTrigger();
-        for (int triggerIndex = 0; triggerIndex < triggers.size(); triggerIndex++) {
-            final NumberTrigger trigger = triggers.get(triggerIndex);
-            if (isTriggered(currentValue, trigger) && isLevelValid(achievementBean, triggerIndex) && !isLevelUnlocked(achievementBean.getId(), triggerIndex)) {
-                final Achievement achievement = createAchievement(achievementBean, triggerIndex + 1, currentValue);
+        for (int i = 0; i < triggers.size(); i++) {
+            final NumberTrigger trigger = triggers.get(i);
+            final Integer level = i + 1;
+            if (isTriggered(currentValue, trigger) && isLevelValid(achievementBean, level) && !isLevelUnlocked(achievementBean.getId(), level)) {
+                final Achievement achievement = createAchievement(achievementBean, level, currentValue);
                 return Optional.of(achievement);
             }
         }
@@ -292,7 +293,7 @@ public class AchievementController {
     }
 
     private void unlock(final Achievement achievement) {
-        if (!isUnlocked(achievement.getId())) {
+        if (!isLevelUnlocked(achievement.getId(), achievement.getLevel())) {
             achievementDao.unlock(achievement.getId(), achievement.getLevel(), achievement.getOwners());
             EventBus.publishUnlocked(achievement);
         }

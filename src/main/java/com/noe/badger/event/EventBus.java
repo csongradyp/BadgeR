@@ -53,14 +53,14 @@ public final class EventBus {
     public static void unSubscribeOnUnlock(final IAchievementUnlockedHandler handler) {
         final Optional<AchievementUnlockedHandlerWrapper> registeredHandler = INSTANCE.unlockedSubscribers.stream().filter(
                 achievementUnlockedHandlerWrapper -> achievementUnlockedHandlerWrapper.getWrapped().equals(handler)).findFirst();
-        if(registeredHandler.isPresent()) {
+        if (registeredHandler.isPresent()) {
             INSTANCE.unlockedBus.unsubscribe(registeredHandler.get());
         }
     }
 
     public static void publishUnlocked(final Achievement achievement) {
-        LOG.info("{} unlocked", achievement.getTitle());
-        INSTANCE.unlockedBus.publishAsync(achievement);
+        INSTANCE.unlockedBus.publish(achievement);
+        LOG.info("Achievement unlocked event published. Achievement - title: {}, level: {}", achievement.getTitle(), achievement.getLevel());
     }
 
     public static void subscribeOnScoreChanged(final ScoreUpdateHandlerWrapper handler) {
@@ -70,14 +70,14 @@ public final class EventBus {
 
     public static void unSubscribeOnScoreChanged(final IScoreUpdateHandler handler) {
         final Optional<ScoreUpdateHandlerWrapper> registeredHandler = INSTANCE.scoreUpdateSubscribers.stream().filter(wrapper -> wrapper.getWrapped().equals(handler)).findFirst();
-        if(registeredHandler.isPresent()) {
+        if (registeredHandler.isPresent()) {
             INSTANCE.scoreUpdateBus.unsubscribe(registeredHandler.get());
         }
     }
 
     public static void publishScoreChanged(final Score score) {
+        INSTANCE.scoreUpdateBus.publish(score);
         LOG.info("Achievement score {} updated with value {}", score.getEvent(), score.getValue());
-        INSTANCE.scoreUpdateBus.publishAsync( score );
     }
 
     public static void triggerEvent(final String id, final Long score) {

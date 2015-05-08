@@ -17,39 +17,38 @@ public class CounterDao {
     @Inject
     private CounterRepository counterRepository;
 
-    public Long increment(final String name) {
-        final Optional<ScoreEntity> score = counterRepository.findById(name);
+    public Long increment(final String event) {
+        final Optional<ScoreEntity> score = counterRepository.findById(event);
         if (score.isPresent()) {
             final ScoreEntity scoreEntity = score.get();
             final Long newValue = scoreEntity.incrementScore();
             counterRepository.save(scoreEntity);
             return newValue;
         }
-        final ScoreEntity newCounter = new ScoreEntity(name);
+        final ScoreEntity newCounter = new ScoreEntity(event);
         counterRepository.save(newCounter);
         return newCounter.getScore();
     }
 
-    public Long setScore(final String name, final Long newScore) {
-        final Optional<ScoreEntity> score = counterRepository.findById(name);
+    public Long setScore(final String event, final Long newScore) {
+        ScoreEntity scoreEntity;
+        final Optional<ScoreEntity> score = counterRepository.findById(event);
         if (score.isPresent()) {
-            final ScoreEntity scoreEntity = score.get();
+            scoreEntity = score.get();
             scoreEntity.setScore(newScore);
-            counterRepository.save(scoreEntity);
-            return scoreEntity.getScore();
+        } else {
+            scoreEntity = new ScoreEntity(event, newScore);
         }
-        final ScoreEntity newCounter = new ScoreEntity(name, newScore);
-        counterRepository.save(newCounter);
-        return newCounter.getScore();
+        counterRepository.save(scoreEntity);
+        return scoreEntity.getScore();
     }
 
-    public Long scoreOf(final String id) {
-        final Optional<ScoreEntity> score = counterRepository.findById(id);
+    public Long scoreOf(final String event) {
+        final Optional<ScoreEntity> score = counterRepository.findById(event);
         if (score.isPresent()) {
-            final ScoreEntity scoreEntity = score.get();
-            return scoreEntity.getScore();
+            return score.get().getScore();
         }
-        return 0L;
+        return Long.MIN_VALUE;
     }
 
     public void deleteAll() {

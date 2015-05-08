@@ -180,6 +180,16 @@ public class Badger {
     }
 
     /**
+     * Triggers the given event and sets its counter by the given score.
+     *
+     * @param event Previously defined event in the achievement definition file.
+     * @param highScore new value of the event counter. New value will be only applied if its greater than the stored one.
+     */
+    public void triggerEventWithHighScore(final String event, final Long highScore) {
+        controller.triggerEventWithHighScore(event, highScore);
+    }
+
+    /**
      * Triggers the given event and increment its counter by one.
      *
      * @param event  Previously defined event in the achievement definition file.

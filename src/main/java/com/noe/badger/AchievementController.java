@@ -97,12 +97,30 @@ public class AchievementController {
         unlockableAchievements.forEach(this::unlock);
     }
 
+    public void triggerEventWithHighScore(final String event, final Long score) {
+        if (isNewHighScore(event, score)) {
+            LOG.debug("New highscore submitted!");
+            triggerEvent(event, score);
+        }
+    }
+
+    private boolean isNewHighScore(final String event, final Long score) {
+        return counterDao.scoreOf(event) <= score;
+    }
+
     public void triggerEvent(final String event, final Long score) {
-        LOG.debug("Achievement event triggered: {} with score {} ", event, score);
-        final Long currentValue = counterDao.setScore(event, score);
-        EventBus.publishScoreChanged(new Score(event, currentValue));
-        final Collection<Achievement> unlockables = getUnlockables(event, currentValue);
-        unlockables.forEach(this::unlock);
+        if (isDifferentValueAsStored(event, score)) {
+            LOG.debug("Achievement event triggered: {} with score {} ", event, score);
+            final Long currentValue = counterDao.setScore(event, score);
+            EventBus.publishScoreChanged(new Score(event, currentValue));
+            final Collection<Achievement> unlockables = getUnlockables(event, currentValue);
+            unlockables.forEach(this::unlock);
+        }
+    }
+
+    private boolean isDifferentValueAsStored(String event, Long score) {
+        final Long currentValue = counterDao.scoreOf(event);
+        return currentValue != score;
     }
 
     void triggerEvent(final String event, final String... owners) {

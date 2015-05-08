@@ -74,13 +74,13 @@ public class AchievementControllerTest {
             assertThat(achievement.getLevel(), is(equalTo(1)));
         });
         when(mockAchievementBundle.get(ACHIEVEMENT_ID)).thenReturn(Optional.of(new TestAchievementBean(ACHIEVEMENT_ID)));
-        when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).thenReturn(false);
+        when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
         EventBus.subscribeOnUnlock(handler);
 
         underTest.unlock(ACHIEVEMENT_ID, "1");
 
         verify(mockAchievementBundle).get(ACHIEVEMENT_ID);
-        verify(mockAchievementDao).isUnlocked(ACHIEVEMENT_ID);
+        verify(mockAchievementDao).isUnlocked(ACHIEVEMENT_ID, 1);
         EventBus.unSubscribeOnUnlock(handler);
     }
 

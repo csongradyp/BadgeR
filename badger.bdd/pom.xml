@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>badger</artifactId>
+        <groupId>net.csongradyp</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>badger.bdd</artifactId>
+
+    <properties>
+        <jbehave-core.version>3.9.5</jbehave-core.version>
+
+        <embeddables>**/AcceptanceStories.java</embeddables>
+        <ignore.failre.in.stories>false</ignore.failre.in.stories>
+        <meta.filter></meta.filter>
+        <threads>1</threads>
+        <story.timeout.in.secs>60</story.timeout.in.secs>
+
+        <jbehave.site.version>3.1.1</jbehave.site.version>
+        <jbehave.feature.file.dir>${basedir}/src/test/resources/stories</jbehave.feature.file.dir>
+        <jbehave.test.resources>${basedir}/src/test/resources</jbehave.test.resources>
+
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>${jbehave-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-spring</artifactId>
+            <version>${jbehave-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.csongradyp</groupId>
+            <artifactId>badger.integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jbehave</groupId>
+                <artifactId>jbehave-maven-plugin</artifactId>
+                <version>${jbehave-core.version}</version>
+                <executions>
+                    <execution>
+                        <id>embeddable-stories</id>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <includes>
+                                <include>${embeddables}</include>
+                            </includes>
+                            <batch>false</batch>
+                            <threads>${threads}</threads>
+                            <storyTimeoutInSecs>${story.timeout.in.secs}</storyTimeoutInSecs>
+                            <generateViewAfterStories>true</generateViewAfterStories>
+                            <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
+                            <ignoreFailureInView>false</ignoreFailureInView>
+                            <metaFilters>
+                                <metaFilter>${meta.filter}</metaFilter>
+                            </metaFilters>
+                        </configuration>
+                        <goals>
+                            <goal>run-stories-as-embeddables</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                        <version>1.2.17</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-jbehave-site-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jbehave.site</groupId>
+                                    <artifactId>jbehave-site-resources</artifactId>
+                                    <version>${jbehave.site.version}</version>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.directory}/jbehave/view</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>unpack-jbehave-reports-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jbehave</groupId>
+                                    <artifactId>jbehave-core</artifactId>
+                                    <version>${jbehave-core.version}</version>
+                                    <outputDirectory>${project.build.directory}/jbehave/view</outputDirectory>
+                                    <includes>**\/*.css,**\/*.ftl,**\/*.js</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

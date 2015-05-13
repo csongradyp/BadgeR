@@ -1,17 +1,12 @@
 package net.csongradyp.steps;
 
-import javax.inject.Inject;
 import net.csongradyp.Steps;
 import net.csongradyp.badger.Badger;
 import net.csongradyp.badger.event.message.Score;
 import net.csongradyp.badger.persistence.CounterDao;
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.ScenarioType;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
+import org.jbehave.core.annotations.*;
+
+import javax.inject.Inject;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +15,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @Steps
-public class AchievementEventTriggerSteps {
+public class EventTriggerSteps {
 
     @Inject
     private Badger badger;
@@ -54,7 +49,7 @@ public class AchievementEventTriggerSteps {
         assertThat(receivedEvent, notNullValue());
     }
 
-    @Then("no event is received")
+    @Then("no score event is received")
     public void noEventIsReceived() {
         assertThat(receivedEvent, nullValue());
     }

@@ -1,8 +1,5 @@
 package net.csongradyp.badger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
 import net.csongrady.badger.domain.IAchievement;
 import net.csongrady.badger.domain.IAchievementBean;
 import net.csongrady.badger.event.IAchievementUnlockedEvent;
@@ -19,6 +16,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
@@ -106,7 +107,7 @@ public class AchievementControllerTest {
     public void testUnlockableReturnsUnlockableAchievementWhenOneOfTheGivenTimeAchievementTriggerIsEqualToTheCurrentTimeInMinutePrecision() throws Exception {
         final IAchievementBean timeAchievementBean = new TimeAchievementBean();
         timeAchievementBean.setId(ACHIEVEMENT_ID);
-        timeAchievementBean.setTrigger(new String[]{dateProvider.now()});
+        timeAchievementBean.setTrigger(new String[]{dateProvider.currentTime()});
 
         final Optional<IAchievementUnlockedEvent> result = underTest.unlockable(0L, timeAchievementBean);
 

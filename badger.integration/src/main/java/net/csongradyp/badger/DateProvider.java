@@ -1,9 +1,13 @@
 package net.csongradyp.badger;
 
-import java.util.Date;
-import javax.inject.Named;
+import net.csongrady.badger.IDateProvider;
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import javax.inject.Named;
+import java.util.Date;
 
 @Named
 public class DateProvider implements IDateProvider {
@@ -22,6 +26,11 @@ public class DateProvider implements IDateProvider {
     }
 
     @Override
+    public String currentTime() {
+        return getTime(new Date());
+    }
+
+    @Override
     public String getDate(final Date date) {
         return format(date.getTime());
     }
@@ -32,12 +41,16 @@ public class DateProvider implements IDateProvider {
 
     @Override
     public Boolean isCurrentTimeBefore(final Date date) {
-        return new Date().before(date);
+        final LocalTime currentTime = new DateTime().toLocalTime();
+        final LocalTime triggerTime = new DateTime(date).toLocalTime();
+        return currentTime.isBefore(triggerTime) || currentTime.isEqual(triggerTime);
     }
 
     @Override
     public Boolean isCurrentTimeAfter(final Date date) {
-        return new Date().after(date);
+        final LocalTime currentTime = new DateTime().toLocalTime();
+        final LocalTime triggerTime = new DateTime(date).toLocalTime();
+        return currentTime.isAfter(triggerTime) || currentTime.isEqual(triggerTime);
     }
 
     @Override
@@ -47,5 +60,9 @@ public class DateProvider implements IDateProvider {
 
     public Date asDate(final String dateString) {
         return dateFormatter.parseDateTime(dateString).toDate();
+    }
+
+    public Date asTime(final String timeString) {
+        return timeFormatter.parseDateTime(timeString).toDate();
     }
 }

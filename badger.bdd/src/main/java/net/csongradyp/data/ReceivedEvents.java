@@ -1,25 +1,21 @@
 package net.csongradyp.data;
 
-import net.csongrady.badger.event.IAchievementUnlockedEvent;
-
-import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
-@Named
-public class ReceivedAchievementUnlockedEvents {
+public class ReceivedEvents<EVENT_TYPE> {
 
-    private List<IAchievementUnlockedEvent> receivedEvents;
+    private List<EVENT_TYPE> receivedEvents;
 
-    public ReceivedAchievementUnlockedEvents() {
+    public ReceivedEvents() {
         this.receivedEvents = new ArrayList<>();
     }
 
-    public List<IAchievementUnlockedEvent> getAll() {
+    public List<EVENT_TYPE> getAll() {
         return receivedEvents;
     }
 
-    public IAchievementUnlockedEvent get(final Integer index) {
+    public EVENT_TYPE get(final Integer index) {
         return receivedEvents.get(index);
     }
 
@@ -27,7 +23,7 @@ public class ReceivedAchievementUnlockedEvents {
         return receivedEvents.isEmpty();
     }
 
-    public void add(IAchievementUnlockedEvent receivedEvent) {
+    public void add(EVENT_TYPE receivedEvent) {
         receivedEvents.add(0, receivedEvent);
     }
 

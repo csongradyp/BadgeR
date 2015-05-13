@@ -1,28 +1,13 @@
 package net.csongradyp.badger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 import net.csongrady.badger.AchievementDefinition;
 import net.csongrady.badger.IAchievementController;
+import net.csongrady.badger.IDateProvider;
 import net.csongrady.badger.domain.AchievementType;
 import net.csongrady.badger.domain.IAchievement;
 import net.csongrady.badger.domain.IAchievementBean;
 import net.csongrady.badger.event.IAchievementUnlockedEvent;
-import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
-import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
-import net.csongradyp.badger.domain.achievement.DateAchievementBean;
-import net.csongradyp.badger.domain.achievement.TimeAchievementBean;
-import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
+import net.csongradyp.badger.domain.achievement.*;
 import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.message.Achievement;
@@ -32,6 +17,10 @@ import net.csongradyp.badger.persistence.CounterDao;
 import net.csongradyp.badger.persistence.entity.AchievementEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.*;
 
 @Named
 public class AchievementController implements IAchievementController {
@@ -216,7 +205,7 @@ public class AchievementController implements IAchievementController {
 
     private Optional<IAchievementUnlockedEvent> checkTimeTrigger(final TimeAchievementBean timeAchievement) {
         final List<String> timeTriggers = timeAchievement.getTrigger();
-        final String now = dateProvider.now();
+        final String now = dateProvider.currentTime();
         for (String timeTrigger : timeTriggers) {
             if (timeTrigger.equals(now) && !isUnlocked(timeAchievement.getId())) {
                 final Achievement achievement = createAchievement(timeAchievement, now);
@@ -233,11 +222,11 @@ public class AchievementController implements IAchievementController {
             final Date endTrigger = timeTrigger.getEndTrigger();
             if (startTrigger.before(endTrigger)) {
                 if (dateProvider.isCurrentTimeAfter(startTrigger) && dateProvider.isCurrentTimeBefore(endTrigger) && !isUnlocked(timeAchievement.getId())) {
-                    final Achievement achievement = createAchievement(timeAchievement, dateProvider.now());
+                    final Achievement achievement = createAchievement(timeAchievement, dateProvider.currentTime());
                     return Optional.of(achievement);
                 }
-            } else if (dateProvider.isCurrentTimeBefore(startTrigger) || dateProvider.isCurrentTimeAfter(endTrigger) && !isUnlocked(timeAchievement.getId())) {
-                final Achievement achievement = createAchievement(timeAchievement, dateProvider.now());
+            } else if (dateProvider.isCurrentTimeBefore(startTrigger) && dateProvider.isCurrentTimeAfter(endTrigger) && !isUnlocked(timeAchievement.getId())) {
+                final Achievement achievement = createAchievement(timeAchievement, dateProvider.currentTime());
                 return Optional.of(achievement);
             }
         }

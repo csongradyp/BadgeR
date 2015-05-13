@@ -28,7 +28,7 @@ Scenario: Achievement event is triggered with same score as stored
 
 Given the current <event> event score is <score>
 When <event> event is triggered with <score> as a <score-type>
-Then no event is received
+Then no score event is received
 
 Examples:
 |event  |score|score-type|
@@ -60,7 +60,7 @@ And is related to <event>
 And the value of the score is <expected-score>
 
 Examples:
-|event  |      score|input-score|expected-score|
+| event |    score  |input-score|expected-score|
 |sample |          0|         10|            10|
 |sample |         12|         13|            13|
 |sample |        -62|        999|           999|
@@ -71,11 +71,10 @@ Scenario: Achievement event is triggered as a highscore with lower score as the 
 
 Given the current <event> event score is <score>
 When <event> event is triggered with <input-score> as a highscore
-Then no event is received
-And the current <event> event score is <score>
+Then no score event is received
 
 Examples:
-|event  |      score|input-score|
+| event |   score   |input-score|
 |sample |        100|         10|
 |sample |         12|          9|
 |sample |         11|          9|

@@ -1,23 +1,17 @@
 package net.csongradyp.steps.common;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import javax.inject.Inject;
 import net.csongrady.badger.domain.AchievementType;
 import net.csongrady.badger.domain.IAchievement;
 import net.csongrady.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.Steps;
 import net.csongradyp.badger.Badger;
 import net.csongradyp.badger.persistence.AchievementDao;
-import net.csongradyp.data.ReceivedAchievementUnlockedEvents;
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.AsParameterConverter;
-import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.ScenarioType;
-import org.jbehave.core.annotations.Then;
+import net.csongradyp.provider.TriggerChecker;
+import org.jbehave.core.annotations.*;
+
+import javax.inject.Inject;
+import java.util.Optional;
+import java.util.Stack;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -32,27 +26,32 @@ public class AchievementUnlockedSteps {
     @Inject
     private AchievementDao achievementDao;
     @Inject
-    private ReceivedAchievementUnlockedEvents receivedEvent;
+    private TriggerChecker triggerChecker;
+
+    private Stack<IAchievementUnlockedEvent> eventStack;
+
+    private IAchievementUnlockedEvent receivedEvent;
+
+    public AchievementUnlockedSteps() {
+        eventStack = new Stack<>();
+    }
 
     @BeforeScenario(uponType = ScenarioType.ANY)
     public void clearEvents() {
-        receivedEvent.clear();
+        eventStack.clear();
     }
 
     @Given("there is subscription for achievement unlocked events")
     public void subscribeOnUnlockEvents() {
-        badger.subscribeOnUnlock(receivedEvent::add);
+        badger.subscribeOnUnlock(eventStack::push);
     }
 
     @Given("an achievement with $id id and $type type bounded to $event event with trigger $trigger")
-    public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") Long trigger) {
-        Set<IAchievement> definedAchievements = badger.getAllAchievementByEvent().get(event);
-        if (definedAchievements != null) {
-            final Optional<IAchievement> definedAchievement = definedAchievements.stream().filter(achievement -> achievement.getType().equals(type)).findAny();
-            if (definedAchievement.isPresent()) {
-                assertThat(definedAchievement.get().getType(), is(equalTo(type)));
-                assertThat(definedAchievement.get().getEvent().contains(event), is(true));
-            }
+    public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
+        final Optional<IAchievement> achievement = badger.getAchievement(type, id);
+        if(achievement.isPresent()) {
+            assertThat("Achievement is subscribed to event" + event, achievement.get().getEvent().contains(event), is(true));
+            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(achievement.get(), type, trigger), is(true));
         } else {
             fail("Achievement is not defined with id: " + id + "and type: " + type);
         }
@@ -70,24 +69,35 @@ public class AchievementUnlockedSteps {
         assertThat(badger.isUnlocked(id), is(false));
     }
 
-
     @Then("achievement unlocked event is received")
     public void unlockedEventIsReceived() {
-        assertThat(receivedEvent.isEmpty(), is(false));
+        assertThat(eventStack.isEmpty(), is(false));
+        receivedEvent = eventStack.pop();
+        eventStack.clear();
+    }
+
+    @Then("unlocked event received for achievement $id")
+    public void unlockedEventReceived(final String id) {
+        assertThat(eventStack.isEmpty(), is(false));
+        final Optional<IAchievementUnlockedEvent> relatedEvent = eventStack.stream().filter(event -> event.getId().equals(id)).findAny();
+        assertThat(relatedEvent.isPresent(), is(true));
+        receivedEvent = relatedEvent.get();
+        eventStack.clear();
+    }
+
+    @Then("no achievement unlocked event received")
+    public void noUnlockedEventIsReceived() {
+        assertThat(eventStack.isEmpty(), is(true));
     }
 
     @Then("achievement id is $id")
     public void checkAchievementId(final @Named("id") String id) {
-        final List<IAchievementUnlockedEvent> events = receivedEvent.getAll();
-//        assertThat(events.size(), is(equalTo(1)));
-        assertThat(events.get(0).getId(), is(equalTo(id)));
+        assertThat(receivedEvent.getId(), is(equalTo(id)));
     }
 
     @Then("the level of the unlocked achievement is $level")
     public void checkAchievementLevel(final @Named("level") Integer level) {
-        final List<IAchievementUnlockedEvent> events = receivedEvent.getAll();
-//        assertThat(events.size(), is(equalTo(1)));
-        assertThat(events.get(0).getLevel(), is(equalTo(level)));
+        assertThat(receivedEvent.getLevel(), is(equalTo(level)));
     }
 
     @AsParameterConverter

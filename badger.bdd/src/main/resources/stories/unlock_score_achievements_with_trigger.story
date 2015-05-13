@@ -17,7 +17,7 @@ And achievement id is <id>
 And the level of the unlocked achievement is <level>
 
 Examples:
-|id    |event  |score|trigger|level|
+|  id  | event |score|trigger|level|
 |first |sample |    0|      3|    1|
 |second|sample2|    0|      2|    1|
 
@@ -27,12 +27,11 @@ Given an achievement with <id> id and counter type bounded to <event> event with
 And the current <event> event score is <score>
 And the achievement with <id> id is already unlocked with level <level>
 When event named <event> is triggered <times> times
-Then achievement unlocked event is received
-And achievement id is <id>
+Then unlocked event received for achievement <id>
 And the level of the unlocked achievement is <expected>
 
 Examples:
-|id    |event  |score|trigger|times|level| expected|
+|  id  | event |score|trigger|times|level| expected|
 |first |sample |    3|      7|    4|    1|        2|
 |second|sample2|    2|      5|    3|    1|        2|
 |second|sample2|    5|     10|    5|    2|        3|

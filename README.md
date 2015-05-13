@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/csongradyp/badgeR.svg)](https://travis-ci.org/csongradyp/badgeR)
 # BadgeR achievement engine Overview#
 
 BadgeR is a java based achievement engine.

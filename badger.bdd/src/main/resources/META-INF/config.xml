@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.2.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+         http://www.springframework.org/schema/data/jpa
+         http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="net.csongradyp"/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <jpa:repositories base-package="net.csongradyp.badger.persistence.repository"/>
+
+    <bean id="badger" class="net.csongradyp.badger.Badger">
+        <constructor-arg index="0" value="badger.bdd/src/main/resources/test.ini"/>
+        <!--<constructor-arg index="1" value="msg" />-->
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="badgerPersistenceUnit"/>
+        <property name="packagesToScan" value="net.csongradyp.badger.persistence.entity"/>
+        <property name="persistenceUnitManager" ref="persistenceUnitManager"/>
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="javax.persistence.jdbc.url" value="objectdb:badger.db"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="persistenceUnitManager" class="org.springframework.data.jpa.support.MergingPersistenceUnitManager">
+        <property name="persistenceXmlLocations">
+            <list>
+                <value>classpath*:META-INF/persistence.xml</value>
+            </list>
+        </property>
+        <property name="defaultPersistenceUnitName" value="badgerPersistenceUnit"/>
+    </bean>
+
+    <!--<bean class="org.jbehave.core.io.LoadFromClasspath">-->
+    <!--<constructor-arg>-->
+    <!--<bean class="org.jbehave.core.embedder.EmbedderClassLoader">-->
+    <!--<constructor-arg>-->
+    <!--<list>-->
+    <!--<value>target/classes</value>-->
+    <!--</list>-->
+    <!--</constructor-arg>-->
+    <!--</bean>-->
+    <!--</constructor-arg>-->
+    <!--</bean>-->
+
+    <!--<bean class="org.jbehave.core.steps.ParameterConverters$DateConverter">-->
+    <!--<constructor-arg>-->
+    <!--<bean class="java.text.SimpleDateFormat">-->
+    <!--<constructor-arg value="yyyy-MM-dd" />-->
+    <!--</bean>-->
+    <!--</constructor-arg>-->
+    <!--</bean>-->
+
+    <!--<bean class="org.jbehave.core.parsers.RegexPrefixCapturingPatternParser">-->
+    <!--<constructor-arg value="%" />-->
+    <!--</bean>-->
+
+    <!--<bean class="org.jbehave.core.configuration.spring.SpringStoryControls">-->
+    <!--<property name="dryRun" value="false" />-->
+    <!--<property name="skipScenariosAfterFailure" value="false" />-->
+    <!--</bean>-->
+
+    <!--<bean class="org.jbehave.core.configuration.spring.SpringStoryReporterBuilder" init-method="withDefaultFormats">-->
+    <!--<property name="formats">-->
+    <!--<list>-->
+    <!--<value>CONSOLE</value>-->
+    <!--<value>HTML</value>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+</beans>

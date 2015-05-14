@@ -8,11 +8,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.csongrady.badger.AchievementDefinition;
-import net.csongrady.badger.domain.AchievementType;
-import net.csongrady.badger.domain.IAchievement;
-import net.csongrady.badger.domain.IAchievementBean;
-import net.csongrady.badger.domain.IRelationalAchievement;
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.IAchievementBean;
+import net.csongradyp.badger.domain.IRelationalAchievement;
 import net.csongradyp.badger.domain.achievement.DateAchievementBean;
 import net.csongradyp.badger.exception.AchievementNotFoundException;
 

@@ -3,7 +3,6 @@ package net.csongradyp.badger.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.csongrady.badger.domain.IAchievementBean;
 
 public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> {
 

@@ -1,7 +1,7 @@
 package net.csongradyp.badger.exception;
 
 
-import net.csongrady.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.AchievementType;
 
 public class AchievementNotFoundException extends RuntimeException {
 

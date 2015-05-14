@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.csongrady.badger.IAchievementController;
-import net.csongrady.badger.domain.AchievementType;
-import net.csongrady.badger.domain.IAchievement;
-import net.csongrady.badger.domain.IRelation;
-import net.csongrady.badger.domain.IRelationalAchievement;
+import net.csongradyp.badger.IAchievementController;
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.IRelation;
+import net.csongradyp.badger.domain.IRelationalAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
 
 public class CompositeAchievementBean implements IRelationalAchievement {

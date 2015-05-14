@@ -1,8 +1,8 @@
 package net.csongradyp.badger.domain.achievement.relation;
 
-import net.csongrady.badger.IAchievementController;
-import net.csongrady.badger.domain.IAchievement;
-import net.csongrady.badger.domain.IRelation;
+import net.csongradyp.badger.IAchievementController;
+import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.IRelation;
 
 public class RelatedAchievement implements IRelation {
 

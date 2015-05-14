@@ -5,10 +5,9 @@ import java.io.InputStream;
 import java.net.URL;
 import javax.inject.Inject;
 import javax.inject.Named;
-import net.csongrady.badger.AchievementDefinition;
-import net.csongrady.badger.domain.AchievementType;
-import net.csongrady.badger.domain.IAchievementBean;
-import net.csongrady.badger.parser.IAchievementDefinitionFileParser;
+import net.csongradyp.badger.AchievementDefinition;
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.IAchievementBean;
 
 @Named
 public class AchievementDefinitionFileParser implements IAchievementDefinitionFileParser {

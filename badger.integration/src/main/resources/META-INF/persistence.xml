@@ -5,7 +5,7 @@
 
         <class>net.csongradyp.badger.persistence.entity.AbstractEntity</class>
         <class>net.csongradyp.badger.persistence.entity.AchievementEntity</class>
-        <class>net.csongradyp.badger.persistence.entity.ScoreEntity</class>
+        <class>net.csongradyp.badger.persistence.entity.EventEntity</class>
 
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 

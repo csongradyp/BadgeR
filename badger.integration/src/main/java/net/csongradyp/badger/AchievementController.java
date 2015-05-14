@@ -1,19 +1,16 @@
 package net.csongradyp.badger;
 
-import net.csongrady.badger.AchievementDefinition;
-import net.csongrady.badger.IAchievementController;
-import net.csongrady.badger.IDateProvider;
-import net.csongrady.badger.domain.AchievementType;
-import net.csongrady.badger.domain.IAchievement;
-import net.csongrady.badger.domain.IAchievementBean;
-import net.csongrady.badger.event.IAchievementUnlockedEvent;
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.IAchievementBean;
+import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.domain.achievement.*;
 import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.message.Achievement;
 import net.csongradyp.badger.event.message.Score;
 import net.csongradyp.badger.persistence.AchievementDao;
-import net.csongradyp.badger.persistence.CounterDao;
+import net.csongradyp.badger.persistence.EventDao;
 import net.csongradyp.badger.persistence.entity.AchievementEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +25,7 @@ public class AchievementController implements IAchievementController {
     private static final Logger LOG = LoggerFactory.getLogger(AchievementController.class);
 
     @Inject
-    private CounterDao counterDao;
+    private EventDao eventDao;
     @Inject
     private AchievementDao achievementDao;
     @Inject
@@ -48,8 +45,8 @@ public class AchievementController implements IAchievementController {
     }
 
     public void setInternationalizationBaseName(final String internationalizationBaseName) {
-        this.internationalizationBaseName = internationalizationBaseName;
         resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, Locale.ENGLISH);
+        this.internationalizationBaseName = internationalizationBaseName;
     }
 
     public void setResourceBundle(final ResourceBundle resourceBundle) {
@@ -97,13 +94,13 @@ public class AchievementController implements IAchievementController {
     }
 
     private boolean isNewHighScore(final String event, final Long score) {
-        return counterDao.scoreOf(event) <= score;
+        return eventDao.scoreOf(event) <= score;
     }
 
     public void triggerEvent(final String event, final Long score) {
         if (isDifferentValueAsStored(event, score)) {
             LOG.debug("Achievement event triggered: {} with score {} ", event, score);
-            final Long currentValue = counterDao.setScore(event, score);
+            final Long currentValue = eventDao.setScore(event, score);
             EventBus.publishScoreChanged(new Score(event, currentValue));
             final Collection<IAchievementUnlockedEvent> unlockables = getUnlockables(event, currentValue);
             unlockables.forEach(this::unlock);
@@ -111,7 +108,7 @@ public class AchievementController implements IAchievementController {
     }
 
     private boolean isDifferentValueAsStored(String event, Long score) {
-        final Long currentValue = counterDao.scoreOf(event);
+        final Long currentValue = eventDao.scoreOf(event);
         return currentValue != score;
     }
 
@@ -121,18 +118,22 @@ public class AchievementController implements IAchievementController {
 
     public void triggerEvent(final String event, final Collection<String> owners) {
         LOG.debug("Achievement event triggered: {} with owners {} ", event, owners);
-        final Long currentValue = counterDao.increment(event);
-        EventBus.publishScoreChanged(new Score(event, currentValue));
+        final Long currentValue = incrementAndPublish(event);
         final Collection<IAchievementUnlockedEvent> unlockables = getUnlockables(event, currentValue, owners);
         unlockables.forEach(this::unlock);
     }
 
     public void triggerEvent(final String event) {
         LOG.info("Achievement event triggered: {}", event);
-        final Long currentValue = counterDao.increment(event);
-        EventBus.publishScoreChanged(new Score(event, currentValue));
+        final Long currentValue = incrementAndPublish(event);
         final Collection<IAchievementUnlockedEvent> unlockables = getUnlockables(event, currentValue);
         unlockables.forEach(this::unlock);
+    }
+
+    private Long incrementAndPublish(final String event) {
+        final Long currentValue = eventDao.increment(event);
+        EventBus.publishScoreChanged(new Score(event, currentValue));
+        return currentValue;
     }
 
     private Collection<IAchievementUnlockedEvent> getUnlockables(final String event, final Long currentValue) {
@@ -164,7 +165,7 @@ public class AchievementController implements IAchievementController {
     private Collection<IAchievementUnlockedEvent> check(final Collection<IAchievement> achievementBeans) {
         final Collection<IAchievementUnlockedEvent> unlockables = new ArrayList<>();
         for (IAchievement achievementBean : achievementBeans) {
-            final Optional<IAchievementUnlockedEvent> achievement = unlockable(counterDao.scoreOf(achievementBean.getId()), achievementBean);
+            final Optional<IAchievementUnlockedEvent> achievement = unlockable(eventDao.scoreOf(achievementBean.getId()), achievementBean);
             if (achievement.isPresent()) {
                 unlockables.add(achievement.get());
             }
@@ -193,7 +194,7 @@ public class AchievementController implements IAchievementController {
 
     private Optional<IAchievementUnlockedEvent> checkDateTrigger(final IAchievementBean<String> dateAchievement) {
         final List<String> dateTriggers = dateAchievement.getTrigger();
-        final String now = dateProvider.now();
+        final String now = dateProvider.currentDate();
         for (String dateTrigger : dateTriggers) {
             if (dateTrigger.equals(now) && !isUnlocked(dateAchievement.getId())) {
                 final Achievement achievement = createAchievement(dateAchievement, now);
@@ -285,7 +286,7 @@ public class AchievementController implements IAchievementController {
     }
 
     public void unlock(final String achievementId, final String triggerValue, final Collection<String> owners) {
-        final Optional<IAchievement> matchingAchievement = getAll().parallelStream().filter(achievement -> achievement.getId().equals(achievementId)).findFirst();
+        final Optional<IAchievement> matchingAchievement = achievementBundle.get(achievementId);
         if (matchingAchievement.isPresent()) {
             final Achievement achievement = createAchievement(matchingAchievement.get(), triggerValue);
             achievement.addOwners(owners);
@@ -317,7 +318,7 @@ public class AchievementController implements IAchievementController {
     }
 
     public Long getCurrentScore(final String id) {
-        return counterDao.scoreOf(id);
+        return eventDao.scoreOf(id);
     }
 
     private Achievement createAchievement(final IAchievementBean achievementBean, final Integer level, final Long triggeredValue) {
@@ -346,12 +347,12 @@ public class AchievementController implements IAchievementController {
     }
 
     public void reset() {
-        counterDao.deleteAll();
+        eventDao.deleteAll();
         achievementDao.deleteAll();
     }
 
-    void setCounterDao(final CounterDao counterDao) {
-        this.counterDao = counterDao;
+    void setEventDao(final EventDao eventDao) {
+        this.eventDao = eventDao;
     }
 
     void setAchievementDao(final AchievementDao achievementDao) {
@@ -360,5 +361,9 @@ public class AchievementController implements IAchievementController {
 
     public void setDateProvider(IDateProvider dateProvider) {
         this.dateProvider = dateProvider;
+    }
+
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
     }
 }

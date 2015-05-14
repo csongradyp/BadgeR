@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.csongrady.badger.IAchievementController;
-import net.csongrady.badger.domain.IRelation;
+import net.csongradyp.badger.IAchievementController;
+import net.csongradyp.badger.domain.IRelation;
 
 public class Relation implements IRelation {
 

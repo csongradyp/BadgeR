@@ -3,7 +3,7 @@ package net.csongradyp.badger.domain.achievement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import net.csongrady.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.AbstractAchievementBean;
 import net.csongradyp.badger.exception.MalformedAchievementDefinition;
 import org.joda.time.format.DateTimeFormat;

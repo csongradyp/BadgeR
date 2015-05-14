@@ -1,10 +1,7 @@
 package net.csongradyp.badger.event;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import net.csongrady.badger.IAchievementController;
-import net.csongrady.badger.event.IAchievementUnlockedEvent;
+import net.csongradyp.badger.IAchievementController;
+import net.csongradyp.badger.event.exception.SubscriptionException;
 import net.csongradyp.badger.event.handler.IAchievementUnlockedHandler;
 import net.csongradyp.badger.event.handler.IScoreUpdateHandler;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
@@ -13,6 +10,10 @@ import net.csongradyp.badger.event.message.Score;
 import net.engio.mbassy.bus.MBassador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 
 public final class EventBus {
 
@@ -23,15 +24,12 @@ public final class EventBus {
 
     private final MBassador<Score> scoreUpdateBus;
     private final MBassador<IAchievementUnlockedEvent> unlockedBus;
-    private final Collection<AchievementUnlockedHandlerWrapper> unlockedSubscribers;
-    private final Collection<ScoreUpdateHandlerWrapper> scoreUpdateSubscribers;
+    private static final Collection<AchievementUnlockedHandlerWrapper> unlockedSubscribers = new ArrayList<>();
+    private static final Collection<ScoreUpdateHandlerWrapper> scoreUpdateSubscribers= new ArrayList<>();
 
     private EventBus() {
         scoreUpdateBus = new MBassador<>();
         unlockedBus = new MBassador<>();
-
-        unlockedSubscribers = new ArrayList<>();
-        scoreUpdateSubscribers = new ArrayList<>();
 
         registerShutdownHook(scoreUpdateBus, unlockedBus);
     }
@@ -45,16 +43,26 @@ public final class EventBus {
     }
 
     public static void subscribeOnUnlock(final AchievementUnlockedHandlerWrapper handler) {
-        INSTANCE.unlockedSubscribers.add(handler);
+        unlockedSubscribers.add(handler);
         INSTANCE.unlockedBus.subscribe(handler);
     }
 
     public static void unSubscribeOnUnlock(final IAchievementUnlockedHandler handler) {
-        final Optional<AchievementUnlockedHandlerWrapper> registeredHandler = INSTANCE.unlockedSubscribers.stream().filter(
-                achievementUnlockedHandlerWrapper -> achievementUnlockedHandlerWrapper.getWrapped().equals(handler)).findFirst();
+        final Optional<AchievementUnlockedHandlerWrapper> registeredHandler = unlockedSubscribers.stream()
+                .filter(wrapper -> wrapper.getWrapped().equals(handler))
+                .findAny();
         if (registeredHandler.isPresent()) {
-            INSTANCE.unlockedBus.unsubscribe(registeredHandler.get());
+            final AchievementUnlockedHandlerWrapper listener = registeredHandler.get();
+            unSubscribe(listener);
         }
+    }
+
+    private static void unSubscribe(final AchievementUnlockedHandlerWrapper listener) {
+        final boolean unsubscribe = INSTANCE.unlockedBus.unsubscribe(listener);
+        if(!unsubscribe) {
+            throw new SubscriptionException("Unsubscribe failed for achievement unlocked handler" + listener.getWrapped());
+        }
+        unlockedSubscribers.remove(listener);
     }
 
     public static void publishUnlocked(final IAchievementUnlockedEvent achievement) {
@@ -63,15 +71,26 @@ public final class EventBus {
     }
 
     public static void subscribeOnScoreChanged(final ScoreUpdateHandlerWrapper handler) {
-        INSTANCE.scoreUpdateSubscribers.add(handler);
+        scoreUpdateSubscribers.add(handler);
         INSTANCE.scoreUpdateBus.subscribe(handler);
     }
 
     public static void unSubscribeOnScoreChanged(final IScoreUpdateHandler handler) {
-        final Optional<ScoreUpdateHandlerWrapper> registeredHandler = INSTANCE.scoreUpdateSubscribers.stream().filter(wrapper -> wrapper.getWrapped().equals(handler)).findFirst();
+        final Optional<ScoreUpdateHandlerWrapper> registeredHandler = scoreUpdateSubscribers.stream()
+                .filter(wrapper -> wrapper.getWrapped().equals(handler))
+                .findAny();
         if (registeredHandler.isPresent()) {
-            INSTANCE.scoreUpdateBus.unsubscribe(registeredHandler.get());
+            final ScoreUpdateHandlerWrapper listener = registeredHandler.get();
+            unSubscribe(listener);
         }
+    }
+
+    private static void unSubscribe(final ScoreUpdateHandlerWrapper listener) {
+        final boolean unsubscribe = INSTANCE.scoreUpdateBus.unsubscribe(listener);
+        if(!unsubscribe) {
+            throw new SubscriptionException("Unsubscribe failed for score changed handler" + listener.getWrapped());
+        }
+        scoreUpdateSubscribers.remove(listener);
     }
 
     public static void publishScoreChanged(final Score score) {
@@ -101,5 +120,13 @@ public final class EventBus {
 
     public static void checkAll() {
         INSTANCE.controller.checkAll();
+    }
+
+    public static Collection<AchievementUnlockedHandlerWrapper> getUnlockedSubscribers() {
+        return unlockedSubscribers;
+    }
+
+    public static Collection<ScoreUpdateHandlerWrapper> getScoreUpdateSubscribers() {
+        return scoreUpdateSubscribers;
     }
 }

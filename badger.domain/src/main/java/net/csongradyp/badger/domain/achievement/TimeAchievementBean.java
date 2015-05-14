@@ -1,14 +1,14 @@
 package net.csongradyp.badger.domain.achievement;
 
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.AbstractAchievementBean;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.csongrady.badger.domain.AchievementType;
-import net.csongradyp.badger.domain.AbstractAchievementBean;
 
 public class TimeAchievementBean extends AbstractAchievementBean<String> {
 
-    public static final String PATTERN = "hh:mm";
     private List<String> trigger;
 
     public TimeAchievementBean() {

@@ -1,6 +1,5 @@
 package net.csongradyp.badger;
 
-import net.csongrady.badger.IDateProvider;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -21,7 +20,7 @@ public class DateProvider implements IDateProvider {
     }
 
     @Override
-    public String now() {
+    public String currentDate() {
         return format(new Date().getTime());
     }
 
@@ -58,11 +57,4 @@ public class DateProvider implements IDateProvider {
         return timeFormatter.print(date.getTime());
     }
 
-    public Date asDate(final String dateString) {
-        return dateFormatter.parseDateTime(dateString).toDate();
-    }
-
-    public Date asTime(final String timeString) {
-        return timeFormatter.parseDateTime(timeString).toDate();
-    }
 }

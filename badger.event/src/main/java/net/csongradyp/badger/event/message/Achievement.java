@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import net.csongrady.badger.event.AchievementEventType;
-import net.csongrady.badger.event.IAchievementUnlockedEvent;
+import net.csongradyp.badger.event.AchievementEventType;
+import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 
 public class Achievement implements IAchievementUnlockedEvent {
 

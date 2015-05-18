@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/csongradyp/badgeR.svg)](https://travis-ci.org/csongradyp/badgeR)
+[![Coverage Status](https://coveralls.io/repos/csongradyp/badgeR/badge.svg?branch=master)](https://coveralls.io/r/csongradyp/badgeR?branch=master)
 # BadgeR achievement engine Overview#
 
 BadgeR is a java based achievement engine.

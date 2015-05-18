@@ -1,11 +1,12 @@
 package net.csongradyp.badger.domain.achievement.relation;
 
+import net.csongradyp.badger.IAchievementUnlockFinderFacade;
+import net.csongradyp.badger.domain.IRelation;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.csongradyp.badger.IAchievementController;
-import net.csongradyp.badger.domain.IRelation;
 
 public class Relation implements IRelation {
 
@@ -48,7 +49,7 @@ public class Relation implements IRelation {
     }
 
     @Override
-    public Boolean evaluate(final IAchievementController controller) {
+    public Boolean evaluate(final IAchievementUnlockFinderFacade controller) {
         Boolean result = null;
         for (IRelation child : children) {
             final Boolean childResult = child.evaluate(controller);

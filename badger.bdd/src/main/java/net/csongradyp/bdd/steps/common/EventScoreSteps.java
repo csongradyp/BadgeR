@@ -1,13 +1,14 @@
 package net.csongradyp.bdd.steps.common;
 
-import javax.inject.Inject;
-import net.csongradyp.bdd.Steps;
-import net.csongradyp.badger.Badger;
+import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.persistence.EventDao;
+import net.csongradyp.bdd.Steps;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.When;
+
+import javax.inject.Inject;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertThat;
 public class EventScoreSteps {
 
     @Inject
-    private Badger badger;
+    private AchievementController controller;
     @Inject
     private EventDao eventDao;
 
@@ -30,6 +31,6 @@ public class EventScoreSteps {
 
     @When("event named $eventName is triggered")
     public void trigger(final String eventName) {
-        badger.triggerEvent(eventName);
+        controller.triggerEvent(eventName);
     }
 }

@@ -1,21 +1,30 @@
 package net.csongradyp.badger;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IAchievementBean;
-import net.csongradyp.badger.event.AchievementEventType;
-import net.csongradyp.badger.event.IAchievementUnlockedEvent;
-import net.csongradyp.badger.parser.IAchievementDefinitionFileParser;
 import net.csongradyp.badger.domain.TestCounterAchievementBean;
-import net.csongradyp.badger.domain.achievement.DateAchievementBean;
-import net.csongradyp.badger.domain.achievement.TimeAchievementBean;
+import net.csongradyp.badger.event.AchievementEventType;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
-import net.csongradyp.badger.event.message.Achievement;
+import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.factory.UnlockedEventFactory;
+import net.csongradyp.badger.parser.IAchievementDefinitionFileParser;
 import net.csongradyp.badger.persistence.AchievementDao;
 import net.csongradyp.badger.persistence.EventDao;
+import net.csongradyp.badger.provider.unlock.AchievementUnlockProviderFacade;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,15 +32,18 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.*;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AchievementControllerTest {
@@ -47,7 +59,9 @@ public class AchievementControllerTest {
     @Mock
     private EventDao mockEventDao;
     @Mock
-    private DateProvider mockDateProvider;
+    private UnlockedEventFactory mockUnlockedEventFactory;
+    @Mock
+    private AchievementUnlockProviderFacade mockAchievementUnlockProviderFacade;
 
     private ScoreUpdateHandlerWrapper scoreHandler;
     private Score scoreEvent;
@@ -57,10 +71,11 @@ public class AchievementControllerTest {
     @Before
     public void setUp() {
         underTest = new AchievementController();
-        underTest.setDefinition(mockAchievementDefinition);
+        underTest.setAchievementUnlockFinder(mockAchievementUnlockProviderFacade);
+        underTest.setUnlockedEventFactory(mockUnlockedEventFactory);
+        underTest.setAchievementDefinition(mockAchievementDefinition);
         underTest.setAchievementDao(mockAchievementDao);
         underTest.setEventDao(mockEventDao);
-        underTest.setDateProvider(mockDateProvider);
 
         scoreHandler = new ScoreUpdateHandlerWrapper(score -> scoreEvent = score);
         EventBus.subscribeOnScoreChanged(scoreHandler);
@@ -78,6 +93,18 @@ public class AchievementControllerTest {
 
         underTest.setInternationalizationBaseName(baseName);
 
+        assertThat(underTest.getResourceBundle(), notNullValue());
+        assertThat(underTest.getResourceBundle().getBaseBundleName(), is(equalTo(baseName)));
+    }
+
+    @Test
+    public void testSetResourceBundleSetsTheBundleForTheEventFactoryAlso() {
+        final String baseName = "msg";
+        final ResourceBundle resourceBundle = ResourceBundle.getBundle(baseName, Locale.ENGLISH);
+
+        underTest.setResourceBundle(resourceBundle);
+
+        verify(mockUnlockedEventFactory).setResourceBundle(resourceBundle);
         assertThat(underTest.getResourceBundle(), notNullValue());
         assertThat(underTest.getResourceBundle().getBaseBundleName(), is(equalTo(baseName)));
     }
@@ -105,10 +132,10 @@ public class AchievementControllerTest {
         final AchievementType type = AchievementType.COUNTER;
         given(mockAchievementDefinition.get(type, ACHIEVEMENT_ID)).willReturn(testAchievement);
 
-        final IAchievement result = underTest.get(type, ACHIEVEMENT_ID);
+        final Optional<IAchievement> result = underTest.get(type, ACHIEVEMENT_ID);
 
-        assertThat(result, notNullValue());
-        assertThat(result, is(testAchievement));
+        assertThat(result.isPresent(), is(true));
+        assertThat(result.get(), is(testAchievement));
     }
 
     @Test
@@ -181,12 +208,15 @@ public class AchievementControllerTest {
 
     @Test
     public void testUnlockPublishUnlockedEventWithProperData() {
+        final TestCounterAchievementBean achievementBean = new TestCounterAchievementBean(ACHIEVEMENT_ID);
         final String triggerValue = "value";
+        final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
         final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(achievement -> {
             verifyUnlocalizedAchievement(achievement, triggerValue, Collections.emptySet());
         });
-        when(mockAchievementDefinition.get(ACHIEVEMENT_ID)).thenReturn(Optional.of(new TestCounterAchievementBean(ACHIEVEMENT_ID)));
+        when(mockAchievementDefinition.get(ACHIEVEMENT_ID)).thenReturn(Optional.of(achievementBean));
         when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
+        when(mockUnlockedEventFactory.createEvent(achievementBean, triggerValue)).thenReturn(unlockedEvent);
         EventBus.subscribeOnUnlock(handler);
 
         underTest.unlock(ACHIEVEMENT_ID, triggerValue);
@@ -202,11 +232,14 @@ public class AchievementControllerTest {
         final String triggerValue = "value";
         final Set<String> owners = new HashSet<>();
         owners.add("owner");
+        final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
+        unlockedEvent.addOwners(owners);
         final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(achievement -> {
-            verifyUnlocalizedAchievement(achievement, triggerValue, owners);
+            assertThat(achievement, is(unlockedEvent));
         });
         when(mockAchievementDefinition.get(ACHIEVEMENT_ID)).thenReturn(Optional.of(new TestCounterAchievementBean(ACHIEVEMENT_ID)));
         when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
+        when(mockUnlockedEventFactory.createEvent(any(IAchievement.class), anyString(), anyCollection())).thenReturn(unlockedEvent);
         EventBus.subscribeOnUnlock(handler);
 
         underTest.unlock(ACHIEVEMENT_ID, triggerValue, owners);
@@ -237,55 +270,6 @@ public class AchievementControllerTest {
     }
 
     @Test
-    public void testUnlockableReturnsUnlockableAchievementWhenGivenDateAchievementTriggerIsEqualToTheCurrentDate() {
-        final String date = "02-14";
-        final IAchievementBean dateAchievementBean = new DateAchievementBean();
-        dateAchievementBean.setId(ACHIEVEMENT_ID);
-        dateAchievementBean.setTrigger(new String[]{date});
-        given(mockDateProvider.currentDate()).willReturn(date);
-
-        final Optional<IAchievementUnlockedEvent> result = underTest.unlockable(0L, dateAchievementBean);
-
-        assertThat(result.isPresent(), is(true));
-        assertThat(result.get().getId(), is(equalTo(ACHIEVEMENT_ID)));
-    }
-
-    @Test
-    public void testUnlockableReturnsUnlockableAchievementWhenOneOfTheGivenTimeAchievementTriggerIsEqualToTheCurrentTimeInMinutePrecision() {
-        final String time = "23:14";
-        final IAchievementBean timeAchievementBean = givenTimeAchievementBean(time);
-        given(mockDateProvider.currentTime()).willReturn(time);
-        given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(false);
-
-        final Optional<IAchievementUnlockedEvent> result = underTest.unlockable(0L, timeAchievementBean);
-
-        assertThat(result.isPresent(), is(true));
-        assertThat(result.get().getId(), is(equalTo(ACHIEVEMENT_ID)));
-    }
-
-    @Test
-    public void testUnlockableReturnsEmptyWhenOneOfTheGivenTimeAchievementTriggerIsEqualToTheCurrentTimeInMinutePrecisionAndIsAlreadyUnlocked() {
-        final String time = "23:14";
-        final IAchievementBean timeAchievementBean = givenTimeAchievementBean(time);
-        given(mockDateProvider.currentTime()).willReturn(time);
-        given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(true);
-
-        final Optional<IAchievementUnlockedEvent> result = underTest.unlockable(0L, timeAchievementBean);
-
-        assertThat(result.isPresent(), is(false));
-    }
-
-    @Test
-    public void testUnlockableReturnsEmptyWhenNoTriggerIsMatchingTheCurrentTime() {
-        final IAchievementBean timeAchievementBean = givenTimeAchievementBean("23:14");
-        given(mockDateProvider.currentTime()).willReturn("23:15");
-
-        final Optional<IAchievementUnlockedEvent> result = underTest.unlockable(0L, timeAchievementBean);
-
-        assertThat(result.isPresent(), is(false));
-    }
-
-    @Test
     public void testResetCallsDaosDeleteAllMethods() {
         underTest.reset();
 
@@ -293,22 +277,15 @@ public class AchievementControllerTest {
         verify(mockEventDao).deleteAll();
     }
 
-    private IAchievementBean givenTimeAchievementBean(final String trigger) {
-        final IAchievementBean timeAchievementBean = new TimeAchievementBean();
-        timeAchievementBean.setId(ACHIEVEMENT_ID);
-        timeAchievementBean.setTrigger(new String[]{trigger});
-        return timeAchievementBean;
-    }
-
-    private void verifyUnlocalizedAchievement(final Achievement achievement, final String triggerValue, Set<String> owners) {
-        assertThat(achievement.getId(), is(equalTo(ACHIEVEMENT_ID)));
-        assertThat(achievement.getTitle(), is(equalTo(ACHIEVEMENT_ID + ".title")));
-        assertThat(achievement.getText(), is(equalTo(ACHIEVEMENT_ID + ".text")));
-        assertThat(achievement.getLevel(), is(equalTo(1)));
-        assertThat(achievement.getEventType(), is(equalTo(AchievementEventType.UNLOCK)));
-        assertThat(achievement.getCategory(), is(equalTo("default")));
-        assertThat(achievement.getOwners(), is(equalTo(owners)));
-        assertThat(achievement.getTriggerValue(), is(equalTo(triggerValue)));
+    private void verifyUnlocalizedAchievement(final AchievementUnlockedEvent achievementUnlockedEvent, final String triggerValue, Set<String> owners) {
+        assertThat(achievementUnlockedEvent.getId(), is(equalTo(ACHIEVEMENT_ID)));
+        assertThat(achievementUnlockedEvent.getTitle(), is(equalTo(ACHIEVEMENT_ID + ".title")));
+        assertThat(achievementUnlockedEvent.getText(), is(equalTo(ACHIEVEMENT_ID + ".text")));
+        assertThat(achievementUnlockedEvent.getLevel(), is(equalTo(1)));
+        assertThat(achievementUnlockedEvent.getEventType(), is(equalTo(AchievementEventType.UNLOCK)));
+        assertThat(achievementUnlockedEvent.getCategory(), is(equalTo("default")));
+        assertThat(achievementUnlockedEvent.getOwners(), is(equalTo(owners)));
+        assertThat(achievementUnlockedEvent.getTriggerValue(), is(equalTo(triggerValue)));
     }
 
 }

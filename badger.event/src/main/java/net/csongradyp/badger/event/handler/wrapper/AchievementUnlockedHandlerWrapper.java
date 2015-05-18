@@ -1,7 +1,7 @@
 package net.csongradyp.badger.event.handler.wrapper;
 
 import net.csongradyp.badger.event.handler.IAchievementUnlockedHandler;
-import net.csongradyp.badger.event.message.Achievement;
+import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.Listener;
 import net.engio.mbassy.listener.References;
@@ -20,8 +20,8 @@ public class AchievementUnlockedHandlerWrapper implements IAchievementUnlockedHa
 
     @Override
     @Handler(rejectSubtypes = true)
-    public void onUnlocked(final Achievement achievement) {
-        wrapped.onUnlocked(achievement);
+    public void onUnlocked(final AchievementUnlockedEvent achievementUnlockedEvent) {
+        wrapped.onUnlocked(achievementUnlockedEvent);
     }
 
     /**

@@ -1,12 +1,5 @@
 package net.csongradyp.badger;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.EventBus;
@@ -18,12 +11,16 @@ import net.csongradyp.badger.parser.AchievementDefinitionFileParser;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.*;
+
 public class Badger {
 
     private static final String CONTEXT_XML_PATH = "META-INF/beans.xml";
 
     private final AchievementDefinitionFileParser parser;
-    private final AchievementController controller;
+    private final IAchievementController controller;
 
     /**
      * Default constructor to set up Spring environment.
@@ -44,7 +41,7 @@ public class Badger {
      */
     public Badger(final InputStream inputStream, final String baseName) {
         this();
-        controller.setDefinition(parser.parse(inputStream));
+        controller.setAchievementDefinition(parser.parse(inputStream));
         controller.setInternationalizationBaseName(baseName);
     }
 
@@ -68,7 +65,7 @@ public class Badger {
      */
     public Badger(final File definitionFile, final String baseName) {
         this();
-        controller.setDefinition(parser.parse(definitionFile));
+        controller.setAchievementDefinition(parser.parse(definitionFile));
         controller.setInternationalizationBaseName(baseName);
     }
 
@@ -79,7 +76,7 @@ public class Badger {
      */
     public Badger(final InputStream inputStream) {
         this();
-        controller.setDefinition(parser.parse(inputStream));
+        controller.setAchievementDefinition(parser.parse(inputStream));
     }
 
     /**
@@ -98,7 +95,7 @@ public class Badger {
      */
     public Badger(final File definitionFile) {
         this();
-        controller.setDefinition(parser.parse(definitionFile));
+        controller.setAchievementDefinition(parser.parse(definitionFile));
     }
 
     /**
@@ -162,11 +159,7 @@ public class Badger {
     }
 
     public Optional<IAchievement> getAchievement(final AchievementType type, final String id) {
-        final IAchievement achievement = controller.get(type, id);
-        if (achievement != null) {
-            return Optional.of(achievement);
-        }
-        return Optional.empty();
+        return controller.get(type, id);
     }
 
     public Boolean isUnlocked(final String id) {
@@ -280,7 +273,7 @@ public class Badger {
         controller.reset();
     }
 
-    public AchievementController getController() {
+    public IAchievementController getController() {
         return controller;
     }
 }

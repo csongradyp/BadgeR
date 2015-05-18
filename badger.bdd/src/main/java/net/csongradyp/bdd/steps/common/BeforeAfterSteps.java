@@ -1,19 +1,23 @@
 package net.csongradyp.bdd.steps.common;
 
-import javax.inject.Inject;
+import net.csongradyp.badger.AchievementController;
+import net.csongradyp.badger.parser.AchievementDefinitionFileParser;
 import net.csongradyp.bdd.Steps;
-import net.csongradyp.badger.Badger;
-import org.jbehave.core.annotations.AfterStories;
+import org.jbehave.core.annotations.BeforeStories;
+
+import javax.inject.Inject;
 
 @Steps
 public class BeforeAfterSteps {
 
     @Inject
-    private Badger badger;
+    private AchievementController controller;
+    @Inject
+    private AchievementDefinitionFileParser parser;
 
-    @AfterStories
-    public void afterStories() {
-        badger.reset();
+    @BeforeStories
+    public void beforeStories() {
+        controller.setAchievementDefinition(parser.parse("badger.bdd/src/main/resources/test.ini"));
     }
 
 }

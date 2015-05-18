@@ -2,6 +2,7 @@ Narrative:
 In order to handle achievement unlock and level up events
 As an achievement based system
 I want to be notified about unlock and level up events
+So that I can visualize unlocked achievement or use for further processes
 
 Lifecycle:
 Before:

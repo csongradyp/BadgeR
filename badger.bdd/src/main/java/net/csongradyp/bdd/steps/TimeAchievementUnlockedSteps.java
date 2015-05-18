@@ -1,16 +1,17 @@
 package net.csongradyp.bdd.steps;
 
+import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.provider.unlock.provider.TimeRangeUnlockedProvider;
+import net.csongradyp.badger.provider.unlock.provider.TimeUnlockedProvider;
 import net.csongradyp.bdd.Steps;
-import net.csongradyp.badger.Badger;
 import net.csongradyp.bdd.provider.TestDateProvider;
 import net.csongradyp.bdd.provider.TriggerChecker;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 
 import javax.inject.Inject;
-
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -22,22 +23,26 @@ import static org.junit.Assert.fail;
 public class TimeAchievementUnlockedSteps {
 
     @Inject
-    private Badger badger;
+    private AchievementController controller;
     @Inject
     private TriggerChecker triggerChecker;
-
-    private TestDateProvider timeProvider = new TestDateProvider();
+    @Inject
+    private TimeUnlockedProvider timeUnlockedProvider;
+    @Inject
+    private TimeRangeUnlockedProvider timeRangeUnlockedProvider;
+    private TestDateProvider dateProvider = new TestDateProvider();
 
     @Given("current time is $time")
     public void setCurrentTime(final String time) {
-        timeProvider.stubTime(time);
-        assertThat(timeProvider.currentTime(), is(equalTo(time)));
-        badger.getController().setDateProvider(timeProvider);
+        dateProvider.stubTime(time);
+        timeUnlockedProvider.setDateProvider(dateProvider);
+        timeRangeUnlockedProvider.setDateProvider(dateProvider);
+        assertThat(dateProvider.currentTime(), is(equalTo(time)));
     }
 
     @Given("an achievement with $id id and $type type bounded to $event event with start trigger $start and end trigger $end")
     public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("start") String start, final @Named("end") String end) {
-        final Optional<IAchievement> achievement = badger.getAchievement(type, id);
+        final Optional<IAchievement> achievement = controller.get(type, id);
         if(achievement.isPresent()) {
             assertThat("Achievement is subscribed to event: " + event, achievement.get().getEvent().contains(event), is(true));
             assertThat("Trigger is present for time-range achievement", triggerChecker.isTimeRangeTriggerPresent(achievement.get(), start, end), is(true));

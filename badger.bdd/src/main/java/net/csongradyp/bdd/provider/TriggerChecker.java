@@ -2,7 +2,7 @@ package net.csongradyp.bdd.provider;
 
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.DateProvider;
+import net.csongradyp.badger.provider.date.DateProvider;
 import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
 import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
 

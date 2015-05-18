@@ -119,7 +119,7 @@ public final class EventBus {
     }
 
     public static void checkAll() {
-        INSTANCE.controller.checkAll();
+        INSTANCE.controller.unlockAllUnlockable();
     }
 
     public static Collection<AchievementUnlockedHandlerWrapper> getUnlockedSubscribers() {

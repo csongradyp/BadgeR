@@ -1,9 +1,9 @@
 package net.csongradyp.badger.domain;
 
-import net.csongradyp.badger.IAchievementController;
+import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 
 public interface IRelation {
 
-    Boolean evaluate(IAchievementController controller);
+    Boolean evaluate(IAchievementUnlockFinderFacade controller);
 
 }

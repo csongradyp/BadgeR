@@ -18,6 +18,7 @@ import net.csongradyp.badger.AchievementBundle;
 import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
 import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
 import net.csongradyp.badger.domain.achievement.DateAchievementBean;
+import net.csongradyp.badger.domain.achievement.SingleAchievementBean;
 import net.csongradyp.badger.domain.achievement.TimeAchievementBean;
 import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
@@ -160,7 +161,7 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
                     achievementBean = parseSection(id, section, new CounterAchievementBean());
                     break;
                 case SINGLE:
-                    achievementBean = parseSection(id, section, new CounterAchievementBean());
+                    achievementBean = parseSection(id, section, new SingleAchievementBean());
                     break;
             }
             return achievementBean;

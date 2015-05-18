@@ -1,9 +1,11 @@
 package net.csongradyp.bdd.steps;
 
-import net.csongradyp.bdd.Steps;
-import net.csongradyp.badger.Badger;
+import net.csongradyp.badger.AchievementController;
+import net.csongradyp.badger.event.EventBus;
+import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
 import net.csongradyp.badger.event.message.Score;
 import net.csongradyp.badger.persistence.EventDao;
+import net.csongradyp.bdd.Steps;
 import org.jbehave.core.annotations.*;
 
 import javax.inject.Inject;
@@ -18,29 +20,29 @@ import static org.hamcrest.core.IsEqual.equalTo;
 public class EventTriggerSteps {
 
     @Inject
-    private Badger badger;
+    private AchievementController controller;
     @Inject
     private EventDao eventDao;
     private Score receivedEvent;
 
     @BeforeScenario(uponType = ScenarioType.ANY)
     public void beforeAchievementEventTriggerSteps() {
-        badger.reset();
+        controller.reset();
         receivedEvent = null;
     }
 
     @Given("there is subscription for score events")
     public void subscribeOnScoreEvents() {
-        badger.subscribeOnScoreChanged(score -> receivedEvent = score);
+        EventBus.subscribeOnScoreChanged(new ScoreUpdateHandlerWrapper(score -> receivedEvent = score));
     }
 
     @When("$eventName event is triggered with $score as a $scoreType")
     @Alias("<event> event is triggered with <input-score> as a <score-type>")
     public void trigger(final @Named("event") String eventName, final @Named("input-score") Long score, final @Named("score-type") String scoreType) {
         if (scoreType.equals("highscore")) {
-            badger.triggerEventWithHighScore(eventName, score);
+            controller.triggerEventWithHighScore(eventName, score);
         } else {
-            badger.triggerEvent(eventName, score);
+            controller.triggerEvent(eventName, score);
         }
     }
 

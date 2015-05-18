@@ -1,6 +1,6 @@
 package net.csongradyp.bdd.provider;
 
-import net.csongradyp.badger.DateProvider;
+import net.csongradyp.badger.provider.date.DateProvider;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;

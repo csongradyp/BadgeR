@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.csongradyp.badger.IAchievementController;
+import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IRelation;
@@ -82,7 +82,7 @@ public class CompositeAchievementBean implements IRelationalAchievement {
     }
 
     @Override
-    public Boolean evaluate(IAchievementController controller) {
+    public Boolean evaluate(IAchievementUnlockFinderFacade controller) {
         return relation.evaluate(controller);
     }
 

@@ -1,18 +1,13 @@
 package net.csongradyp.badger;
 
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.event.IAchievementUnlockedEvent;
+
+import java.util.*;
 
 public interface IAchievementController {
 
-    void setDefinition(final AchievementDefinition definition);
+    void setAchievementDefinition(final AchievementDefinition definition);
 
     void setInternationalizationBaseName(final String internationalizationBaseName);
 
@@ -24,11 +19,11 @@ public interface IAchievementController {
 
     Collection<IAchievement> getByOwner(final String owner);
 
-    IAchievement get(final AchievementType type, final String id);
+    Optional<IAchievement> get(final AchievementType type, final String id);
 
     Map<String, Set<IAchievement>> getAllByEvents();
 
-    void checkAll();
+    void unlockAllUnlockable();
 
     void triggerEventWithHighScore(final String event, final Long score);
 
@@ -40,8 +35,6 @@ public interface IAchievementController {
 
     void triggerEvent(final String event);
 
-    Optional<IAchievementUnlockedEvent> unlockable(final Long currentValue, final IAchievement achievementBean);
-
     void unlock(final AchievementType type, final String achievementId, String triggeredValue);
 
     void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners);
@@ -51,6 +44,8 @@ public interface IAchievementController {
     void unlock(final String achievementId, final String triggerValue);
 
     Boolean isUnlocked(final String achievementId);
+
+    Boolean isUnlocked(String achievementId, Integer level);
 
     Long getCurrentScore(final String id);
 

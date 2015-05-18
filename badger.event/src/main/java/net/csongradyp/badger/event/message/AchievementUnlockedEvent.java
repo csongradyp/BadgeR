@@ -8,7 +8,7 @@ import java.util.Set;
 import net.csongradyp.badger.event.AchievementEventType;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 
-public class Achievement implements IAchievementUnlockedEvent {
+public class AchievementUnlockedEvent implements IAchievementUnlockedEvent {
 
     private final String id;
     private final String title;
@@ -20,7 +20,7 @@ public class Achievement implements IAchievementUnlockedEvent {
     private AchievementEventType eventType;
     private Set<String> owners;
 
-    public Achievement(final String id, final String title, final String text, final String triggerValue) {
+    public AchievementUnlockedEvent(final String id, final String title, final String text, final String triggerValue) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -32,13 +32,13 @@ public class Achievement implements IAchievementUnlockedEvent {
         category = "default";
     }
 
-    public Achievement(final String id, final String category, final String title, final String text, final String triggerScore) {
+    public AchievementUnlockedEvent(final String id, final String category, final String title, final String text, final String triggerScore) {
         this(id, title, text, triggerScore);
         this.category = category;
         eventType = AchievementEventType.UNLOCK;
     }
 
-    public Achievement(final String id, final String title, final String text, final String triggerScore, final Integer level) {
+    public AchievementUnlockedEvent(final String id, final String title, final String text, final String triggerScore, final Integer level) {
         this(id, title, text, triggerScore);
         this.level = level;
         category = "default";
@@ -47,7 +47,7 @@ public class Achievement implements IAchievementUnlockedEvent {
         }
     }
 
-    public Achievement(final String id, final String category, final String title, final String text, final String triggerScore, final Integer level) {
+    public AchievementUnlockedEvent(final String id, final String category, final String title, final String text, final String triggerScore, final Integer level) {
         this(id, title, text, triggerScore, level);
         this.category = category;
     }

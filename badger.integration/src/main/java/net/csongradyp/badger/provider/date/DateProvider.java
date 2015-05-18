@@ -1,4 +1,4 @@
-package net.csongradyp.badger;
+package net.csongradyp.badger.provider.date;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;

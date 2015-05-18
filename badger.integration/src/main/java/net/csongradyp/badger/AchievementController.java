@@ -2,16 +2,15 @@ package net.csongradyp.badger;
 
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IAchievementBean;
-import net.csongradyp.badger.event.IAchievementUnlockedEvent;
-import net.csongradyp.badger.domain.achievement.*;
-import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
 import net.csongradyp.badger.event.EventBus;
-import net.csongradyp.badger.event.message.Achievement;
+import net.csongradyp.badger.event.IAchievementUnlockedEvent;
+import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.factory.UnlockedEventFactory;
 import net.csongradyp.badger.persistence.AchievementDao;
 import net.csongradyp.badger.persistence.EventDao;
 import net.csongradyp.badger.persistence.entity.AchievementEntity;
+import net.csongradyp.badger.provider.unlock.AchievementUnlockProviderFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,43 +28,58 @@ public class AchievementController implements IAchievementController {
     @Inject
     private AchievementDao achievementDao;
     @Inject
-    private IDateProvider dateProvider;
+    private UnlockedEventFactory unlockedEventFactory;
+    @Inject
+    private AchievementUnlockProviderFacade achievementUnlockFinder;
     private ResourceBundle resourceBundle;
 
-    private AchievementDefinition achievementBundle;
+    private AchievementDefinition achievementDefinition;
     private String internationalizationBaseName;
 
     public AchievementController() {
-        achievementBundle = new AchievementBundle();
+        achievementDefinition = new AchievementBundle();
         EventBus.setController(this);
     }
 
-    public void setDefinition(final AchievementDefinition definition) {
-        this.achievementBundle = definition;
+    @Override
+    public void setAchievementDefinition(final AchievementDefinition achievementDefinition) {
+        this.achievementDefinition = achievementDefinition;
+        achievementUnlockFinder.setAchievementDefinition(achievementDefinition);
     }
 
+    @Override
     public void setInternationalizationBaseName(final String internationalizationBaseName) {
         resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, Locale.ENGLISH);
         this.internationalizationBaseName = internationalizationBaseName;
     }
 
+    @Override
     public void setResourceBundle(final ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
+        unlockedEventFactory.setResourceBundle(resourceBundle);
     }
 
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
+
+    @Override
     public void setLocale(final Locale locale) {
         resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, locale);
+        unlockedEventFactory.setResourceBundle(resourceBundle);
     }
 
+    @Override
     public Collection<IAchievement> getAll() {
-        return achievementBundle.getAll();
+        return achievementDefinition.getAll();
     }
 
+    @Override
     public Collection<IAchievement> getByOwner(final String owner) {
         final Collection<IAchievement> achievementsByOwner = new ArrayList<>();
         final Collection<AchievementEntity> achievementEntities = achievementDao.getByOwner(owner);
         for (AchievementEntity achievementEntity : achievementEntities) {
-            final Optional<IAchievement> achievement = achievementBundle.get(achievementEntity.getId());
+            final Optional<IAchievement> achievement = achievementDefinition.get(achievementEntity.getId());
             if (achievement.isPresent()) {
                 achievementsByOwner.add(achievement.get());
             }
@@ -73,19 +87,27 @@ public class AchievementController implements IAchievementController {
         return achievementsByOwner;
     }
 
-    public IAchievement get(final AchievementType type, final String id) {
-        return achievementBundle.get(type, id);
+    @Override
+    public Optional<IAchievement> get(final AchievementType type, final String id) {
+        final IAchievement achievement = achievementDefinition.get(type, id);
+        if (achievement != null) {
+            return Optional.of(achievement);
+        }
+        return Optional.empty();
     }
 
+    @Override
     public Map<String, Set<IAchievement>> getAllByEvents() {
-        return achievementBundle.getAllByEvents();
+        return achievementDefinition.getAllByEvents();
     }
 
-    public void checkAll() {
-        final Collection<IAchievementUnlockedEvent> unlockableAchievements = check(getAll());
+    @Override
+    public void unlockAllUnlockable() {
+        final Collection<IAchievementUnlockedEvent> unlockableAchievements = achievementUnlockFinder.findAll();
         unlockableAchievements.forEach(this::unlock);
     }
 
+    @Override
     public void triggerEventWithHighScore(final String event, final Long score) {
         if (isNewHighScore(event, score)) {
             LOG.debug("New highscore submitted!");
@@ -97,12 +119,13 @@ public class AchievementController implements IAchievementController {
         return eventDao.scoreOf(event) <= score;
     }
 
+    @Override
     public void triggerEvent(final String event, final Long score) {
         if (isDifferentValueAsStored(event, score)) {
             LOG.debug("Achievement event triggered: {} with score {} ", event, score);
             final Long currentValue = eventDao.setScore(event, score);
             EventBus.publishScoreChanged(new Score(event, currentValue));
-            final Collection<IAchievementUnlockedEvent> unlockables = getUnlockables(event, currentValue);
+            final Collection<IAchievementUnlockedEvent> unlockables = achievementUnlockFinder.findUnlockables(event, score);
             unlockables.forEach(this::unlock);
         }
     }
@@ -112,193 +135,66 @@ public class AchievementController implements IAchievementController {
         return currentValue != score;
     }
 
+    @Override
     public void triggerEvent(final String event, final String... owners) {
         triggerEvent(event, Arrays.asList(owners));
     }
 
+    @Override
     public void triggerEvent(final String event, final Collection<String> owners) {
         LOG.debug("Achievement event triggered: {} with owners {} ", event, owners);
-        final Long currentValue = incrementAndPublish(event);
-        final Collection<IAchievementUnlockedEvent> unlockables = getUnlockables(event, currentValue, owners);
+        publishIncremented(event);
+        final Collection<IAchievementUnlockedEvent> unlockables = achievementUnlockFinder.findUnlockables(event, owners);
         unlockables.forEach(this::unlock);
     }
 
+    @Override
     public void triggerEvent(final String event) {
         LOG.info("Achievement event triggered: {}", event);
-        final Long currentValue = incrementAndPublish(event);
-        final Collection<IAchievementUnlockedEvent> unlockables = getUnlockables(event, currentValue);
+        publishIncremented(event);
+        final Collection<IAchievementUnlockedEvent> unlockables = achievementUnlockFinder.findUnlockables(event);
         unlockables.forEach(this::unlock);
     }
 
-    private Long incrementAndPublish(final String event) {
+    private Long publishIncremented(final String event) {
         final Long currentValue = eventDao.increment(event);
         EventBus.publishScoreChanged(new Score(event, currentValue));
         return currentValue;
     }
 
-    private Collection<IAchievementUnlockedEvent> getUnlockables(final String event, final Long currentValue) {
-        final Collection<IAchievementUnlockedEvent> unlockables = new ArrayList<>();
-        final Collection<IAchievement> achievementBeans = achievementBundle.getAchievementsSubscribedFor(event);
-        for (IAchievement achievementBean : achievementBeans) {
-            final Optional<IAchievementUnlockedEvent> achievement = unlockable(currentValue, achievementBean);
-            if (achievement.isPresent()) {
-                unlockables.add(achievement.get());
-            }
-        }
-        return unlockables;
-    }
-
-    private Collection<IAchievementUnlockedEvent> getUnlockables(final String event, final Long currentValue, final Collection<String> owners) {
-        final Collection<IAchievementUnlockedEvent> unlockables = new ArrayList<>();
-        final Collection<IAchievement> achievementBeans = achievementBundle.getAchievementsSubscribedFor(event);
-        for (IAchievement achievementBean : achievementBeans) {
-            final Optional<IAchievementUnlockedEvent> achievement = unlockable(currentValue, achievementBean);
-            if (achievement.isPresent()) {
-                final IAchievementUnlockedEvent toUnlock = achievement.get();
-                toUnlock.addOwners(owners);
-                unlockables.add(toUnlock);
-            }
-        }
-        return unlockables;
-    }
-
-    private Collection<IAchievementUnlockedEvent> check(final Collection<IAchievement> achievementBeans) {
-        final Collection<IAchievementUnlockedEvent> unlockables = new ArrayList<>();
-        for (IAchievement achievementBean : achievementBeans) {
-            final Optional<IAchievementUnlockedEvent> achievement = unlockable(eventDao.scoreOf(achievementBean.getId()), achievementBean);
-            if (achievement.isPresent()) {
-                unlockables.add(achievement.get());
-            }
-        }
-        return unlockables;
-    }
-
-    public Optional<IAchievementUnlockedEvent> unlockable(final Long currentValue, final IAchievement achievementBean) {
-        if (CounterAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
-            return checkCounterTrigger(currentValue, (CounterAchievementBean) achievementBean);
-        } else if (DateAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
-            return checkDateTrigger((DateAchievementBean) achievementBean);
-        } else if (TimeAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
-            return checkTimeTrigger((TimeAchievementBean) achievementBean);
-        } else if (TimeRangeAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
-            return checkTimeRangeTrigger((TimeRangeAchievementBean) achievementBean);
-        } else if (CompositeAchievementBean.class.isAssignableFrom(achievementBean.getClass())) {
-            CompositeAchievementBean relationBean = (CompositeAchievementBean) achievementBean;
-            if (relationBean.evaluate(this)) {
-                final Achievement achievement = createAchievement(relationBean);
-                return Optional.of(achievement);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<IAchievementUnlockedEvent> checkDateTrigger(final IAchievementBean<String> dateAchievement) {
-        final List<String> dateTriggers = dateAchievement.getTrigger();
-        final String now = dateProvider.currentDate();
-        for (String dateTrigger : dateTriggers) {
-            if (dateTrigger.equals(now) && !isUnlocked(dateAchievement.getId())) {
-                final Achievement achievement = createAchievement(dateAchievement, now);
-                return Optional.of(achievement);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<IAchievementUnlockedEvent> checkTimeTrigger(final TimeAchievementBean timeAchievement) {
-        final List<String> timeTriggers = timeAchievement.getTrigger();
-        final String now = dateProvider.currentTime();
-        for (String timeTrigger : timeTriggers) {
-            if (timeTrigger.equals(now) && !isUnlocked(timeAchievement.getId())) {
-                final Achievement achievement = createAchievement(timeAchievement, now);
-                return Optional.of(achievement);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<IAchievementUnlockedEvent> checkTimeRangeTrigger(final TimeRangeAchievementBean timeAchievement) {
-        final List<TimeRangeAchievementBean.TimeTriggerPair> timeTriggers = timeAchievement.getTrigger();
-        for (TimeRangeAchievementBean.TimeTriggerPair timeTrigger : timeTriggers) {
-            final Date startTrigger = timeTrigger.getStartTrigger();
-            final Date endTrigger = timeTrigger.getEndTrigger();
-            if (startTrigger.before(endTrigger)) {
-                if (dateProvider.isCurrentTimeAfter(startTrigger) && dateProvider.isCurrentTimeBefore(endTrigger) && !isUnlocked(timeAchievement.getId())) {
-                    final Achievement achievement = createAchievement(timeAchievement, dateProvider.currentTime());
-                    return Optional.of(achievement);
-                }
-            } else if (dateProvider.isCurrentTimeBefore(startTrigger) && dateProvider.isCurrentTimeAfter(endTrigger) && !isUnlocked(timeAchievement.getId())) {
-                final Achievement achievement = createAchievement(timeAchievement, dateProvider.currentTime());
-                return Optional.of(achievement);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<IAchievementUnlockedEvent> checkCounterTrigger(final Long currentValue, final IAchievementBean<NumberTrigger> achievementBean) {
-        final List<NumberTrigger> triggers = achievementBean.getTrigger();
-        for (int i = 0; i < triggers.size(); i++) {
-            final NumberTrigger trigger = triggers.get(i);
-            final Integer level = i + 1;
-            if (isTriggered(currentValue, trigger) && isLevelValid(achievementBean, level) && !isLevelUnlocked(achievementBean.getId(), level)) {
-                final Achievement achievement = createAchievement(achievementBean, level, currentValue);
-                return Optional.of(achievement);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Boolean isTriggered(final Long currentValue, final NumberTrigger trigger) {
-        final Long triggerValue = trigger.getTrigger();
-        switch (trigger.getOperation()) {
-            case GREATER_THAN:
-                return currentValue >= triggerValue;
-            case LESS_THAN:
-                return currentValue <= triggerValue;
-            case EQUALS:
-                return currentValue.equals(triggerValue);
-        }
-        return false;
-    }
-
-    private boolean isLevelValid(final IAchievementBean<NumberTrigger> counterAchievement, final Integer triggerIndex) {
-        return counterAchievement.getMaxLevel() >= triggerIndex;
-    }
-
-    private Boolean isLevelUnlocked(final String id, final Integer level) {
-        return achievementDao.isUnlocked(id, level);
-    }
-
+    @Override
     public void unlock(final AchievementType type, final String achievementId, String triggeredValue) {
         if (!isUnlocked(achievementId)) {
-            final IAchievement achievementBean = achievementBundle.get(type, achievementId);
-            final Achievement achievement = createAchievement(achievementBean, triggeredValue);
-            unlock(achievement);
+            final IAchievement achievementBean = achievementDefinition.get(type, achievementId);
+            final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(achievementBean, triggeredValue);
+            unlock(achievementUnlockedEvent);
         }
     }
 
+    @Override
     public void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners) {
         if (!isUnlocked(achievementId)) {
-            final IAchievement achievementBean = achievementBundle.get(type, achievementId);
-            final Achievement achievement = createAchievement(achievementBean, triggeredValue);
-            achievement.addOwners(owners);
-            unlock(achievement);
+            final IAchievement achievementBean = achievementDefinition.get(type, achievementId);
+            final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(achievementBean, triggeredValue, owners);
+            unlock(achievementUnlockedEvent);
         }
     }
 
+    @Override
     public void unlock(final String achievementId, final String triggerValue, final Collection<String> owners) {
-        final Optional<IAchievement> matchingAchievement = achievementBundle.get(achievementId);
+        final Optional<IAchievement> matchingAchievement = achievementDefinition.get(achievementId);
         if (matchingAchievement.isPresent()) {
-            final Achievement achievement = createAchievement(matchingAchievement.get(), triggerValue);
-            achievement.addOwners(owners);
-            unlock(achievement);
+            final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(matchingAchievement.get(), triggerValue, owners);
+            unlock(achievementUnlockedEvent);
         }
     }
 
+    @Override
     public void unlock(final String achievementId, final String triggerValue) {
-        final Optional<IAchievement> matchingAchievement = achievementBundle.get(achievementId);
+        final Optional<IAchievement> matchingAchievement = achievementDefinition.get(achievementId);
         if (matchingAchievement.isPresent()) {
-            final Achievement achievement = createAchievement(matchingAchievement.get(), triggerValue);
-            unlock(achievement);
+            final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(matchingAchievement.get(), triggerValue);
+            unlock(achievementUnlockedEvent);
         }
     }
 
@@ -309,43 +205,26 @@ public class AchievementController implements IAchievementController {
         }
     }
 
+    private Boolean isLevelUnlocked(final String id, final Integer level) {
+        return achievementDao.isUnlocked(id, level);
+    }
+
+    @Override
     public Boolean isUnlocked(final String achievementId) {
         return achievementDao.isUnlocked(achievementId);
     }
 
+    @Override
     public Boolean isUnlocked(final String achievementId, final Integer level) {
         return achievementDao.isUnlocked(achievementId, level);
     }
 
+    @Override
     public Long getCurrentScore(final String id) {
         return eventDao.scoreOf(id);
     }
 
-    private Achievement createAchievement(final IAchievementBean achievementBean, final Integer level, final Long triggeredValue) {
-        final Achievement achievement = createAchievement(achievementBean, String.valueOf(triggeredValue));
-        achievement.setLevel(level);
-        LOG.info("Achievement created with id: {} level: {}", achievementBean.getId(), level);
-        return achievement;
-    }
-
-    private Achievement createAchievement(final IAchievement achievementBean) {
-        return createAchievement(achievementBean, "");
-    }
-
-    private Achievement createAchievement(final IAchievement achievementBean, final String triggeredValue) {
-        final String title;
-        final String text;
-        if (resourceBundle != null) {
-            title = resourceBundle.getString(achievementBean.getTitleKey());
-            text = resourceBundle.getString(achievementBean.getTextKey());
-        } else {
-            title = achievementBean.getTitleKey();
-            text = achievementBean.getTextKey();
-        }
-        LOG.info("Achievement created with id: {}", achievementBean.getId());
-        return new Achievement(achievementBean.getId(), achievementBean.getCategory(), title, text, triggeredValue);
-    }
-
+    @Override
     public void reset() {
         eventDao.deleteAll();
         achievementDao.deleteAll();
@@ -359,11 +238,12 @@ public class AchievementController implements IAchievementController {
         this.achievementDao = achievementDao;
     }
 
-    public void setDateProvider(IDateProvider dateProvider) {
-        this.dateProvider = dateProvider;
+    void setAchievementUnlockFinder(AchievementUnlockProviderFacade achievementUnlockFinder) {
+        this.achievementUnlockFinder = achievementUnlockFinder;
     }
 
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle;
+    void setUnlockedEventFactory(UnlockedEventFactory unlockedEventFactory) {
+        this.unlockedEventFactory = unlockedEventFactory;
     }
+
 }

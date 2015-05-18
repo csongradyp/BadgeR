@@ -1,10 +1,10 @@
-package net.csongradyp.badger;
+package net.csongradyp.badger.provider.date;
 
 import java.util.Date;
 
 public interface IDateProvider {
 
-    String now();
+    String currentDate();
 
     String currentTime();
 

@@ -3,7 +3,7 @@ package net.csongradyp.badger.event;
 import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
-import net.csongradyp.badger.event.message.Achievement;
+import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.Score;
 import org.junit.After;
 import org.junit.Before;
@@ -25,12 +25,12 @@ public class EventBusTest {
     private IAchievementController mockController;
     private AchievementUnlockedHandlerWrapper unlockedHandlerWrapper;
     private ScoreUpdateHandlerWrapper scoreUpdateHandlerWrapper;
-    private Achievement receivedAchievement;
+    private AchievementUnlockedEvent receivedAchievementUnlockedEvent;
     private Score receivedScore;
 
     @Before
     public void setUp()  {
-        unlockedHandlerWrapper = new AchievementUnlockedHandlerWrapper(achievement -> receivedAchievement = achievement);
+        unlockedHandlerWrapper = new AchievementUnlockedHandlerWrapper(achievement -> receivedAchievementUnlockedEvent = achievement);
         EventBus.subscribeOnUnlock(unlockedHandlerWrapper);
         scoreUpdateHandlerWrapper = new ScoreUpdateHandlerWrapper(score -> receivedScore = score);
         EventBus.subscribeOnScoreChanged(scoreUpdateHandlerWrapper);
@@ -41,12 +41,12 @@ public class EventBusTest {
     public void tearDown()  {
         EventBus.unSubscribeOnUnlock(unlockedHandlerWrapper.getWrapped());
         EventBus.unSubscribeOnScoreChanged(scoreUpdateHandlerWrapper.getWrapped());
-        receivedAchievement = null;
+        receivedAchievementUnlockedEvent = null;
     }
 
     @Test
     public void testOnUnlockedEventSubscriptions() throws Exception {
-        final  AchievementUnlockedHandlerWrapper handlerWrapper = new AchievementUnlockedHandlerWrapper(achievement -> receivedAchievement = achievement);
+        final  AchievementUnlockedHandlerWrapper handlerWrapper = new AchievementUnlockedHandlerWrapper(achievement -> receivedAchievementUnlockedEvent = achievement);
         EventBus.subscribeOnUnlock(handlerWrapper);
         assertThat(EventBus.getUnlockedSubscribers().size(), is(equalTo(2)));
         assertThat(EventBus.getUnlockedSubscribers().contains(handlerWrapper), is(true));
@@ -75,16 +75,16 @@ public class EventBusTest {
         final String text = "text";
         final String score = "value";
         final int level = 3;
-        final Achievement achievement = new Achievement(id, title, text, score, level);
+        final AchievementUnlockedEvent achievementUnlockedEvent = new AchievementUnlockedEvent(id, title, text, score, level);
 
-        EventBus.publishUnlocked(achievement);
+        EventBus.publishUnlocked(achievementUnlockedEvent);
 
-        assertThat(receivedAchievement, notNullValue());
-        assertThat(receivedAchievement.getId(), is(equalTo(id)));
-        assertThat(receivedAchievement.getTitle(), is(equalTo(title)));
-        assertThat(receivedAchievement.getText(), is(equalTo(text)));
-        assertThat(receivedAchievement.getTriggerValue(), is(equalTo(score)));
-        assertThat(receivedAchievement.getLevel(), is(equalTo(level)));
+        assertThat(receivedAchievementUnlockedEvent, notNullValue());
+        assertThat(receivedAchievementUnlockedEvent.getId(), is(equalTo(id)));
+        assertThat(receivedAchievementUnlockedEvent.getTitle(), is(equalTo(title)));
+        assertThat(receivedAchievementUnlockedEvent.getText(), is(equalTo(text)));
+        assertThat(receivedAchievementUnlockedEvent.getTriggerValue(), is(equalTo(score)));
+        assertThat(receivedAchievementUnlockedEvent.getLevel(), is(equalTo(level)));
     }
 
     @Test
@@ -123,6 +123,6 @@ public class EventBusTest {
     @Test
     public void testCheckAllCallsControllerMethod() throws Exception {
         EventBus.checkAll();
-        verify(mockController).checkAll();
+        verify(mockController).unlockAllUnlockable();
     }
 }

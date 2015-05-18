@@ -1,13 +1,10 @@
 package net.csongradyp.badger.parser.ini;
 
-import net.csongradyp.badger.IAchievementController;
-import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IAchievementBean;
-import net.csongradyp.badger.domain.IRelation;
-import net.csongradyp.badger.domain.TestCounterAchievementBean;
-import net.csongradyp.badger.domain.TestDateAchievementBean;
-import net.csongradyp.badger.domain.TestTimeAchievementBean;
-import net.csongradyp.badger.domain.achievement.relation.*;
+import net.csongradyp.badger.IAchievementUnlockFinderFacade;
+import net.csongradyp.badger.domain.*;
+import net.csongradyp.badger.domain.achievement.relation.RelatedAchievement;
+import net.csongradyp.badger.domain.achievement.relation.Relation;
+import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +18,6 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,7 +27,7 @@ public class RelationParserTest {
     @Mock
     private RelationValidator mockRelationValidator;
     @Mock
-    private IAchievementController mockController;
+    private IAchievementUnlockFinderFacade mockUnlockFinderFacade;
     @Mock
     private IAchievementBean mockAchievementBean;
 
@@ -42,7 +38,7 @@ public class RelationParserTest {
         underTest = new RelationParser();
         underTest.setRelationValidator(mockRelationValidator);
 
-        when(mockController.unlockable(anyLong(), any(IAchievementBean.class))).thenReturn(Optional.empty());
+        when(mockUnlockFinderFacade.getUnlockable(any(IAchievementBean.class))).thenReturn(Optional.empty());
     }
 
     @Test
@@ -59,7 +55,7 @@ public class RelationParserTest {
         for (IRelation iRelation : relation.getChildren()) {
             assertThat(iRelation, instanceOf(RelatedAchievement.class));
         }
-        assertThat(relation.evaluate(mockController), is(true));
+        assertThat(relation.evaluate(mockUnlockFinderFacade), is(true));
     }
 
     @Test
@@ -79,6 +75,6 @@ public class RelationParserTest {
         for (IRelation iRelation : ((Relation)relation.getChildren().iterator().next()).getChildren()) {
             assertThat(iRelation, instanceOf(RelatedAchievement.class));
         }
-        assertThat(relation.evaluate(mockController), is(true));
+        assertThat(relation.evaluate(mockUnlockFinderFacade), is(true));
     }
 }

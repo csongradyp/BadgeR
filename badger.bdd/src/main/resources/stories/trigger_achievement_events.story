@@ -4,6 +4,7 @@ Narrative:
 In order to notify the system of event counter/score updates
 As an achievement based system
 I want to be notified about event score changes for further process
+So that I can visualize unlocked achievement or use for further processes
 
 Lifecycle:
 Before:

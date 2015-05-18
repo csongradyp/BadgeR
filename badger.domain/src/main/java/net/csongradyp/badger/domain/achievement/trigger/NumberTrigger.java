@@ -27,4 +27,8 @@ public class NumberTrigger {
         return operation;
     }
 
+    @Override
+    public String toString() {
+        return operation + " " + trigger;
+    }
 }

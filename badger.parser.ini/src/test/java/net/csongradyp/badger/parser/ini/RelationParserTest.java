@@ -1,7 +1,15 @@
 package net.csongradyp.badger.parser.ini;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 import net.csongradyp.badger.IAchievementUnlockFinderFacade;
-import net.csongradyp.badger.domain.*;
+import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.IAchievementBean;
+import net.csongradyp.badger.domain.IRelation;
+import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
+import net.csongradyp.badger.domain.achievement.DateAchievementBean;
+import net.csongradyp.badger.domain.achievement.TimeAchievementBean;
 import net.csongradyp.badger.domain.achievement.relation.ChildAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
 import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
@@ -11,11 +19,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -45,8 +50,8 @@ public class RelationParserTest {
     public void testParseReturnsOneLevelRelationWhenNoBracketsArePresentInTheRelationDefinition() {
         final String definition = "date & time";
         final Collection<IAchievement> achievements = new ArrayList<>();
-        achievements.add(new TestDateAchievementBean(ID));
-        achievements.add(new TestTimeAchievementBean(ID));
+        achievements.add(new DateAchievementBean());
+        achievements.add(new TimeAchievementBean());
 
         final Relation relation = underTest.parse(ID, definition, achievements);
 
@@ -61,9 +66,9 @@ public class RelationParserTest {
     public void testParseReturnsTwoLevelRelationWhenOnePairOfBracketsArePresentInTheRelationDefinition() {
         final String definition = "(date & time) | counter";
         final Collection<IAchievement> achievements = new ArrayList<>();
-        achievements.add(new TestDateAchievementBean(ID));
-        achievements.add(new TestTimeAchievementBean(ID));
-        achievements.add(new TestCounterAchievementBean(ID));
+        achievements.add(new DateAchievementBean());
+        achievements.add(new TimeAchievementBean());
+        achievements.add(new CounterAchievementBean());
 
         final Relation relation = underTest.parse(ID, definition, achievements);
 

@@ -1,14 +1,16 @@
 package net.csongradyp.badger.domain.achievement;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.AbstractAchievementBean;
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.achievement.trigger.TimeTriggerPair;
 import net.csongradyp.badger.exception.MalformedAchievementDefinition;
 import org.joda.time.format.DateTimeFormat;
 
-public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeRangeAchievementBean.TimeTriggerPair> {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeTriggerPair> {
 
     public static final String PATTERN = "HH:mm";
     private List<TimeTriggerPair> triggers;
@@ -26,7 +28,8 @@ public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeRangeA
         for (int i = 0; i < trigger.length - 1; i = i + 2) {
             final Date start = DateTimeFormat.forPattern(PATTERN).parseDateTime(trigger[i]).toDate();
             final Date end = DateTimeFormat.forPattern(PATTERN).parseDateTime(trigger[i + 1]).toDate();
-            this.triggers.add(new TimeTriggerPair(start, end));
+            final TimeTriggerPair timeTriggerPair = new TimeTriggerPair(start, end);
+            this.triggers.add(timeTriggerPair);
         }
     }
 
@@ -42,21 +45,4 @@ public class TimeRangeAchievementBean extends AbstractAchievementBean<TimeRangeA
         return AchievementType.TIME_RANGE;
     }
 
-    public class TimeTriggerPair {
-        private final Date startTrigger;
-        private final Date endTrigger;
-
-        public TimeTriggerPair(Date startTrigger, Date endTrigger) {
-            this.startTrigger = startTrigger;
-            this.endTrigger = endTrigger;
-        }
-
-        public Date getStartTrigger() {
-            return startTrigger;
-        }
-
-        public Date getEndTrigger() {
-            return endTrigger;
-        }
-    }
 }

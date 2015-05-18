@@ -20,3 +20,11 @@ Examples:
 |simple|    en|English|Jackdaws love my big sphinx of quartz|
 |simple|    hu| Magyar|\u00C1rv\u00EDzt\u00FBr\u00F5 t\u00FCk\u00F6rf\u00FAr\u00F3g\u00E9p|
 |simple|    de|Deutsch|Victor jagt zw\u00F6lf Boxk\u00E4mpfer quer \u00FCber den gro\u00DFen Sylter Deich|
+
+
+Scenario: Recieved unlock event is not localized
+Given there is no internationalization message files for BadgeR
+When an achievement with simple id is unlocked
+Then unlocked event received for achievement simple
+And the title of the achievement is the message property key simple.title
+And the desciption of the achievement is the message property key simple.text

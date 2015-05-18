@@ -3,7 +3,7 @@ package net.csongradyp.badger.parser.ini;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IRelation;
-import net.csongradyp.badger.domain.achievement.relation.RelatedAchievement;
+import net.csongradyp.badger.domain.achievement.relation.ChildAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
 import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
 import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
@@ -45,7 +45,7 @@ public class RelationParser {
                 final AchievementType achievementType = AchievementType.parse(achievementTypeString);
                 final Optional<IAchievement> achievementBean = achievements.stream().filter(achievement -> achievement.getType().equals(achievementType) && id.equals(achievement.getId())).findAny();
                 if (achievementBean.isPresent()) {
-                    relationStack.peek().addChild(new RelatedAchievement(achievementBean.get()));
+                    relationStack.peek().addChild(new ChildAchievement(achievementBean.get()));
                 }
                 normalizedRelation = normalizedRelation.substring(nextIndex);
             }

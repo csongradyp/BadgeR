@@ -2,7 +2,7 @@ package net.csongradyp.badger.parser.ini;
 
 import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.*;
-import net.csongradyp.badger.domain.achievement.relation.RelatedAchievement;
+import net.csongradyp.badger.domain.achievement.relation.ChildAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
 import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
 import org.junit.Before;
@@ -53,9 +53,8 @@ public class RelationParserTest {
         assertThat(relation.getOperator(), equalTo(RelationOperator.AND));
         assertThat(relation.getChildren().size(), equalTo(2));
         for (IRelation iRelation : relation.getChildren()) {
-            assertThat(iRelation, instanceOf(RelatedAchievement.class));
+            assertThat(iRelation, instanceOf(ChildAchievement.class));
         }
-        assertThat(relation.evaluate(mockUnlockFinderFacade), is(true));
     }
 
     @Test
@@ -73,8 +72,7 @@ public class RelationParserTest {
         assertThat(relation.getChildren().iterator().next(), instanceOf(Relation.class));
         assertThat(((Relation)relation.getChildren().iterator().next()).getChildren().size(), equalTo(2));
         for (IRelation iRelation : ((Relation)relation.getChildren().iterator().next()).getChildren()) {
-            assertThat(iRelation, instanceOf(RelatedAchievement.class));
+            assertThat(iRelation, instanceOf(ChildAchievement.class));
         }
-        assertThat(relation.evaluate(mockUnlockFinderFacade), is(true));
     }
 }

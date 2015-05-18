@@ -14,6 +14,7 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
     public AbstractAchievementBean() {
         event = new ArrayList<>();
         maxLevel = 1;
+        category= "default";
     }
 
     @Override
@@ -35,8 +36,6 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
     public void setCategory(final String category) {
         if(category != null && !category.isEmpty()) {
             this.category = category;
-        } else {
-            this.category = "default";
         }
     }
 

@@ -1,5 +1,21 @@
 package net.csongradyp.badger.parser;
 
+import net.csongradyp.badger.AchievementBundle;
+import net.csongradyp.badger.AchievementDefinition;
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.IAchievementBean;
+import net.csongradyp.badger.domain.IRelationalAchievement;
+import net.csongradyp.badger.domain.achievement.*;
+import net.csongradyp.badger.domain.achievement.relation.Relation;
+import net.csongradyp.badger.exception.AchievementNotFoundException;
+import net.csongradyp.badger.exception.MalformedAchievementDefinition;
+import net.csongradyp.badger.parser.ini.RelationParser;
+import org.ini4j.Ini;
+import org.ini4j.Profile;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,26 +23,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Named;
-import net.csongradyp.badger.AchievementDefinition;
-import net.csongradyp.badger.domain.AchievementType;
-import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IAchievementBean;
-import net.csongradyp.badger.domain.IRelationalAchievement;
-import net.csongradyp.badger.AchievementBundle;
-import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
-import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
-import net.csongradyp.badger.domain.achievement.DateAchievementBean;
-import net.csongradyp.badger.domain.achievement.SingleAchievementBean;
-import net.csongradyp.badger.domain.achievement.TimeAchievementBean;
-import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
-import net.csongradyp.badger.domain.achievement.relation.Relation;
-import net.csongradyp.badger.exception.AchievementNotFoundException;
-import net.csongradyp.badger.exception.MalformedAchievementDefinition;
-import net.csongradyp.badger.parser.ini.RelationParser;
-import org.ini4j.Ini;
-import org.ini4j.Profile;
 
 @Named
 public class AchievementIniParser implements IAchievementDefinitionFileParser {
@@ -88,8 +84,8 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
         final AchievementDefinition achievementBundle = new AchievementBundle();
         achievementBundle.setEvents(parseEvents());
         final Collection<IAchievement> achievements = parseAchievements();
-        achievementBundle.setAchievements(achievements);
         achievementBundle.setRelations(parseRelations(achievements));
+        achievementBundle.setAchievements(achievements);
         return achievementBundle;
     }
 

@@ -1,10 +1,11 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
-import net.csongradyp.badger.provider.date.IDateProvider;
 import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
+import net.csongradyp.badger.domain.achievement.trigger.TimeTriggerPair;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.factory.UnlockedEventFactory;
+import net.csongradyp.badger.provider.date.IDateProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,8 +23,8 @@ public class TimeRangeUnlockedProvider extends UnlockedProvider<TimeRangeAchieve
 
     @Override
     public Optional<IAchievementUnlockedEvent> getUnlockable(final TimeRangeAchievementBean timeAchievement, final Long score) {
-        final List<TimeRangeAchievementBean.TimeTriggerPair> timeTriggers = timeAchievement.getTrigger();
-        for (TimeRangeAchievementBean.TimeTriggerPair timeTrigger : timeTriggers) {
+        final List<TimeTriggerPair> timeTriggers = timeAchievement.getTrigger();
+        for (TimeTriggerPair timeTrigger : timeTriggers) {
             final Date startTrigger = timeTrigger.getStartTrigger();
             final Date endTrigger = timeTrigger.getEndTrigger();
             if (startTrigger.before(endTrigger)) {
@@ -39,7 +40,11 @@ public class TimeRangeUnlockedProvider extends UnlockedProvider<TimeRangeAchieve
         return Optional.empty();
     }
 
-    public void setDateProvider(IDateProvider dateProvider) {
+    public void setDateProvider(final IDateProvider dateProvider) {
         this.dateProvider = dateProvider;
+    }
+
+    void setUnlockedEventFactory(final UnlockedEventFactory unlockedEventFactory) {
+        this.unlockedEventFactory = unlockedEventFactory;
     }
 }

@@ -2,9 +2,10 @@ package net.csongradyp.bdd.provider;
 
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.provider.date.DateProvider;
-import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
+import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
 import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
+import net.csongradyp.badger.domain.achievement.trigger.TimeTriggerPair;
+import net.csongradyp.badger.provider.date.DateProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,17 +26,25 @@ public class TriggerChecker {
                 optional = achievement.getTrigger().stream().filter(t -> t.equals(trigger)).findAny();
                 break;
             case TIME_RANGE:
-                optional = achievement.getTrigger().stream().filter(t -> {
-                    final Date startTrigger = ((TimeRangeAchievementBean.TimeTriggerPair) t).getStartTrigger();
-                    final Date endTrigger = ((TimeRangeAchievementBean.TimeTriggerPair) t).getEndTrigger();
-                    return startTrigger.equals(Long.valueOf(trigger));
-                }).findAny();
+                optional = Optional.empty();
                 break;
             case COUNTER:
-                optional = achievement.getTrigger().stream().filter(t -> ((NumberTrigger) t).getTrigger().equals(Long.valueOf(trigger))).findAny();
+                final NumberTrigger.Operation op;
+                final String number = trigger.replaceAll("[+-]", "");
+                final Long value = Long.valueOf(number);
+                if (trigger.contains("+")) {
+                    op = NumberTrigger.Operation.GREATER_THAN;
+                } else if(trigger.contains("-")) {
+                    op = NumberTrigger.Operation.LESS_THAN;
+                } else {
+                    op = NumberTrigger.Operation.EQUALS;
+                }
+                optional = achievement.getTrigger().stream().filter(t -> ((NumberTrigger) t).getTrigger().equals(value) && ((NumberTrigger) t).getOperation() == op).findAny();
                 break;
             case SINGLE:
             case COMPOSITE:
+                final IAchievement child = ((CompositeAchievementBean) achievement).getChildren().get(type);
+                return isTriggerPresent(child, type, trigger);
             default:
                 optional = Optional.empty();
                 break;
@@ -44,11 +53,15 @@ public class TriggerChecker {
     }
 
     public Boolean isTimeRangeTriggerPresent(final IAchievement achievement, final String start, final String end) {
-        final Optional optional = achievement.getTrigger().stream().filter(t -> {
-            final Date startTrigger = ((TimeRangeAchievementBean.TimeTriggerPair) t).getStartTrigger();
-            final Date endTrigger = ((TimeRangeAchievementBean.TimeTriggerPair) t).getEndTrigger();
-            return start.equals(dateProvider.getTime(startTrigger)) && end.equals(dateProvider.getTime(endTrigger));
-       }).findAny();
+        final Optional optional = getTimeRangeTrigger(achievement, start, end);
         return optional.isPresent();
+    }
+
+    private Optional getTimeRangeTrigger(final IAchievement achievement, final String start, final String end) {
+        return achievement.getTrigger().stream().filter(t -> {
+            final Date startTrigger = ((TimeTriggerPair) t).getStartTrigger();
+            final Date endTrigger = ((TimeTriggerPair) t).getEndTrigger();
+            return start.equals(dateProvider.getTime(startTrigger)) && end.equals(dateProvider.getTime(endTrigger));
+        }).findAny();
     }
 }

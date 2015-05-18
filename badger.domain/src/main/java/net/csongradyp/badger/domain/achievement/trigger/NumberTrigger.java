@@ -3,7 +3,17 @@ package net.csongradyp.badger.domain.achievement.trigger;
 public class NumberTrigger {
 
     public enum Operation {
-        EQUALS, GREATER_THAN, LESS_THAN;
+        EQUALS(""), GREATER_THAN("+"), LESS_THAN("-");
+
+        private final String operator;
+
+        Operation(final String operator) {
+            this.operator = operator;
+        }
+
+        public String getOperator() {
+            return operator;
+        }
     }
 
     private final Long trigger;
@@ -29,6 +39,6 @@ public class NumberTrigger {
 
     @Override
     public String toString() {
-        return operation + " " + trigger;
+        return trigger + operation.getOperator();
     }
 }

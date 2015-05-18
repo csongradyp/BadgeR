@@ -1,6 +1,5 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
-import java.util.Optional;
 import net.csongradyp.badger.domain.achievement.TimeAchievementBean;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
@@ -12,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -41,7 +42,7 @@ public class TimeUnlockedProviderTest {
     @Test
     public void testUnlockableReturnsUnlockableAchievementWhenOneOfTheGivenTimeAchievementTriggerIsEqualToTheCurrentTimeInMinutePrecision() {
         final String time = "23:14";
-        final TimeAchievementBean timeAchievementBean = givenTimeAchievementBean(time);
+        final TimeAchievementBean timeAchievementBean = givenTimeRangeAchievementBean(time);
         given(mockDateProvider.currentTime()).willReturn(time);
         given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(false);
         final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", time);
@@ -56,7 +57,7 @@ public class TimeUnlockedProviderTest {
     @Test
     public void testUnlockableReturnsEmptyWhenOneOfTheGivenTimeAchievementTriggerIsEqualToTheCurrentTimeInMinutePrecisionAndIsAlreadyUnlocked() {
         final String time = "23:14";
-        final TimeAchievementBean timeAchievementBean = givenTimeAchievementBean(time);
+        final TimeAchievementBean timeAchievementBean = givenTimeRangeAchievementBean(time);
         given(mockDateProvider.currentTime()).willReturn(time);
         given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(true);
 
@@ -67,7 +68,7 @@ public class TimeUnlockedProviderTest {
 
     @Test
     public void testUnlockableReturnsEmptyWhenNoTriggerIsMatchingTheCurrentTime() {
-        final TimeAchievementBean timeAchievementBean = givenTimeAchievementBean("23:14");
+        final TimeAchievementBean timeAchievementBean = givenTimeRangeAchievementBean("23:14");
         given(mockDateProvider.currentTime()).willReturn("23:15");
 
         final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(timeAchievementBean, 0L);
@@ -75,7 +76,7 @@ public class TimeUnlockedProviderTest {
         assertThat(result.isPresent(), is(false));
     }
 
-    private TimeAchievementBean givenTimeAchievementBean(final String trigger) {
+    private TimeAchievementBean givenTimeRangeAchievementBean(final String trigger) {
         final TimeAchievementBean timeAchievementBean = new TimeAchievementBean();
         timeAchievementBean.setId(ACHIEVEMENT_ID);
         timeAchievementBean.setTrigger(new String[]{trigger});

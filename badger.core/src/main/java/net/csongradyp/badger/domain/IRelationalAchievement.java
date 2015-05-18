@@ -2,7 +2,7 @@ package net.csongradyp.badger.domain;
 
 import java.util.Map;
 
-public interface IRelationalAchievement extends IAchievement<IRelation>, IRelation {
+public interface IRelationalAchievement extends IAchievement<String>, IRelation {
 
     Map<AchievementType, IAchievement> getChildren();
 

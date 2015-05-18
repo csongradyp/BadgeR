@@ -6,8 +6,10 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import javax.inject.Named;
 import java.util.Date;
 
+@Named
 public class TestDateProvider extends DateProvider {
 
     private Date stubbedDate;
@@ -26,7 +28,7 @@ public class TestDateProvider extends DateProvider {
 
     public void stubTime(final String time) {
         final String date = dateFormatter.print(new DateTime().minusDays(1));
-        stubbedDate = dateTimeFormatter.parseDateTime(date + " " + time).toDate();
+        stubDateTime(date, time);
     }
 
     public void stubDateTime(final String date, final String time) {

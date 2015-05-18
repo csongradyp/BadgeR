@@ -3,6 +3,7 @@ package net.csongradyp.bdd.steps.common;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
@@ -56,6 +57,25 @@ public class AchievementUnlockedSteps {
         }
     }
 
+    @Given("an achievement with $id id and $type type")
+    public void checkCompositeAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type) {
+        final Optional<IAchievement> achievement = controller.get(type, id);
+       assertThat("Achievement is not defined with id: " + id + "and type: " + type, achievement.isPresent(), is(true));
+    }
+
+    @Given("has a child with $id id and $type type bounded to $event event with trigger $trigger")
+    public void checkChildAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
+        final Optional<IAchievement> achievement = controller.get(AchievementType.COMPOSITE, id);
+        if(achievement.isPresent()) {
+            final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
+            assertThat("Achievement is subscribed to event" + event, composite.getEvent().contains(event), is(true));
+            final IAchievement child = composite.getChildren().get(type);
+            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(child, type, trigger), is(true));
+        } else {
+            fail("Achievement is not defined with id: " + id + "and type: composite ");
+        }
+    }
+
     @Given("the achievement with $id id is already unlocked with level $level")
     public void unlock(final @Named("id") String id, final @Named("level") Integer level) {
         achievementDao.unlock(id, level);
@@ -105,7 +125,7 @@ public class AchievementUnlockedSteps {
     }
 
     @AsParameterConverter
-    public AchievementType getType(String type) {
+    public AchievementType getType(final String type) {
         return AchievementType.parse(type);
     }
 

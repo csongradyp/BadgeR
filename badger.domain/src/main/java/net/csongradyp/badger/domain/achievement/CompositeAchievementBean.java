@@ -1,16 +1,12 @@
 package net.csongradyp.badger.domain.achievement;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IRelation;
 import net.csongradyp.badger.domain.IRelationalAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
+
+import java.util.*;
 
 public class CompositeAchievementBean implements IRelationalAchievement {
 
@@ -40,7 +36,11 @@ public class CompositeAchievementBean implements IRelationalAchievement {
 
     @Override
     public String getCategory() {
-        return "composite";
+        final Optional<IAchievement> childAchievement = children.values().stream().filter(child -> child.getCategory() != "default").findAny();
+        if(childAchievement.isPresent()) {
+            return childAchievement.get().getCategory();
+        }
+        return "default";
     }
 
     @Override
@@ -61,10 +61,10 @@ public class CompositeAchievementBean implements IRelationalAchievement {
     }
 
     @Override
-    public List<IRelation> getTrigger() {
-        final List<IRelation> relationAsTriggers = Collections.emptyList();
-        relationAsTriggers.add(relation);
-        return relationAsTriggers;
+    public List<String> getTrigger() {
+        List<String> triggers = new ArrayList<>();
+        children.values().forEach(achievement -> achievement.getTrigger().forEach(t -> triggers.add(t.toString())));
+        return triggers;
     }
 
     @Override

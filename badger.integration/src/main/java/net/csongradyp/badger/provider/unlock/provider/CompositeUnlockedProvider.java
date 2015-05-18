@@ -14,16 +14,24 @@ import java.util.Optional;
 public class CompositeUnlockedProvider extends UnlockedProvider<CompositeAchievementBean> {
 
     @Inject
-    private IAchievementUnlockFinderFacade achievementController;
+    private IAchievementUnlockFinderFacade unlockFinder;
     @Inject
     private UnlockedEventFactory unlockedEventFactory;
 
     @Override
     public Optional<IAchievementUnlockedEvent> getUnlockable(final CompositeAchievementBean relationBean, final Long score) {
-        if (relationBean.evaluate(achievementController)) {
+        if (relationBean.evaluate(unlockFinder)) {
             final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(relationBean);
             return Optional.of(achievementUnlockedEvent);
         }
         return Optional.empty();
+    }
+
+    void setUnlockFinder(final IAchievementUnlockFinderFacade unlockFinder) {
+        this.unlockFinder = unlockFinder;
+    }
+
+    void setUnlockedEventFactory(final UnlockedEventFactory unlockedEventFactory) {
+        this.unlockedEventFactory = unlockedEventFactory;
     }
 }

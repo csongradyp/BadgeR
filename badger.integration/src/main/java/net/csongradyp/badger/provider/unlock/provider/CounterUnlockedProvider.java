@@ -33,16 +33,19 @@ public class CounterUnlockedProvider extends UnlockedProvider<CounterAchievement
     }
 
     private Boolean isTriggered(final Long currentValue, final NumberTrigger trigger) {
-        final Long triggerValue = trigger.getTrigger();
+        Boolean triggered = false;
         switch (trigger.getOperation()) {
             case GREATER_THAN:
-                return currentValue >= triggerValue;
+                triggered = currentValue >= trigger.getTrigger();
+                break;
             case LESS_THAN:
-                return currentValue <= triggerValue;
+                triggered = currentValue <= trigger.getTrigger();
+                break;
             case EQUALS:
-                return currentValue.equals(triggerValue);
+                triggered = currentValue.equals(trigger.getTrigger());
+                break;
         }
-        return false;
+        return triggered;
     }
 
 
@@ -52,5 +55,9 @@ public class CounterUnlockedProvider extends UnlockedProvider<CounterAchievement
 
     private Boolean isLevelUnlocked(final String id, final Integer level) {
         return achievementDao.isUnlocked(id, level);
+    }
+
+    void setUnlockedEventFactory(final UnlockedEventFactory unlockedEventFactory) {
+        this.unlockedEventFactory = unlockedEventFactory;
     }
 }

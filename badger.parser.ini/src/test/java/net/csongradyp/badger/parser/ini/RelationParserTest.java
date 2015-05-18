@@ -50,8 +50,12 @@ public class RelationParserTest {
     public void testParseReturnsOneLevelRelationWhenNoBracketsArePresentInTheRelationDefinition() {
         final String definition = "date & time";
         final Collection<IAchievement> achievements = new ArrayList<>();
-        achievements.add(new DateAchievementBean());
-        achievements.add(new TimeAchievementBean());
+        final DateAchievementBean dateAchievementBean = new DateAchievementBean();
+        dateAchievementBean.setId(ID);
+        achievements.add(dateAchievementBean);
+        final TimeAchievementBean timeAchievementBean = new TimeAchievementBean();
+        timeAchievementBean.setId(ID);
+        achievements.add(timeAchievementBean);
 
         final Relation relation = underTest.parse(ID, definition, achievements);
 
@@ -66,9 +70,15 @@ public class RelationParserTest {
     public void testParseReturnsTwoLevelRelationWhenOnePairOfBracketsArePresentInTheRelationDefinition() {
         final String definition = "(date & time) | counter";
         final Collection<IAchievement> achievements = new ArrayList<>();
-        achievements.add(new DateAchievementBean());
-        achievements.add(new TimeAchievementBean());
-        achievements.add(new CounterAchievementBean());
+        final DateAchievementBean dateAchievementBean = new DateAchievementBean();
+        dateAchievementBean.setId(ID);
+        achievements.add(dateAchievementBean);
+        final TimeAchievementBean timeAchievementBean = new TimeAchievementBean();
+        timeAchievementBean.setId(ID);
+        achievements.add(timeAchievementBean);
+        final CounterAchievementBean counterAchievementBean = new CounterAchievementBean();
+        counterAchievementBean.setId(ID);
+        achievements.add(counterAchievementBean);
 
         final Relation relation = underTest.parse(ID, definition, achievements);
 

@@ -23,20 +23,3 @@ Examples:
 |        id        |     event    | date|start| end | time|
 |composite-dateTime|compositeEvent|05-04|04:00|05:00|04:10|
 |composite-dateTime|compositeEvent|06-22|04:00|05:00|04:23|
-
-Scenario: Related event triggered so that composite achievement is unlocked - date & score
-
-Given an achievement with <id> id and composite type
-And has a child with <id> id and date type bounded to <event> event with trigger <date>
-And has a child with <id> id and counter type bounded to <event> event with trigger <trigger>
-And the achievement with <id> is not unlocked
-And the current date is <date>
-And the current <event> event score is 0
-When <event> event is triggered with <score> as a score
-Then achievement unlocked event is received
-And achievement id is <id>
-And the level of the unlocked achievement is 1
-
-Examples:
-|          id         |     event    | date|trigger|score|
-|composite-dateCounter|compositeEvent|12-12|   100+|  123|

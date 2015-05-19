@@ -1,12 +1,11 @@
 package net.csongradyp.badger.provider.date;
 
+import java.util.Date;
+import javax.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import javax.inject.Named;
-import java.util.Date;
 
 @Named
 public class DateProvider implements IDateProvider {

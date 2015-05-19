@@ -1,16 +1,19 @@
 package net.csongradyp.badger.provider.unlock;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.inject.Named;
 import net.csongradyp.badger.AchievementDefinition;
 import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.persistence.EventDao;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
 
 @Named
 public class AchievementUnlockProviderFacade implements IAchievementUnlockFinderFacade {

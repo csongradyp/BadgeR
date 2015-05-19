@@ -1,5 +1,7 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
+import java.util.Date;
+import java.util.Optional;
 import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
@@ -11,9 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Date;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

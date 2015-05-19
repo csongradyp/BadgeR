@@ -1,5 +1,7 @@
 package net.csongradyp.bdd.steps;
 
+import java.util.Optional;
+import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
@@ -11,9 +13,6 @@ import net.csongradyp.bdd.provider.TestDateProvider;
 import net.csongradyp.bdd.provider.TriggerChecker;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
-
-import javax.inject.Inject;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

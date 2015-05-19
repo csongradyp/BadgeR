@@ -1,9 +1,8 @@
 package net.csongradyp.badger.provider.unlock;
 
+import java.util.Optional;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
-
-import java.util.Optional;
 
 public interface IUnlockedProvider<TYPE extends IAchievement> {
 

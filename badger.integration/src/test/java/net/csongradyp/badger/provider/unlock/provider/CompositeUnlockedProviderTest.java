@@ -1,5 +1,6 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
+import java.util.Optional;
 import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
@@ -18,8 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

@@ -1,14 +1,19 @@
 package net.csongradyp.badger;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IAchievementBean;
 import net.csongradyp.badger.domain.IRelationalAchievement;
 import net.csongradyp.badger.domain.achievement.DateAchievementBean;
 import net.csongradyp.badger.exception.AchievementNotFoundException;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class AchievementBundle implements AchievementDefinition {
 

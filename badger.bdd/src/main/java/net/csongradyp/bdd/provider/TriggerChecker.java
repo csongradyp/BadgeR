@@ -1,16 +1,15 @@
 package net.csongradyp.bdd.provider;
 
+import java.util.Date;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
 import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
 import net.csongradyp.badger.domain.achievement.trigger.TimeTriggerPair;
 import net.csongradyp.badger.provider.date.DateProvider;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
-import java.util.Optional;
 
 @Named
 public class TriggerChecker {

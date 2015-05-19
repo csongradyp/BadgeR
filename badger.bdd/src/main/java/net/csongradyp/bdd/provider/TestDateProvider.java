@@ -1,13 +1,12 @@
 package net.csongradyp.bdd.provider;
 
+import java.util.Date;
+import javax.inject.Named;
 import net.csongradyp.badger.provider.date.DateProvider;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
-import javax.inject.Named;
-import java.util.Date;
 
 @Named
 public class TestDateProvider extends DateProvider {

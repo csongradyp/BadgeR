@@ -1,5 +1,6 @@
 package net.csongradyp.badger.persistence;
 
+import java.util.Collections;
 import java.util.Optional;
 import net.csongradyp.badger.persistence.entity.AchievementEntity;
 import net.csongradyp.badger.persistence.repository.AchievementRepository;
@@ -9,8 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

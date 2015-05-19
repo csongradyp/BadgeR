@@ -1,5 +1,6 @@
 package net.csongradyp.bdd.steps.common;
 
+import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.persistence.EventDao;
 import net.csongradyp.bdd.Steps;
@@ -7,8 +8,6 @@ import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.When;
-
-import javax.inject.Inject;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

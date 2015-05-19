@@ -1,5 +1,8 @@
 package net.csongradyp.badger.event;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.event.exception.SubscriptionException;
 import net.csongradyp.badger.event.handler.IAchievementUnlockedHandler;
@@ -10,10 +13,6 @@ import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import net.engio.mbassy.bus.MBassador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
 
 public final class EventBus {
 

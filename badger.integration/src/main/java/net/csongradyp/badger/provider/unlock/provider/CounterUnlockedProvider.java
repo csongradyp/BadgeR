@@ -1,16 +1,15 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
+import java.util.List;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
 import net.csongradyp.badger.domain.IAchievementBean;
 import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
 import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.factory.UnlockedEventFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.List;
-import java.util.Optional;
 
 @Named
 public class CounterUnlockedProvider extends UnlockedProvider<CounterAchievementBean> {

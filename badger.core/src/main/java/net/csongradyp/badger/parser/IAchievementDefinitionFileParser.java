@@ -1,9 +1,8 @@
 package net.csongradyp.badger.parser;
 
-import net.csongradyp.badger.AchievementDefinition;
-
 import java.io.File;
 import java.net.URL;
+import net.csongradyp.badger.AchievementDefinition;
 
 public interface IAchievementDefinitionFileParser {
 

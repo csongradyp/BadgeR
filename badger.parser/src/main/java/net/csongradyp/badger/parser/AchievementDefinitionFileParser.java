@@ -1,14 +1,13 @@
 package net.csongradyp.badger.parser;
 
-import net.csongradyp.badger.AchievementDefinition;
-import net.csongradyp.badger.parser.file.FileType;
-import org.apache.commons.io.FilenameUtils;
-
-import javax.annotation.Resource;
-import javax.inject.Named;
 import java.io.File;
 import java.net.URL;
 import java.util.Map;
+import javax.annotation.Resource;
+import javax.inject.Named;
+import net.csongradyp.badger.AchievementDefinition;
+import net.csongradyp.badger.parser.file.FileType;
+import org.apache.commons.io.FilenameUtils;
 
 @Named
 public class AchievementDefinitionFileParser implements IAchievementDefinitionFileParser {

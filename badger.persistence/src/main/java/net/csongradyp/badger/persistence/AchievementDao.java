@@ -1,11 +1,15 @@
 package net.csongradyp.badger.persistence;
 
-import net.csongradyp.badger.persistence.entity.AchievementEntity;
-import net.csongradyp.badger.persistence.repository.AchievementRepository;
-
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
+import net.csongradyp.badger.persistence.entity.AchievementEntity;
+import net.csongradyp.badger.persistence.repository.AchievementRepository;
 
 /**
  * DAO for achievements to database communication.

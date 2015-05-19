@@ -1,5 +1,9 @@
 package net.csongradyp.badger.parser;
 
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import net.csongradyp.badger.AchievementDefinition;
 import net.csongradyp.badger.parser.excpetion.UnsupportedAchievementDefinitionFileType;
 import net.csongradyp.badger.parser.file.FileType;
@@ -9,11 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

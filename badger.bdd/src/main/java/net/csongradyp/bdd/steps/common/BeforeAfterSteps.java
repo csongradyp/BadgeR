@@ -1,11 +1,10 @@
 package net.csongradyp.bdd.steps.common;
 
+import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.parser.AchievementDefinitionFileParser;
 import net.csongradyp.bdd.Steps;
 import org.jbehave.core.annotations.BeforeStories;
-
-import javax.inject.Inject;
 
 @Steps
 public class BeforeAfterSteps {

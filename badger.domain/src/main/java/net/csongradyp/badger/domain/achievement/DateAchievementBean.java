@@ -3,8 +3,8 @@ package net.csongradyp.badger.domain.achievement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.AbstractAchievementBean;
+import net.csongradyp.badger.domain.AchievementType;
 
 public class DateAchievementBean extends AbstractAchievementBean<String> {
 

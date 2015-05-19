@@ -1,12 +1,11 @@
 package net.csongradyp.bdd.steps;
 
+import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.bdd.Steps;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.When;
-
-import javax.inject.Inject;
 
 @Steps
 public class ScoreAchievementUnlockedSteps {

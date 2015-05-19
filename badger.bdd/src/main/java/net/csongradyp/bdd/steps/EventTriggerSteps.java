@@ -1,14 +1,19 @@
 package net.csongradyp.bdd.steps;
 
+import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
 import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import net.csongradyp.badger.persistence.EventDao;
 import net.csongradyp.bdd.Steps;
-import org.jbehave.core.annotations.*;
-
-import javax.inject.Inject;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;

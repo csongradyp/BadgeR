@@ -1,9 +1,13 @@
 package net.csongradyp.badger;
 
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-
-import java.util.*;
 
 public interface IAchievementController {
 

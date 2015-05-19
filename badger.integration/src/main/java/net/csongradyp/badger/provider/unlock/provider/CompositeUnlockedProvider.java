@@ -1,14 +1,13 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
 import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.factory.UnlockedEventFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Optional;
 
 @Named
 public class CompositeUnlockedProvider extends UnlockedProvider<CompositeAchievementBean> {

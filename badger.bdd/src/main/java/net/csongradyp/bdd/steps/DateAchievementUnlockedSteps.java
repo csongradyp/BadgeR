@@ -1,11 +1,10 @@
 package net.csongradyp.bdd.steps;
 
+import javax.inject.Inject;
 import net.csongradyp.badger.provider.unlock.provider.DateUnlockedProvider;
 import net.csongradyp.bdd.Steps;
 import net.csongradyp.bdd.provider.TestDateProvider;
 import org.jbehave.core.annotations.Given;
-
-import javax.inject.Inject;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

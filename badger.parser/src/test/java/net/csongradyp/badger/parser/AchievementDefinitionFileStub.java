@@ -1,15 +1,14 @@
 package net.csongradyp.badger.parser;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import net.csongradyp.badger.AchievementDefinition;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IAchievementBean;
 import net.csongradyp.badger.domain.IRelationalAchievement;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 public class AchievementDefinitionFileStub implements AchievementDefinition {
     @Override

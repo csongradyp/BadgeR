@@ -1,15 +1,14 @@
 package net.csongradyp.badger.factory;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.ResourceBundle;
+import javax.inject.Named;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IAchievementBean;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.ResourceBundle;
 
 @Named
 public class UnlockedEventFactory {

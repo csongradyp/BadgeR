@@ -1,12 +1,15 @@
 package net.csongradyp.badger.domain.achievement;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IRelationalAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
-
-import java.util.*;
 
 public class CompositeAchievementBean implements IRelationalAchievement {
 

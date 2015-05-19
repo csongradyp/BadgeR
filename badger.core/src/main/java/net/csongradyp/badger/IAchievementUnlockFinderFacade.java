@@ -1,10 +1,9 @@
 package net.csongradyp.badger;
 
-import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.event.IAchievementUnlockedEvent;
-
 import java.util.Collection;
 import java.util.Optional;
+import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 
 public interface IAchievementUnlockFinderFacade {
 

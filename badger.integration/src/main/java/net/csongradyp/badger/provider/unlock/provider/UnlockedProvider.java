@@ -1,10 +1,9 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
+import javax.inject.Inject;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.persistence.AchievementDao;
 import net.csongradyp.badger.provider.unlock.IUnlockedProvider;
-
-import javax.inject.Inject;
 
 abstract class UnlockedProvider<TYPE extends IAchievement> implements IUnlockedProvider<TYPE> {
 

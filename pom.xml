@@ -108,7 +108,6 @@
                     <excludes>
                         <exclude>**/net/csongradyp/bdd/**/*</exclude>
                     </excludes>
-                    <append>true</append>
                 </configuration>
                 <executions>
                     <execution>

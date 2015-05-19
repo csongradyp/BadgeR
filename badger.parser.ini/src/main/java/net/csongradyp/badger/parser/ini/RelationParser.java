@@ -1,5 +1,12 @@
 package net.csongradyp.badger.parser.ini;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Stack;
+import javax.inject.Inject;
+import javax.inject.Named;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IRelation;
@@ -7,10 +14,6 @@ import net.csongradyp.badger.domain.achievement.relation.ChildAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
 import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
 import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
 
 @Named
 public class RelationParser {

@@ -1,10 +1,9 @@
 package net.csongradyp.bdd.data;
 
-import net.csongradyp.badger.event.IAchievementUnlockedEvent;
-
-import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Named;
+import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 
 @Named
 public class ReceivedAchievementUnlockedEvents {

@@ -1,5 +1,6 @@
 package net.csongradyp.badger.event;
 
+import java.util.ArrayList;
 import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
@@ -12,9 +13,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 

@@ -1,5 +1,10 @@
 package net.csongradyp.bdd.steps;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import javax.annotation.Resource;
+import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.bdd.Steps;
@@ -9,12 +14,6 @@ import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

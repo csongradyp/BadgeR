@@ -1,10 +1,9 @@
 package net.csongradyp.badger.parser.ini;
 
 
+import javax.inject.Named;
 import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
 import org.springframework.util.StringUtils;
-
-import javax.inject.Named;
 
 @Named
 public class RelationValidator {

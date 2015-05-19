@@ -1,9 +1,9 @@
 package net.csongradyp.badger.event.message;
 
 /**
- * Class for updated event score information.
+ * Event for updated score information.
  */
-public class Score {
+public class ScoreUpdatedEvent {
 
     private String event;
     private Long value;
@@ -12,7 +12,7 @@ public class Score {
      * @param event Name of the triggered event.
      * @param value New value of event trigger.
      */
-    public Score(final String event, final Long value) {
+    public ScoreUpdatedEvent(final String event, final Long value) {
         this.event = event;
         this.value = value;
     }
@@ -29,7 +29,7 @@ public class Score {
     /**
      * Returns the new value of the event counter/score.
      *
-     * @return new value of event counter/score after trigger.
+     * @return new value of event counter/score after triggered.
      */
     public Long getValue() {
         return value;

@@ -3,7 +3,7 @@ package net.csongradyp.bdd.steps;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
-import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import net.csongradyp.badger.persistence.EventDao;
 import net.csongradyp.bdd.Steps;
 import org.jbehave.core.annotations.*;
@@ -23,7 +23,7 @@ public class EventTriggerSteps {
     private AchievementController controller;
     @Inject
     private EventDao eventDao;
-    private Score receivedEvent;
+    private ScoreUpdatedEvent receivedEvent;
 
     @BeforeScenario(uponType = ScenarioType.ANY)
     public void beforeAchievementEventTriggerSteps() {

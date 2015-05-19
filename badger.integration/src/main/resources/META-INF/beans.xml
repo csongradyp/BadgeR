@@ -21,6 +21,8 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <jpa:repositories base-package="net.csongradyp.badger.persistence.repository"/>
 
+    <import resource="parsers-beans.xml"/>
+
     <util:map id="unlockedProviders" map-class="java.util.HashMap">
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).COMPOSITE}" value-ref="compositeUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).COUNTER}" value-ref="counterUnlockedProvider" />

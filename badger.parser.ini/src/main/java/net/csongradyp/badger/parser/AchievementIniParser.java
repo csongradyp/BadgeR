@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,18 +67,6 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
         return createDefinitions();
     }
 
-    @Override
-    public AchievementDefinition parse(final InputStream inputStream) {
-        try {
-            ini = new Ini(inputStream);
-            ini.getConfig().setMultiOption(true);
-            validateEventDefinition();
-        } catch (IOException e) {
-            throw new MalformedAchievementDefinition("Achievement ini file error!", e);
-        }
-        return createDefinitions();
-    }
-
     private AchievementDefinition createDefinitions() {
         final AchievementDefinition achievementBundle = new AchievementBundle();
         achievementBundle.setEvents(parseEvents());
@@ -113,15 +100,6 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
             }
         }
         return compositeAchievementBeans;
-    }
-
-    @Override
-    public IAchievementBean parse(final AchievementType type, final String achievementId) {
-        final Profile.Section typeSection = ini.get(type.getType());
-        if (exists(typeSection)) {
-            return parse(achievementId, type, typeSection.getChild(achievementId));
-        }
-        throw new AchievementNotFoundException(type, achievementId);
     }
 
     private Collection<IAchievement> parseAchievements() {

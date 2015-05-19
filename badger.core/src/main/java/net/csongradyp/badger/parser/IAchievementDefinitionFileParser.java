@@ -1,11 +1,9 @@
 package net.csongradyp.badger.parser;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 import net.csongradyp.badger.AchievementDefinition;
-import net.csongradyp.badger.domain.AchievementType;
-import net.csongradyp.badger.domain.IAchievementBean;
+
+import java.io.File;
+import java.net.URL;
 
 public interface IAchievementDefinitionFileParser {
 
@@ -15,7 +13,4 @@ public interface IAchievementDefinitionFileParser {
 
     AchievementDefinition parse(URL achievementFile);
 
-    AchievementDefinition parse(InputStream inputStream);
-
-    IAchievementBean parse(final AchievementType type, final String achievementId);
 }

@@ -10,22 +10,15 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>badger.integration</module>
+        <module>badger.core</module>
+        <module>badger.domain</module>
         <module>badger.persistence</module>
         <module>badger.event</module>
-        <module>badger.core</module>
         <module>badger.parser.ini</module>
-        <module>badger.domain</module>
+        <module>badger.parser</module>
+        <module>badger.integration</module>
         <module>badger.bdd</module>
     </modules>
-
-    <repositories>
-        <repository>
-            <id>objectdb</id>
-            <name>ObjectDB Repository</name>
-            <url>http://m2.objectdb.com</url>
-        </repository>
-    </repositories>
 
     <properties>
         <spring.version>4.0.3.RELEASE</spring.version>
@@ -34,13 +27,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-
-        <build.directory.core>../badger.core/target</build.directory.core>
-        <build.directory.domain>../badger.domain/target</build.directory.domain>
-        <build.directory.event>../badger.event/target</build.directory.event>
-        <build.directory.parser.ini>../badger.parser.ini/target</build.directory.parser.ini>
-        <build.directory.persistence>../badger.persistence/target</build.directory.persistence>
-        <build.directory.integration>../badger.integration/target</build.directory.integration>
     </properties>
 
     <dependencyManagement>
@@ -82,7 +68,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!--LOG-->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -107,40 +92,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>3.1.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.4.201502262128</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/net/csongradyp/bdd/**/*</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

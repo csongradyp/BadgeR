@@ -1,7 +1,7 @@
 package net.csongradyp.badger.event.handler.wrapper;
 
 import net.csongradyp.badger.event.handler.IScoreUpdateHandler;
-import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.Listener;
 import net.engio.mbassy.listener.References;
@@ -20,8 +20,8 @@ public class ScoreUpdateHandlerWrapper implements IScoreUpdateHandler {
 
     @Override
     @Handler(rejectSubtypes = true)
-    public void onUpdate(final Score score) {
-        wrapped.onUpdate(score);
+    public void onUpdate(final ScoreUpdatedEvent scoreUpdatedEvent) {
+        wrapped.onUpdate(scoreUpdatedEvent);
     }
 
     /**

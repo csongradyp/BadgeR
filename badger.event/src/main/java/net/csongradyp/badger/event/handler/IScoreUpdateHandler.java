@@ -1,6 +1,6 @@
 package net.csongradyp.badger.event.handler;
 
-import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 
 /**
  * Interface to handle triggered event score update events.
@@ -10,7 +10,7 @@ public interface IScoreUpdateHandler {
     /**
      * Callback method to receive update information.
      *
-     * @param score Updated event counter/score as a {@link Score} instance.
+     * @param scoreUpdatedEvent Updated event counter/score as a {@link ScoreUpdatedEvent} instance.
      */
-    void onUpdate(Score score);
+    void onUpdate(ScoreUpdatedEvent scoreUpdatedEvent);
 }

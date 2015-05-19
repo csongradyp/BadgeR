@@ -16,11 +16,11 @@ public enum AchievementType {
 
     public static AchievementType parse(final String type) {
         for ( AchievementType achievementType : values() ) {
-            if(achievementType.getType().toLowerCase().equals(type)) {
+            if(achievementType.getType().toLowerCase().equals(type.toLowerCase())) {
                 return achievementType;
             }
         }
-        return null;
+       throw new IllegalArgumentException("Invalid achievement type: " + type);
     }
 
     public String getType() {

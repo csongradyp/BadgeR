@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>net.csongradyp</groupId>
-            <artifactId>badger.parser.ini</artifactId>
+            <artifactId>badger.parser</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

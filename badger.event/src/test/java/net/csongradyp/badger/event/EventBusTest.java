@@ -4,7 +4,7 @@ import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
-import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,13 +26,13 @@ public class EventBusTest {
     private AchievementUnlockedHandlerWrapper unlockedHandlerWrapper;
     private ScoreUpdateHandlerWrapper scoreUpdateHandlerWrapper;
     private AchievementUnlockedEvent receivedAchievementUnlockedEvent;
-    private Score receivedScore;
+    private ScoreUpdatedEvent receivedScoreUpdatedEvent;
 
     @Before
     public void setUp()  {
         unlockedHandlerWrapper = new AchievementUnlockedHandlerWrapper(achievement -> receivedAchievementUnlockedEvent = achievement);
         EventBus.subscribeOnUnlock(unlockedHandlerWrapper);
-        scoreUpdateHandlerWrapper = new ScoreUpdateHandlerWrapper(score -> receivedScore = score);
+        scoreUpdateHandlerWrapper = new ScoreUpdateHandlerWrapper(score -> receivedScoreUpdatedEvent = score);
         EventBus.subscribeOnScoreChanged(scoreUpdateHandlerWrapper);
         EventBus.setController(mockController);
     }
@@ -58,7 +58,7 @@ public class EventBusTest {
 
     @Test
     public void testOnScoreChangedEventSubscriptions() throws Exception {
-        final ScoreUpdateHandlerWrapper handlerWrapper = new ScoreUpdateHandlerWrapper(score -> receivedScore = score);
+        final ScoreUpdateHandlerWrapper handlerWrapper = new ScoreUpdateHandlerWrapper(score -> receivedScoreUpdatedEvent = score);
         EventBus.subscribeOnScoreChanged(handlerWrapper);
         assertThat(EventBus.getScoreUpdateSubscribers().size(), is(equalTo(2)));
         assertThat(EventBus.getScoreUpdateSubscribers().contains(handlerWrapper), is(true));
@@ -91,13 +91,13 @@ public class EventBusTest {
     public void testPublishScoreChangedPublishesGivenEvent() throws Exception {
         final String event = "event";
         final long value = 123L;
-        final Score score = new Score(event, value);
+        final ScoreUpdatedEvent scoreUpdatedEvent = new ScoreUpdatedEvent(event, value);
 
-        EventBus.publishScoreChanged(score);
+        EventBus.publishScoreChanged(scoreUpdatedEvent);
 
-        assertThat(receivedScore, notNullValue());
-        assertThat(receivedScore.getEvent(), is(equalTo(event)));
-        assertThat(receivedScore.getValue(), is(equalTo(value)));
+        assertThat(receivedScoreUpdatedEvent, notNullValue());
+        assertThat(receivedScoreUpdatedEvent.getEvent(), is(equalTo(event)));
+        assertThat(receivedScoreUpdatedEvent.getValue(), is(equalTo(value)));
     }
 
     @Test

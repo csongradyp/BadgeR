@@ -5,7 +5,7 @@ import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
-import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import net.csongradyp.badger.factory.UnlockedEventFactory;
 import net.csongradyp.badger.persistence.AchievementDao;
 import net.csongradyp.badger.persistence.EventDao;
@@ -123,11 +123,16 @@ public class AchievementController implements IAchievementController {
     public void triggerEvent(final String event, final Long score) {
         if (isDifferentValueAsStored(event, score)) {
             LOG.debug("Achievement event triggered: {} with score {} ", event, score);
-            final Long currentValue = eventDao.setScore(event, score);
-            EventBus.publishScoreChanged(new Score(event, currentValue));
+            publishUpdatedScore(event, score);
             final Collection<IAchievementUnlockedEvent> unlockables = achievementUnlockFinder.findUnlockables(event, score);
             unlockables.forEach(this::unlock);
         }
+    }
+
+    private void publishUpdatedScore(final String event, final Long score) {
+        final Long currentValue = eventDao.setScore(event, score);
+        final ScoreUpdatedEvent updatedEvent = new ScoreUpdatedEvent(event, currentValue);
+        EventBus.publishScoreChanged(updatedEvent);
     }
 
     private boolean isDifferentValueAsStored(String event, Long score) {
@@ -158,7 +163,7 @@ public class AchievementController implements IAchievementController {
 
     private Long publishIncremented(final String event) {
         final Long currentValue = eventDao.increment(event);
-        EventBus.publishScoreChanged(new Score(event, currentValue));
+        EventBus.publishScoreChanged(new ScoreUpdatedEvent(event, currentValue));
         return currentValue;
     }
 

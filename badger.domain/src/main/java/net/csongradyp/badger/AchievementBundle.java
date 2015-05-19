@@ -52,7 +52,7 @@ public class AchievementBundle implements AchievementDefinition {
         final String id = achievement.getId();
         final AchievementType type = achievement.getType();
         if (relationMap.containsKey(id)) {
-            relationMap.get(id).addWrappedElement(type, achievement);
+            relationMap.get(id).addChild(type, achievement);
             final IAchievement compositeAchievement = relationMap.get(id);
             addToSortedContainers(compositeAchievement, AchievementType.COMPOSITE);
         } else {

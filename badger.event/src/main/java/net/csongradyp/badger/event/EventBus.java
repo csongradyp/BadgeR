@@ -6,7 +6,7 @@ import net.csongradyp.badger.event.handler.IAchievementUnlockedHandler;
 import net.csongradyp.badger.event.handler.IScoreUpdateHandler;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
-import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import net.engio.mbassy.bus.MBassador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public final class EventBus {
 
     private IAchievementController controller;
 
-    private final MBassador<Score> scoreUpdateBus;
+    private final MBassador<ScoreUpdatedEvent> scoreUpdateBus;
     private final MBassador<IAchievementUnlockedEvent> unlockedBus;
     private static final Collection<AchievementUnlockedHandlerWrapper> unlockedSubscribers = new ArrayList<>();
     private static final Collection<ScoreUpdateHandlerWrapper> scoreUpdateSubscribers= new ArrayList<>();
@@ -93,9 +93,9 @@ public final class EventBus {
         scoreUpdateSubscribers.remove(listener);
     }
 
-    public static void publishScoreChanged(final Score score) {
-        INSTANCE.scoreUpdateBus.publish(score);
-        LOG.info("Achievement score {} updated with value {}", score.getEvent(), score.getValue());
+    public static void publishScoreChanged(final ScoreUpdatedEvent scoreUpdatedEvent) {
+        INSTANCE.scoreUpdateBus.publish(scoreUpdatedEvent);
+        LOG.info("Achievement score {} updated with value {}", scoreUpdatedEvent.getEvent(), scoreUpdatedEvent.getValue());
     }
 
     public static void triggerEvent(final String id, final Long score) {

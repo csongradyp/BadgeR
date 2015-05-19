@@ -23,7 +23,7 @@ public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> 
     }
 
     @Override
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 

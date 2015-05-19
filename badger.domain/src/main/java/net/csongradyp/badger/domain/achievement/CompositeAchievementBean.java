@@ -25,7 +25,7 @@ public class CompositeAchievementBean implements IRelationalAchievement {
         return children;
     }
 
-    public void addWrappedElement(final AchievementType type, final IAchievement achievement) {
+    public void addChild(final AchievementType type, final IAchievement achievement) {
         children.put(type, achievement);
     }
 

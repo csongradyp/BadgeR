@@ -30,7 +30,8 @@ public class TimeAchievementUnlockedSteps {
     private TimeUnlockedProvider timeUnlockedProvider;
     @Inject
     private TimeRangeUnlockedProvider timeRangeUnlockedProvider;
-    private TestDateProvider dateProvider = new TestDateProvider();
+    @Inject
+    private TestDateProvider dateProvider;
 
     @Given("current time is $time")
     public void setCurrentTime(final String time) {

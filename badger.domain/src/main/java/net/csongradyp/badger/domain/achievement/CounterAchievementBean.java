@@ -2,10 +2,9 @@ package net.csongradyp.badger.domain.achievement;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.AbstractAchievementBean;
+import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.achievement.trigger.NumberTrigger;
-import net.csongradyp.badger.exception.MalformedAchievementDefinition;
 
 public class CounterAchievementBean extends AbstractAchievementBean<NumberTrigger> {
 
@@ -39,18 +38,7 @@ public class CounterAchievementBean extends AbstractAchievementBean<NumberTrigge
                 this.trigger.add(numberTrigger);
             }
         }
-        validateTriggers();
         setMaxLevel(this.trigger.size());
-    }
-
-    private void validateTriggers() {
-        for (int i = 0; i < this.trigger.size() - 1; i++) {
-            NumberTrigger first = this.trigger.get(i);
-            NumberTrigger second = this.trigger.get(i + 1);
-            if (first.getTrigger() > second.getTrigger()) {
-                throw new MalformedAchievementDefinition("Triggers are not properly set for achievement: " + getId() + ". Nr. " + i + ". trigger should be less than the next one");
-            }
-        }
     }
 
     @Override

@@ -19,7 +19,7 @@ import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
-import net.csongradyp.badger.event.message.Score;
+import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
 import net.csongradyp.badger.factory.UnlockedEventFactory;
 import net.csongradyp.badger.parser.IAchievementDefinitionFileParser;
 import net.csongradyp.badger.persistence.AchievementDao;
@@ -64,7 +64,7 @@ public class AchievementControllerTest {
     private AchievementUnlockProviderFacade mockAchievementUnlockProviderFacade;
 
     private ScoreUpdateHandlerWrapper scoreHandler;
-    private Score scoreEvent;
+    private ScoreUpdatedEvent scoreUpdatedEventEvent;
 
     private AchievementController underTest;
 
@@ -77,9 +77,9 @@ public class AchievementControllerTest {
         underTest.setAchievementDao(mockAchievementDao);
         underTest.setEventDao(mockEventDao);
 
-        scoreHandler = new ScoreUpdateHandlerWrapper(score -> scoreEvent = score);
+        scoreHandler = new ScoreUpdateHandlerWrapper(score -> scoreUpdatedEventEvent = score);
         EventBus.subscribeOnScoreChanged(scoreHandler);
-        scoreEvent = null;
+        scoreUpdatedEventEvent = null;
     }
 
     @After
@@ -178,7 +178,7 @@ public class AchievementControllerTest {
         underTest.triggerEventWithHighScore(event, score);
 
         verify(mockEventDao, never()).setScore(event, score);
-        assertThat(scoreEvent, is(nullValue()));
+        assertThat(scoreUpdatedEventEvent, is(nullValue()));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class AchievementControllerTest {
         underTest.triggerEventWithHighScore(event, score);
 
         verify(mockEventDao, never()).setScore(event, score);
-        assertThat(scoreEvent, is(nullValue()));
+        assertThat(scoreUpdatedEventEvent, is(nullValue()));
     }
 
     @Test
@@ -203,9 +203,9 @@ public class AchievementControllerTest {
         underTest.triggerEventWithHighScore(event, score);
 
         verify(mockEventDao).setScore(event, score);
-        assertThat(scoreEvent, is(notNullValue()));
-        assertThat(scoreEvent.getEvent(), is(event));
-        assertThat(scoreEvent.getValue(), is(score));
+        assertThat(scoreUpdatedEventEvent, is(notNullValue()));
+        assertThat(scoreUpdatedEventEvent.getEvent(), is(event));
+        assertThat(scoreUpdatedEventEvent.getValue(), is(score));
     }
 
     @Test

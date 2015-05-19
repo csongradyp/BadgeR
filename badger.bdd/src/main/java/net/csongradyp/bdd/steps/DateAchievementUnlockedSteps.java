@@ -4,7 +4,6 @@ import net.csongradyp.badger.provider.unlock.provider.DateUnlockedProvider;
 import net.csongradyp.bdd.Steps;
 import net.csongradyp.bdd.provider.TestDateProvider;
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
 
 import javax.inject.Inject;
 
@@ -17,10 +16,11 @@ public class DateAchievementUnlockedSteps {
 
     @Inject
     private DateUnlockedProvider dateUnlockedProvider;
-    private TestDateProvider dateProvider = new TestDateProvider();
+    @Inject
+    private TestDateProvider dateProvider;
 
     @Given("the current date is $date")
-    public void setCurrentDate(final @Named("date") String date) {
+    public void setCurrentDate(final String date) {
         dateProvider.stubDate(date);
         assertThat(dateProvider.currentDate(), is(equalTo(date)));
         dateUnlockedProvider.setDateProvider(dateProvider);

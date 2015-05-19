@@ -1,5 +1,11 @@
 package net.csongradyp.badger;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.EventBus;
@@ -10,10 +16,6 @@ import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
 import net.csongradyp.badger.parser.AchievementDefinitionFileParser;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.*;
 
 public class Badger {
 
@@ -30,19 +32,6 @@ public class Badger {
         applicationContext.registerShutdownHook();
         parser = applicationContext.getBean(AchievementDefinitionFileParser.class);
         controller = applicationContext.getBean(AchievementController.class);
-    }
-
-    /**
-     * Starts the BadgeR achievement engine without i18n support.
-     *
-     * @param inputStream {@link InputStream} instance which opened for the achievement definition file.
-     * @param baseName    i18n properties file base name for internationalization support.<br/>
-     *                    See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
-     */
-    public Badger(final InputStream inputStream, final String baseName) {
-        this();
-        controller.setAchievementDefinition(parser.parse(inputStream));
-        controller.setInternationalizationBaseName(baseName);
     }
 
     /**
@@ -67,16 +56,6 @@ public class Badger {
         this();
         controller.setAchievementDefinition(parser.parse(definitionFile));
         controller.setInternationalizationBaseName(baseName);
-    }
-
-    /**
-     * Starts the BadgeR achievement engine without i18n support.
-     *
-     * @param inputStream {@link InputStream} instance which opened for the achievement definition file.
-     */
-    public Badger(final InputStream inputStream) {
-        this();
-        controller.setAchievementDefinition(parser.parse(inputStream));
     }
 
     /**
@@ -135,7 +114,7 @@ public class Badger {
      *
      * @return {@link Collection} of {@link IAchievement} instances.
      */
-    public Collection<IAchievement> getAllAchivement() {
+    public Collection<IAchievement> getAllAchievement() {
         return controller.getAll();
     }
 

@@ -1,6 +1,5 @@
 package net.csongradyp.badger.persistence.entity;
 
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -13,14 +12,13 @@ import javax.persistence.MappedSuperclass;
 public abstract class AbstractEntity {
 
     @Id
-    @GeneratedValue
-    private Integer id;
+    private String id;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(final String id) {
         this.id = id;
     }
 

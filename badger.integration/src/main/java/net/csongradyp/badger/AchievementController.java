@@ -83,7 +83,7 @@ public class AchievementController implements IAchievementController {
     @Override
     public Collection<IAchievement> getByOwner(final String owner) {
         final Collection<IAchievement> achievementsByOwner = new ArrayList<>();
-        final Collection<AchievementEntity> achievementEntities = achievementDao.getByOwner(owner);
+        final Collection<AchievementEntity> achievementEntities = achievementDao.getAllByOwner(owner);
         for (AchievementEntity achievementEntity : achievementEntities) {
             final Optional<IAchievement> achievement = achievementDefinition.get(achievementEntity.getId());
             if (achievement.isPresent()) {

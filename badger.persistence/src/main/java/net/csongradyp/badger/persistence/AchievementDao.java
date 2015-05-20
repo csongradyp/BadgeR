@@ -1,14 +1,13 @@
 package net.csongradyp.badger.persistence;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 import net.csongradyp.badger.persistence.entity.AchievementEntity;
+import net.csongradyp.badger.persistence.exception.UnlockedAchievementNotFoundException;
 import net.csongradyp.badger.persistence.repository.AchievementRepository;
 
 /**
@@ -22,42 +21,27 @@ public class AchievementDao {
     @Inject
     private AchievementRepository achievementRepository;
 
-     public void unlock(final String achievementId) {
-        final AchievementEntity achievement = new AchievementEntity(achievementId);
-         achievementRepository.save(achievement);
-     }
-
-    public void unlock(final String achievementId, final Integer level) {
-        final AchievementEntity achievement = new AchievementEntity(achievementId);
-        achievement.setLevel(level);
-        achievementRepository.save(achievement);
+    public void unlock(final String achievementId) {
+        unlock(achievementId, 1, new HashSet<>());
     }
 
-     public void unlock(final String achievementId, final String... owners) {
-        final AchievementEntity achievement = new AchievementEntity(achievementId);
-         achievement.addOwners(Arrays.asList(owners));
-        achievementRepository.save(achievement);
+    public void unlock(final String achievementId, final Integer level) {
+        unlock(achievementId, level, new HashSet<>());
     }
 
     public void unlock(final String achievementId, final Integer level, final Set<String> owners) {
-        final Optional<AchievementEntity> achievement = achievementRepository.findById(achievementId);
-        if (achievement.isPresent()) {
-            final AchievementEntity achievementEntity = achievement.get();
-            achievementEntity.setLevel(level);
-            achievementEntity.addOwners(owners);
-            achievementRepository.save(achievementEntity);
-        } else {
-            final AchievementEntity achievementEntity = new AchievementEntity(achievementId);
-            achievementEntity.setOwners(owners);
-            achievementRepository.save(achievementEntity);
-        }
+        final AchievementEntity achievement = new AchievementEntity();
+        achievement.setId(achievementId);
+        achievement.setLevel(level);
+        achievement.addOwners(owners);
+        achievementRepository.save(achievement);
     }
 
     public void deleteAll() {
         achievementRepository.deleteAll();
     }
 
-    public Collection<AchievementEntity> getByOwner(final String owner) {
+    public Collection<AchievementEntity> getAllByOwner(final String owner) {
         final Set<String> owners = new HashSet<>();
         owners.add(owner);
         return achievementRepository.findByOwnersIn(owners);
@@ -67,7 +51,7 @@ public class AchievementDao {
         return achievementRepository.count();
     }
 
-    private Collection<AchievementEntity> getAll() {
+    public Collection<AchievementEntity> getAll() {
         return achievementRepository.findAll();
     }
 
@@ -91,13 +75,15 @@ public class AchievementDao {
      *
      * @param id - name of achievement.
      * @return {@link java.util.Date} of acquire.
+     *
+     * @throws UnlockedAchievementNotFoundException when achievement with given id is not unlocked.
      */
     public Date getAcquireDate(final String id) {
         final AchievementEntity achievement = achievementRepository.findOne(id);
         if (achievement != null) {
             return achievement.getAcquireDate();
         }
-        return null;
+        throw new UnlockedAchievementNotFoundException(id);
     }
 
     void setAchievementRepository(final AchievementRepository achievementRepository) {

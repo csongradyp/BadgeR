@@ -99,12 +99,19 @@
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>3.1.0</version>
+                <configuration>
+                    <jacocoReports>
+                        <jacocoReport>${project.basedir}/out/jacoco.xml</jacocoReport>
+                    </jacocoReports>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.4.201502262128</version>
                 <configuration>
+                    <append>true</append>
+                    <destFile>${project.parent.basedir}/out/jacoco.exec</destFile>
                     <excludes>
                         <exclude>**/net/csongradyp/bdd/**/*</exclude>
                     </excludes>
@@ -115,6 +122,17 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.parent.basedir}/out/jacoco.exec</dataFile>
+                            <outputDirectory>${project.parent.basedir}/out/</outputDirectory>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>report</id>

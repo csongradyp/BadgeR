@@ -21,7 +21,7 @@ public class DateAchievementUnlockedSteps {
     @Given("the current date is $date")
     public void setCurrentDate(final String date) {
         dateProvider.stubDate(date);
-        assertThat(dateProvider.currentDate(), is(equalTo(date)));
+        assertThat(dateProvider.currentDateString(), is(equalTo(date)));
         dateUnlockedProvider.setDateProvider(dateProvider);
     }
 

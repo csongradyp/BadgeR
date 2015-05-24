@@ -1,82 +1,31 @@
 package net.csongradyp.badger.domain.achievement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import net.csongradyp.badger.IAchievementUnlockFinderFacade;
+import net.csongradyp.badger.domain.AbstractAchievementBean;
 import net.csongradyp.badger.domain.AchievementType;
-import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IRelationalAchievement;
+import net.csongradyp.badger.domain.IRelation;
+import net.csongradyp.badger.domain.ITriggerableAchievementBean;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
+import net.csongradyp.badger.domain.achievement.trigger.ITrigger;
 
-public class CompositeAchievementBean implements IRelationalAchievement {
+import java.util.*;
+
+public class CompositeAchievementBean extends AbstractAchievementBean implements ITriggerableAchievementBean<ITrigger>, IRelation {
 
     private Relation relation;
-    private final String id;
-    private Map<AchievementType, IAchievement> children;
+    private List<ITrigger> triggers;
 
-    public CompositeAchievementBean(final String id, final Relation relation) {
-        this.id = id;
-        this.relation = relation;
-        children = new HashMap<>();
+    public CompositeAchievementBean() {
+        triggers = new ArrayList<>();
     }
 
     @Override
-    public Map<AchievementType, IAchievement> getChildren() {
-        return children;
-    }
-
-    public void addChild(final AchievementType type, final IAchievement achievement) {
-        children.put(type, achievement);
+    public void setTrigger(final List<ITrigger> triggers) {
+        this.triggers = triggers;
     }
 
     @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String getCategory() {
-        final Optional<IAchievement> childAchievement = children.values().stream().filter(child -> child.getCategory() != "default").findAny();
-        if(childAchievement.isPresent()) {
-            return childAchievement.get().getCategory();
-        }
-        return "default";
-    }
-
-    @Override
-    public List<String> getEvent() {
-        List<String> events = new ArrayList<>();
-        children.values().forEach(achievement -> events.addAll(achievement.getEvent()));
-        return events;
-    }
-
-    @Override
-    public String getTitleKey() {
-        return children.values().iterator().next().getTitleKey();
-    }
-
-    @Override
-    public String getTextKey() {
-        return children.values().iterator().next().getTextKey();
-    }
-
-    @Override
-    public List<String> getTrigger() {
-        List<String> triggers = new ArrayList<>();
-        children.values().forEach(achievement -> achievement.getTrigger().forEach(t -> triggers.add(t.toString())));
+    public List<ITrigger> getTrigger() {
         return triggers;
-    }
-
-    @Override
-    public Integer getMaxLevel() {
-        Integer maxLevel = 1;
-        if (children.containsKey(AchievementType.COUNTER)) {
-            maxLevel = children.get(AchievementType.COUNTER).getMaxLevel();
-        }
-        return maxLevel;
     }
 
     @Override
@@ -85,8 +34,15 @@ public class CompositeAchievementBean implements IRelationalAchievement {
     }
 
     @Override
-    public Boolean evaluate(IAchievementUnlockFinderFacade controller) {
-        return relation.evaluate(controller);
+    public Boolean evaluate(final Long score, final Date date, final Date time) {
+        return relation.evaluate(score, date, time);
     }
 
+    public void addTrigger(final Collection<ITrigger> triggers) {
+        triggers.stream().forEach(this.triggers::add);
+    }
+
+    public void setRelation(final Relation relation) {
+        this.relation = relation;
+    }
 }

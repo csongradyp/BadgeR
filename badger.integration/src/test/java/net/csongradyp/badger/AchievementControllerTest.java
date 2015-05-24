@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
+import net.csongradyp.badger.domain.achievement.ScoreAchievementBean;
 import net.csongradyp.badger.event.AchievementEventType;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
@@ -128,9 +128,9 @@ public class AchievementControllerTest {
 
     @Test
     public void testGetReturnsAchievementsFromAchievementDefinition() {
-        final CounterAchievementBean testAchievement = new CounterAchievementBean();
+        final ScoreAchievementBean testAchievement = new ScoreAchievementBean();
         testAchievement.setId(ACHIEVEMENT_ID);
-        final AchievementType type = AchievementType.COUNTER;
+        final AchievementType type = AchievementType.SCORE;
         given(mockAchievementDefinition.get(type, ACHIEVEMENT_ID)).willReturn(testAchievement);
 
         final Optional<IAchievement> result = underTest.get(type, ACHIEVEMENT_ID);
@@ -141,7 +141,7 @@ public class AchievementControllerTest {
 
     @Test
     public void testGetAllCallUnderlyingBundle() {
-        final CounterAchievementBean testAchievementBean = new CounterAchievementBean();
+        final ScoreAchievementBean testAchievementBean = new ScoreAchievementBean();
         testAchievementBean.setId(ACHIEVEMENT_ID);
         final ArrayList<IAchievement> parsedAchievements = new ArrayList<>();
         parsedAchievements.add(testAchievementBean);
@@ -210,7 +210,7 @@ public class AchievementControllerTest {
 
     @Test
     public void testUnlockPublishUnlockedEventWithProperData() {
-        final CounterAchievementBean achievementBean = new CounterAchievementBean();
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
         achievementBean.setId(ACHIEVEMENT_ID);
         final String triggerValue = "value";
         final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
@@ -240,7 +240,7 @@ public class AchievementControllerTest {
         final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(achievement -> {
             assertThat(achievement, is(unlockedEvent));
         });
-        final CounterAchievementBean achievementBean = new CounterAchievementBean();
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
        achievementBean.setId(ACHIEVEMENT_ID);
         when(mockAchievementDefinition.get(ACHIEVEMENT_ID)).thenReturn(Optional.of(achievementBean));
         when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);

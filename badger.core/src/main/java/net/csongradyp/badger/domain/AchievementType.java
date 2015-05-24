@@ -4,7 +4,7 @@ public enum AchievementType {
     
     DATE("date"),
     TIME("time"), TIME_RANGE("timeRange"),
-    COUNTER("counter"),
+    SCORE("score"),
     SINGLE("single"),
     COMPOSITE("composite");
 

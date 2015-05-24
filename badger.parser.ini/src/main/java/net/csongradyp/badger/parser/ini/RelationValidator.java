@@ -26,7 +26,7 @@ public class RelationValidator {
     private void validateSemantics(final String normalizedRelation) {
         final String sequenceString = normalizedRelation.toLowerCase()
                                                         .replaceAll("\\s", "")
-                                                        .replaceAll( "(date|timerange|time|counter|single)", "")
+                                                        .replaceAll( "(date|timerange|time|score|single)", "")
                                                         .replaceAll("[&|()]", "");
         if(!sequenceString.isEmpty()) {
             throw new MalformedAchievementRelationDefinition("Relation contains unwanted characters.");

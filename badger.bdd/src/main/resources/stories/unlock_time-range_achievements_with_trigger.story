@@ -26,10 +26,10 @@ Examples:
 Scenario: Related event triggered so that date based achievement is unlocked
 
 Given an achievement with <id> id and timerange type bounded to <event> event with start trigger <start> and end trigger <end>
-And the achievement with <id> id is already unlocked with level 1
+And the achievement with <id> id is unlocked
 And current time is <time>
 When event named <event> is triggered
-Then no achievement unlocked event received
+Then no achievement unlocked event received related to <id>
 
 Examples:
 |    id    |  event  |start| end | time|

@@ -1,14 +1,12 @@
 package net.csongradyp.badger.persistence;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 import net.csongradyp.badger.persistence.entity.AchievementEntity;
 import net.csongradyp.badger.persistence.exception.UnlockedAchievementNotFoundException;
 import net.csongradyp.badger.persistence.repository.AchievementRepository;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.*;
 
 /**
  * DAO for achievements to database communication.

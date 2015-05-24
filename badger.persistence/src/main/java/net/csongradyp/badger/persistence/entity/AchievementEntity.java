@@ -1,13 +1,10 @@
 package net.csongradyp.badger.persistence.entity;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 public class AchievementEntity extends AbstractEntity {

@@ -1,15 +1,5 @@
 package net.csongradyp.badger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.EventBus;
@@ -23,6 +13,10 @@ import net.csongradyp.badger.persistence.entity.AchievementEntity;
 import net.csongradyp.badger.provider.unlock.AchievementUnlockProviderFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.*;
 
 @Named
 public class AchievementController implements IAchievementController {
@@ -81,7 +75,20 @@ public class AchievementController implements IAchievementController {
     }
 
     @Override
-    public Collection<IAchievement> getByOwner(final String owner) {
+    public Collection<IAchievement> getAllUnlocked() {
+        final Collection<IAchievement> unlocked = new ArrayList<>();
+        final Collection<AchievementEntity> unlockedEntities = achievementDao.getAll();
+        unlockedEntities.parallelStream().forEach(entity -> {
+            final Optional<IAchievement> achievement = achievementDefinition.get(entity.getId());
+            if(achievement.isPresent()) {
+                unlocked.add(achievement.get());
+            }
+        });
+        return unlocked;
+    }
+
+    @Override
+    public Collection<IAchievement> getAllByOwner(final String owner) {
         final Collection<IAchievement> achievementsByOwner = new ArrayList<>();
         final Collection<AchievementEntity> achievementEntities = achievementDao.getAllByOwner(owner);
         for (AchievementEntity achievementEntity : achievementEntities) {

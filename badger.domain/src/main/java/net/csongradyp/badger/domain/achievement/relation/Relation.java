@@ -1,9 +1,10 @@
 package net.csongradyp.badger.domain.achievement.relation;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import net.csongradyp.badger.IAchievementUnlockFinderFacade;
 import net.csongradyp.badger.domain.IRelation;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
 
 public class Relation implements IRelation {
 
@@ -31,10 +32,10 @@ public class Relation implements IRelation {
     }
 
     @Override
-    public Boolean evaluate(final IAchievementUnlockFinderFacade controller) {
+    public Boolean evaluate(final Long triggerValue, final Date date, final Date time) {
         Boolean result = null;
         for (IRelation child : children) {
-            final Boolean childResult = child.evaluate(controller);
+            final Boolean childResult = child.evaluate(triggerValue, date, time);
             if (result == null) {
                 result = childResult;
             } else if (operator == RelationOperator.AND) {

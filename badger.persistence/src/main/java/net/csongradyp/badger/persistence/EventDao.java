@@ -1,16 +1,12 @@
 package net.csongradyp.badger.persistence;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import net.csongradyp.badger.persistence.entity.EventEntity;
 import net.csongradyp.badger.persistence.exception.MissingEventCounterException;
 import net.csongradyp.badger.persistence.repository.EventRepository;
 
-/**
- * Counter DAO for database communication.
- *
- * @author Peter_Csongrady
- */
+import javax.inject.Inject;
+import javax.inject.Named;
+
 @Named
 public class EventDao {
 

@@ -4,7 +4,6 @@ import java.util.Date;
 import javax.inject.Named;
 import net.csongradyp.badger.provider.date.DateProvider;
 import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -35,26 +34,22 @@ public class TestDateProvider extends DateProvider {
     }
 
     @Override
-    public String currentDate() {
+    public String currentDateString() {
         return format(stubbedDate.getTime());
     }
 
     @Override
-    public String currentTime() {
+    public String currentTimeString() {
         return getTime(stubbedDate);
     }
 
     @Override
-    public Boolean isCurrentTimeBefore(final Date date) {
-        final LocalTime currentTime = new DateTime(stubbedDate).toLocalTime();
-        final LocalTime triggerTime = new DateTime(date).toLocalTime();
-        return currentTime.isBefore(triggerTime) || currentTime.isEqual(triggerTime);
+    public Date currentDate() {
+        return stubbedDate;
     }
 
     @Override
-    public Boolean isCurrentTimeAfter(final Date date) {
-        final LocalTime currentTime = new DateTime(stubbedDate).toLocalTime();
-        final LocalTime triggerTime = new DateTime(date).toLocalTime();
-        return currentTime.isAfter(triggerTime) || currentTime.isEqual(triggerTime);
+    public Date currentTime() {
+        return stubbedDate;
     }
 }

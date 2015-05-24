@@ -14,8 +14,7 @@ Given an achievement with <id> id and time type bounded to <event> event with tr
 And the achievement with <id> is not unlocked
 And current time is <time>
 When event named <event> is triggered
-Then achievement unlocked event is received
-And achievement id is <id>
+Then unlocked event received for achievement <id>
 And the level of the unlocked achievement is 1
 
 Examples:
@@ -29,7 +28,7 @@ Given an achievement with <id> id and time type bounded to <event> event with tr
 And the achievement with <id> id is already unlocked with level 1
 And current time is <time>
 When event named <event> is triggered
-Then no achievement unlocked event received
+Then no achievement unlocked event received related to <id>
 
 Examples:
 |      id      |  event  | time|

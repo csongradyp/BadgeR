@@ -1,11 +1,11 @@
 package net.csongradyp.bdd.steps;
 
-import java.util.Optional;
-import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
+import net.csongradyp.badger.domain.achievement.trigger.ITrigger;
+import net.csongradyp.badger.provider.unlock.provider.CompositeUnlockedProvider;
 import net.csongradyp.badger.provider.unlock.provider.DateUnlockedProvider;
 import net.csongradyp.badger.provider.unlock.provider.TimeRangeUnlockedProvider;
 import net.csongradyp.bdd.Steps;
@@ -13,6 +13,11 @@ import net.csongradyp.bdd.provider.TestDateProvider;
 import net.csongradyp.bdd.provider.TriggerChecker;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
+
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,6 +36,8 @@ public class CompositeAchievementUnlockedSteps {
     @Inject
     private TimeRangeUnlockedProvider timeRangeUnlockedProvider;
     @Inject
+    private CompositeUnlockedProvider compositeUnlockedProvider;
+    @Inject
     private TestDateProvider dateProvider;
 
 
@@ -40,7 +47,8 @@ public class CompositeAchievementUnlockedSteps {
         if(achievement.isPresent()) {
             final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
             assertThat("Achievement is subscribed to event: " + event, composite.getEvent().contains(event), is(true));
-            assertThat("Trigger is present for time-range achievement", triggerChecker.isTimeRangeTriggerPresent(composite.getChildren().get(AchievementType.TIME_RANGE), start, end), is(true));
+            final Collection<ITrigger> triggers = composite.getTrigger().stream().filter(t -> t.getType()==AchievementType.TIME_RANGE).collect(Collectors.toList());
+            assertThat("Trigger is present for time-range achievement", triggerChecker.isTimeRangeTriggerPresent(triggers, start, end), is(true));
         } else {
             fail("Achievement is not defined with id: " + id + "and type: composite");
         }
@@ -49,9 +57,10 @@ public class CompositeAchievementUnlockedSteps {
     @Given("current date is $date and current time is $time")
     public void setCurrentDateTime(final String date, final String time) {
         dateProvider.stubDateTime(date, time);
-        assertThat(dateProvider.currentDate(), is(equalTo(date)));
+        assertThat(dateProvider.currentDateString(), is(equalTo(date)));
         dateUnlockedProvider.setDateProvider(dateProvider);
         timeRangeUnlockedProvider.setDateProvider(dateProvider);
+        compositeUnlockedProvider.setDateProvider(dateProvider);
     }
 
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractAchievementBean<T> implements IAchievementBean<T> {
+public abstract class AbstractAchievementBean implements IAchievementBean {
 
     private String id;
     private String category;

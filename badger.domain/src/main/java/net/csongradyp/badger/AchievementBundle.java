@@ -20,13 +20,11 @@ public class AchievementBundle implements AchievementDefinition {
     private final Map<AchievementType, Map<String, IAchievement>> achievementTypeMap;
     private final Map<String, Set<IAchievement>> achievementEventMap;
     private final Map<String, Set<IAchievement>> achievementCategoryMap;
-    private final Map<String, IRelationalAchievement> relationMap;
 
     public AchievementBundle() {
         achievementTypeMap = new HashMap<>();
         achievementEventMap = new HashMap<>();
         achievementCategoryMap = new HashMap<>();
-        relationMap = new HashMap<>();
         setUpTypeMap();
     }
 
@@ -45,7 +43,7 @@ public class AchievementBundle implements AchievementDefinition {
 
     @Override
     public void setEvents(final Collection<String> events) {
-        events.stream().forEach(event ->  achievementEventMap.put(event, new HashSet<>()));
+        events.stream().forEach(event -> achievementEventMap.put(event, new HashSet<>()));
     }
 
     @Override
@@ -54,19 +52,7 @@ public class AchievementBundle implements AchievementDefinition {
     }
 
     private void add(final IAchievement achievement) {
-        final String id = achievement.getId();
-        final AchievementType type = achievement.getType();
-        if (relationMap.containsKey(id)) {
-            relationMap.get(id).addChild(type, achievement);
-            final IAchievement compositeAchievement = relationMap.get(id);
-            addToSortedContainers(compositeAchievement, AchievementType.COMPOSITE);
-        } else {
-            addToSortedContainers(achievement, type);
-        }
-    }
-
-    private void addToSortedContainers(IAchievement achievement, AchievementType type) {
-        addToTypeMap(type, achievement);
+        addToTypeMap(achievement.getType(), achievement);
         addToCategoryMap(achievement);
         addToEventMap(achievement);
     }
@@ -94,11 +80,11 @@ public class AchievementBundle implements AchievementDefinition {
 
     @Override
     public void setRelations(final Collection<IRelationalAchievement> relations) {
-        relations.stream().forEach(compositeBean -> {
-            relationMap.put(compositeBean.getId(), compositeBean);
-            compositeBean.getChildren().keySet().forEach(type -> addToTypeMap(type, compositeBean));
-            addToEventMap(compositeBean);
-        });
+//        relations.stream().forEach(compositeBean -> {
+//            relationMap.put(compositeBean.getId(), compositeBean);
+//            compositeBean.getChildren().keySet().forEach(type -> addToTypeMap(type, compositeBean));
+//            addToEventMap(compositeBean);
+//        });
     }
 
     @Override
@@ -124,7 +110,7 @@ public class AchievementBundle implements AchievementDefinition {
     public Collection<IAchievement> getAll() {
         Collection<IAchievement> allAchievements = new HashSet<>();
         achievementTypeMap.values().forEach(achievementMap -> allAchievements.addAll(achievementMap.values()));
-        relationMap.values().forEach(allAchievements::add);
+//        relationMap.values().forEach(allAchievements::add);
         return allAchievements;
     }
 

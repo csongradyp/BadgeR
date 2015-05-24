@@ -2,7 +2,7 @@ package net.csongradyp.badger.domain;
 
 import java.util.List;
 
-public interface IAchievement<TRIGGER> {
+public interface IAchievement {
 
     String getId();
 
@@ -13,8 +13,6 @@ public interface IAchievement<TRIGGER> {
     String getTitleKey();
 
     String getTextKey();
-
-    List<TRIGGER> getTrigger();
 
     Integer getMaxLevel();
 

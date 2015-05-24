@@ -1,12 +1,17 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import net.csongradyp.badger.domain.achievement.DateAchievementBean;
+import net.csongradyp.badger.domain.achievement.trigger.DateTrigger;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.factory.UnlockedEventFactory;
 import net.csongradyp.badger.persistence.AchievementDao;
+import net.csongradyp.badger.provider.date.DateProvider;
 import net.csongradyp.badger.provider.date.IDateProvider;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,12 +45,13 @@ public class DateUnlockedProviderTest {
     }
 
     @Test
-    public void testUnlockableReturnsUnlockableAchievementWhenGivenDateAchievementTriggerIsEqualToTheCurrentDate() {
+    public void testUnlockableReturnsUnlockableAchievementWhenGivenDateAchievementTriggerIsEqualToTheCurrentDateAndAchievementIsNotUnlocked() {
         final String date = "02-14";
         final DateAchievementBean dateAchievementBean = new DateAchievementBean();
         dateAchievementBean.setId(ACHIEVEMENT_ID);
-        dateAchievementBean.setTrigger(new String[]{date});
-        given(mockDateProvider.currentDate()).willReturn(date);
+        dateAchievementBean.setTrigger(givenDateTrigger(date));
+        given(mockDateProvider.currentDate()).willReturn(new DateTime(2015, 2, 14, 0, 0).toDate());
+        given(mockDateProvider.currentDateString()).willReturn(date);
         given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(false);
         final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", date);
         given(mockUnlockedEventFactory.createEvent(dateAchievementBean, date)).willReturn(unlockedEvent);
@@ -61,8 +67,8 @@ public class DateUnlockedProviderTest {
         final String date = "02-14";
         final DateAchievementBean dateAchievementBean = new DateAchievementBean();
         dateAchievementBean.setId(ACHIEVEMENT_ID);
-        dateAchievementBean.setTrigger(new String[]{date});
-        given(mockDateProvider.currentDate()).willReturn(date);
+        dateAchievementBean.setTrigger(givenDateTrigger(date));
+        given(mockDateProvider.currentDate()).willReturn(new DateTime(2015, 2, 14, 0, 0).toDate());
         given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(true);
 
         final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(dateAchievementBean, 0L);
@@ -72,17 +78,23 @@ public class DateUnlockedProviderTest {
 
     @Test
     public void testUnlockableReturnsEmptyWhenGivenDateAchievementTriggerIsNotEqualToTheCurrentDate() {
-        final String date = "02-14";
         final String trigger = "01-01";
         final DateAchievementBean dateAchievementBean = new DateAchievementBean();
         dateAchievementBean.setId(ACHIEVEMENT_ID);
-        dateAchievementBean.setTrigger(new String[]{trigger});
-        given(mockDateProvider.currentDate()).willReturn(date);
+        dateAchievementBean.setTrigger(givenDateTrigger(trigger));
+        given(mockDateProvider.currentDate()).willReturn(new DateTime(2015, 2, 14, 0, 0).toDate());
         given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(false);
 
         final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(dateAchievementBean, 0L);
 
         assertThat(result.isPresent(), is(false));
+    }
+
+    private List<DateTrigger> givenDateTrigger(final String date) {
+        final DateProvider dateProvider = new DateProvider();
+        List<DateTrigger> dateTriggers = new ArrayList<>();
+        dateTriggers.add(new DateTrigger(dateProvider.parseDate(date)));
+        return dateTriggers;
     }
 
 }

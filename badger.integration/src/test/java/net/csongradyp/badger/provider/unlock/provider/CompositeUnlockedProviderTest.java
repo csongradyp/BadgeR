@@ -1,14 +1,9 @@
 package net.csongradyp.badger.provider.unlock.provider;
 
+import java.util.Date;
 import java.util.Optional;
-import net.csongradyp.badger.IAchievementUnlockFinderFacade;
-import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
-import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
-import net.csongradyp.badger.domain.achievement.TimeAchievementBean;
-import net.csongradyp.badger.domain.achievement.relation.ChildAchievement;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
-import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import net.csongradyp.badger.factory.UnlockedEventFactory;
@@ -17,6 +12,7 @@ import net.csongradyp.badger.provider.date.IDateProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -29,14 +25,14 @@ import static org.mockito.Matchers.any;
 public class CompositeUnlockedProviderTest {
 
     private static final String ACHIEVEMENT_ID = "id";
-    @Mock
+    @Mock(answer = Answers.RETURNS_SMART_NULLS)
     private IDateProvider mockDateProvider;
     @Mock
     private UnlockedEventFactory mockUnlockedEventFactory;
     @Mock
     protected AchievementDao mockAchievementDao;
     @Mock
-    private IAchievementUnlockFinderFacade mockUnlockFinder;
+    private Relation mockRelation;
 
     private CompositeUnlockedProvider underTest;
 
@@ -45,15 +41,16 @@ public class CompositeUnlockedProviderTest {
         underTest = new CompositeUnlockedProvider();
         underTest.setUnlockedEventFactory(mockUnlockedEventFactory);
         underTest.setAchievementDao(mockAchievementDao);
-        underTest.setUnlockFinder(mockUnlockFinder);
+        underTest.setDateProvider(mockDateProvider);
     }
 
     @Test
-    public void testGetUnlockableReturnsUnlockEventWhenAllChildrenAreTriggered() throws Exception {
+    public void testGetUnlockableReturnsUnlockEventWhenTriggerRelationEvaluationReturnsTrueAndAchievementIsNotUnlocked() throws Exception {
         final CompositeAchievementBean achievementBean = givenCompositeAchievementBean();
         final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
-        given(mockUnlockFinder.getUnlockable(any(IAchievement.class))).willReturn(Optional.of(unlockedEvent));
-        given(mockUnlockedEventFactory.createEvent(achievementBean)).willReturn(unlockedEvent);
+        given(mockRelation.evaluate(any(Long.class), any(Date.class), any(Date.class))).willReturn(true);
+        given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(false);
+        given(mockUnlockedEventFactory.createEvent(achievementBean, "0")).willReturn(unlockedEvent);
 
         final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(achievementBean, 0L);
 
@@ -61,25 +58,43 @@ public class CompositeUnlockedProviderTest {
         assertThat(result.get(), is(unlockedEvent));
     }
 
+    @Test
+    public void testGetUnlockableReturnsEmptyWhenTriggerRelationEvaluationReturnsFalseAndAchievementIsNotUnlocked() throws Exception {
+        final CompositeAchievementBean achievementBean = givenCompositeAchievementBean();
+        given(mockRelation.evaluate(any(Long.class), any(Date.class), any(Date.class))).willReturn(false);
+        given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(false);
+
+        final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(achievementBean, 0L);
+
+        assertThat(result.isPresent(), is(false));
+    }
+
+    @Test
+    public void testGetUnlockableReturnsEmptyWhenTriggerRelationEvaluationReturnsTrueAndAchievementIsUnlocked() throws Exception {
+        final CompositeAchievementBean achievementBean = givenCompositeAchievementBean();
+        given(mockRelation.evaluate(any(Long.class), any(Date.class), any(Date.class))).willReturn(true);
+        given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(true);
+
+        final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(achievementBean, 0L);
+
+        assertThat(result.isPresent(), is(false));
+    }
+
+    @Test
+    public void testGetUnlockableReturnsEmptyWhenTriggerRelationEvaluationReturnsFalseAndAchievementIsUnlocked() throws Exception {
+        final CompositeAchievementBean achievementBean = givenCompositeAchievementBean();
+        given(mockRelation.evaluate(any(Long.class), any(Date.class), any(Date.class))).willReturn(false);
+        given(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID)).willReturn(true);
+
+        final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(achievementBean, 0L);
+
+        assertThat(result.isPresent(), is(false));
+    }
+
     private CompositeAchievementBean givenCompositeAchievementBean() {
-        final ChildAchievement score = new ChildAchievement(givenScoreAchievementBean());
-        final ChildAchievement time = new ChildAchievement(givenTimeRangeAchievementBean());
-        final Relation relation = new Relation();
-        relation.setOperator(RelationOperator.AND);
-        relation.addChild(score);
-        relation.addChild(time);
-        return new CompositeAchievementBean(ACHIEVEMENT_ID, relation);
-    }
-
-    private CounterAchievementBean givenScoreAchievementBean() {
-        final CounterAchievementBean timeAchievementBean = new CounterAchievementBean();
-        timeAchievementBean.setId(ACHIEVEMENT_ID);
-        return timeAchievementBean;
-    }
-
-    private TimeAchievementBean givenTimeRangeAchievementBean() {
-        final TimeAchievementBean timeAchievementBean = new TimeAchievementBean();
-        timeAchievementBean.setId(ACHIEVEMENT_ID);
-        return timeAchievementBean;
+        final CompositeAchievementBean achievementBean = new CompositeAchievementBean();
+        achievementBean.setId(ACHIEVEMENT_ID);
+        achievementBean.setRelation(mockRelation);
+        return achievementBean;
     }
 }

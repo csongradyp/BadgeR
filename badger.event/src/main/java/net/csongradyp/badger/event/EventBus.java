@@ -105,10 +105,6 @@ public final class EventBus {
         INSTANCE.controller.triggerEvent(id, owners);
     }
 
-    public static void setController(final IAchievementController controller) {
-        INSTANCE.controller = controller;
-    }
-
     public static void unlock(final String achievementId, final String triggerValue) {
         INSTANCE.controller.unlock(achievementId, triggerValue);
     }
@@ -127,5 +123,9 @@ public final class EventBus {
 
     public static Collection<ScoreUpdateHandlerWrapper> getScoreUpdateSubscribers() {
         return scoreUpdateSubscribers;
+    }
+
+    public static void setController(final IAchievementController controller) {
+        INSTANCE.controller = controller;
     }
 }

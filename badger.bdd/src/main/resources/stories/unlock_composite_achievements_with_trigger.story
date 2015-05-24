@@ -15,8 +15,7 @@ And has a child with <id> id and timerange type bounded to <event> event with st
 And the achievement with <id> is not unlocked
 And current date is <date> and current time is <time>
 When event named <event> is triggered
-Then achievement unlocked event is received
-And achievement id is <id>
+Then unlocked event received for achievement <id>
 And the level of the unlocked achievement is 1
 
 Examples:
@@ -29,13 +28,12 @@ Scenario: Related event triggered so that composite achievement is unlocked - da
 
 Given an achievement with <id> id and composite type
 And has a child with <id> id and date type bounded to <event> event with trigger <date>
-And has a child with <id> id and counter type bounded to <event> event with trigger <trigger>
+And has a child with <id> id and score type bounded to <event> event with trigger <trigger>
 And the achievement with <id> is not unlocked
 And the current <event> event score is 0
 And the current date is <date>
 When <event> event is triggered with <input-score> as a score
-Then achievement unlocked event is received
-And achievement id is <id>
+Then unlocked event received for achievement <id>
 And the level of the unlocked achievement is 1
 
 Examples:

@@ -2,7 +2,7 @@ package net.csongradyp.badger.factory;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
-import net.csongradyp.badger.domain.achievement.CounterAchievementBean;
+import net.csongradyp.badger.domain.achievement.ScoreAchievementBean;
 import net.csongradyp.badger.event.AchievementEventType;
 import net.csongradyp.badger.event.message.AchievementUnlockedEvent;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class UnlockedEventFactoryTest {
         final String id = "TestId";
         final String category = "some category";
         final int level = 5;
-        final CounterAchievementBean achievementBean = givenAchievementBean(id, category);
+        final ScoreAchievementBean achievementBean = givenAchievementBean(id, category);
 
         final AchievementUnlockedEvent event = underTest.createEvent(achievementBean, level, 456L);
 
@@ -52,7 +52,7 @@ public class UnlockedEventFactoryTest {
         final String category = "some category";
         final String triggeredValue = "456";
         final String[] owners = {"foo", "bar"};
-        final CounterAchievementBean achievementBean = givenAchievementBean(id, category);
+        final ScoreAchievementBean achievementBean = givenAchievementBean(id, category);
 
         final AchievementUnlockedEvent event = underTest.createEvent(achievementBean, triggeredValue, owners);
 
@@ -72,7 +72,7 @@ public class UnlockedEventFactoryTest {
     public void testCreateEventWithoutTriggerInformation() {
         final String id = "TestId";
         final String category = "some category";
-        final CounterAchievementBean achievementBean = givenAchievementBean(id, category);
+        final ScoreAchievementBean achievementBean = givenAchievementBean(id, category);
 
         final AchievementUnlockedEvent event = underTest.createEvent(achievementBean);
 
@@ -94,7 +94,7 @@ public class UnlockedEventFactoryTest {
         final String category = "some category";
         final String localizedTitle = "Simple";
         final String localizedText = "simple text";
-        final CounterAchievementBean achievementBean = givenAchievementBean(id, category);
+        final ScoreAchievementBean achievementBean = givenAchievementBean(id, category);
 
         final AchievementUnlockedEvent event = underTest.createEvent(achievementBean);
 
@@ -109,8 +109,8 @@ public class UnlockedEventFactoryTest {
         assertThat(event.getText(), is(localizedText));
     }
 
-    private CounterAchievementBean givenAchievementBean(String id, String category) {
-        final CounterAchievementBean achievementBean = new CounterAchievementBean();
+    private ScoreAchievementBean givenAchievementBean(String id, String category) {
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
         achievementBean.setId(id);
         achievementBean.setCategory(category);
         return achievementBean;

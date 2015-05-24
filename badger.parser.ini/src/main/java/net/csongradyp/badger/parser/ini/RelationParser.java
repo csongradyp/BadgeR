@@ -1,19 +1,17 @@
 package net.csongradyp.badger.parser.ini;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Stack;
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.IRelation;
+import net.csongradyp.badger.domain.achievement.relation.Relation;
+import net.csongradyp.badger.domain.achievement.relation.RelationElement;
+import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
+import net.csongradyp.badger.domain.achievement.trigger.ITrigger;
+import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-import net.csongradyp.badger.domain.AchievementType;
-import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IRelation;
-import net.csongradyp.badger.domain.achievement.relation.ChildAchievement;
-import net.csongradyp.badger.domain.achievement.relation.Relation;
-import net.csongradyp.badger.domain.achievement.relation.RelationOperator;
-import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Named
 public class RelationParser {
@@ -21,8 +19,11 @@ public class RelationParser {
     @Inject
     private RelationValidator relationValidator;
 
-    public Relation parse(final String id, final String relation, Collection<IAchievement> achievements) {
-        String normalizedRelation = relation.toLowerCase().replaceAll("\\s", "");
+    public Relation parse(final String relationExpression, final Collection<ITrigger> triggers) {
+        if(relationExpression == null) {
+            throw new MalformedAchievementRelationDefinition("Relation expression should be present!");
+        }
+        String normalizedRelation = relationExpression.toLowerCase().replaceAll("\\s", "");
         relationValidator.validate(normalizedRelation);
         final Stack<Relation> relationStack = new Stack<>();
         relationStack.push(new Relation());
@@ -46,9 +47,9 @@ public class RelationParser {
                 Integer nextIndex = getNextElementStartIndex(normalizedRelation);
                 final String achievementTypeString = normalizedRelation.substring(0, nextIndex);
                 final AchievementType achievementType = AchievementType.parse(achievementTypeString);
-                final Optional<IAchievement> achievementBean = achievements.stream().filter(achievement -> achievement.getType().equals(achievementType) && id.equals(achievement.getId())).findAny();
-                if (achievementBean.isPresent()) {
-                    relationStack.peek().addChild(new ChildAchievement(achievementBean.get()));
+                final Collection<ITrigger> typeTriggers = triggers.stream().filter(t -> t.getType() == achievementType).collect(Collectors.toList());
+                if (typeTriggers != null && !typeTriggers.isEmpty()) {
+                    relationStack.peek().addChild(new RelationElement(typeTriggers));
                 }
                 normalizedRelation = normalizedRelation.substring(nextIndex);
             }
@@ -71,7 +72,7 @@ public class RelationParser {
         return Collections.min( Arrays.asList( and, or, open, close ) );
     }
 
-    public void setRelationValidator(final RelationValidator relationValidator) {
+    void setRelationValidator(final RelationValidator relationValidator) {
         this.relationValidator = relationValidator;
     }
 

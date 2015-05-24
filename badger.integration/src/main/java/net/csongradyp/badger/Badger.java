@@ -125,7 +125,7 @@ public class Badger {
      * @return {@link Collection} of {@link IAchievement} instances.
      */
     public Collection<IAchievement> getAchievementsByOwner(final String owner) {
-        return controller.getByOwner(owner);
+        return controller.getAllByOwner(owner);
     }
 
     /**

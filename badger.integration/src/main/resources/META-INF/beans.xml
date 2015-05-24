@@ -10,7 +10,7 @@
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context-3.2.xsd
          http://www.springframework.org/schema/tx
-         http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+         http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
          http://www.springframework.org/schema/data/jpa
          http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
          http://www.springframework.org/schema/util
@@ -22,10 +22,11 @@
     <jpa:repositories base-package="net.csongradyp.badger.persistence.repository"/>
 
     <import resource="parsers-beans.xml"/>
+    <import resource="trigger-parsers-beans.xml"/>
 
     <util:map id="unlockedProviders" map-class="java.util.HashMap">
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).COMPOSITE}" value-ref="compositeUnlockedProvider" />
-        <entry key="#{T(net.csongradyp.badger.domain.AchievementType).COUNTER}" value-ref="counterUnlockedProvider" />
+        <entry key="#{T(net.csongradyp.badger.domain.AchievementType).SCORE}" value-ref="scoreUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).DATE}" value-ref="dateUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).TIME}" value-ref="timeUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).TIME_RANGE}" value-ref="timeRangeUnlockedProvider" />

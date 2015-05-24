@@ -21,7 +21,9 @@ public interface IAchievementController {
 
     Collection<IAchievement> getAll();
 
-    Collection<IAchievement> getByOwner(final String owner);
+    Collection<IAchievement> getAllUnlocked();
+
+    Collection<IAchievement> getAllByOwner(final String owner);
 
     Optional<IAchievement> get(final AchievementType type, final String id);
 

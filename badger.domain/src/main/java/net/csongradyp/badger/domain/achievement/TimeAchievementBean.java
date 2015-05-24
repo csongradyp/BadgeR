@@ -1,33 +1,33 @@
 package net.csongradyp.badger.domain.achievement;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import net.csongradyp.badger.domain.AbstractAchievementBean;
 import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.ITriggerableAchievementBean;
+import net.csongradyp.badger.domain.achievement.trigger.TimeTrigger;
 
-public class TimeAchievementBean extends AbstractAchievementBean<String> {
+import java.util.ArrayList;
+import java.util.List;
 
-    private List<String> trigger;
+public class TimeAchievementBean extends AbstractAchievementBean implements ITriggerableAchievementBean<TimeTrigger> {
+
+    private List<TimeTrigger> trigger;
 
     public TimeAchievementBean() {
         trigger = new ArrayList<>();
     }
 
     @Override
-    public List<String> getTrigger() {
+    public List<TimeTrigger> getTrigger() {
         return trigger;
     }
 
-    public void setTrigger(final String[] trigger) {
-        Collections.addAll(this.trigger, trigger);
+    public void setTrigger(final List<TimeTrigger> trigger) {
+        this.trigger = trigger;
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                "trigger=" + trigger +
-                '}';
+        return super.toString() + "trigger=" + trigger + '}';
     }
 
     @Override

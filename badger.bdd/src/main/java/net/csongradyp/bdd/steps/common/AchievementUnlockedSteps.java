@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
+import net.csongradyp.badger.domain.ITriggerableAchievementBean;
 import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
@@ -55,9 +56,9 @@ public class AchievementUnlockedSteps {
     @Given("an achievement with $id id and $type type bounded to $event event with trigger $trigger")
     public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
         final Optional<IAchievement> achievement = controller.get(type, id);
-        if(achievement.isPresent()) {
+        if (achievement.isPresent()) {
             assertThat("Achievement is subscribed to event" + event, achievement.get().getEvent().contains(event), is(true));
-            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(achievement.get(), type, trigger), is(true));
+            assertThat("Trigger:" + trigger + " is present for achievement", triggerChecker.isTriggerPresent((ITriggerableAchievementBean) achievement.get(), type, trigger), is(true));
         } else {
             fail("Achievement is not defined with id: " + id + "and type: " + type);
         }
@@ -66,26 +67,32 @@ public class AchievementUnlockedSteps {
     @Given("an achievement with $id id and $type type")
     public void checkCompositeAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type) {
         final Optional<IAchievement> achievement = controller.get(type, id);
-       assertThat("Achievement is not defined with id: " + id + "and type: " + type, achievement.isPresent(), is(true));
+        assertThat("Achievement is not defined with id: " + id + "and type: " + type, achievement.isPresent(), is(true));
     }
 
     @Given("has a child with $id id and $type type bounded to $event event with trigger $trigger")
     public void checkChildAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
         final Optional<IAchievement> achievement = controller.get(AchievementType.COMPOSITE, id);
-        if(achievement.isPresent()) {
+        if (achievement.isPresent()) {
             final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
             assertThat("Achievement is subscribed to event" + event, composite.getEvent().contains(event), is(true));
-            final IAchievement child = composite.getChildren().get(type);
-            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(child, type, trigger), is(true));
+//            final Collection<ITrigger> child = composite.getTriggersByType().get(type);
+//            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent((ITriggerableAchievementBean) child, type, trigger), is(true));
         } else {
             fail("Achievement is not defined with id: " + id + "and type: composite ");
         }
     }
 
     @Given("the achievement with $id id is already unlocked with level $level")
-    public void unlock(final @Named("id") String id, final @Named("level") Integer level) {
+    public void unlockWithLevel(final @Named("id") String id, final @Named("level") Integer level) {
         achievementDao.unlock(id, level);
-        assertThat(controller.isUnlocked(id, level), is(true));
+        assertThat(achievementDao.isUnlocked(id, level), is(true));
+    }
+
+    @Given("the achievement with $id id is unlocked")
+    public void unlock(final @Named("id") String id) {
+        achievementDao.unlock(id);
+        assertThat(achievementDao.isUnlocked(id), is(true));
     }
 
     @When("an achievement with $id id is unlocked")
@@ -100,13 +107,6 @@ public class AchievementUnlockedSteps {
         assertThat(controller.isUnlocked(id), is(false));
     }
 
-    @Then("achievement unlocked event is received")
-    public void unlockedEventIsReceived() {
-        assertThat(eventList.isEmpty(), is(false));
-        receivedEvent = eventList.get(0);
-        eventList.clear();
-    }
-
     @Then("unlocked event received for achievement $id")
     public void unlockedEventReceived(final String id) {
         assertThat(eventList.isEmpty(), is(false));
@@ -115,9 +115,9 @@ public class AchievementUnlockedSteps {
         receivedEvent = relatedEvent.get();
     }
 
-    @Then("no achievement unlocked event received")
-    public void noUnlockedEventIsReceived() {
-        assertThat(eventList.isEmpty(), is(true));
+    @Then("no achievement unlocked event received related to $id")
+    public void noUnlockedEventIsReceived(final String id) {
+        assertThat(eventList.stream().filter(e -> e.getId().equals(id)).findAny().isPresent(), is(false));
     }
 
     @Then("achievement id is $id")

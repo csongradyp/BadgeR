@@ -1,9 +1,8 @@
 package net.csongradyp.badger.domain;
 
-import net.csongradyp.badger.IAchievementUnlockFinderFacade;
+import java.util.Date;
 
 public interface IRelation {
 
-    Boolean evaluate(IAchievementUnlockFinderFacade controller);
-
+    Boolean evaluate(Long score, Date date, Date time);
 }

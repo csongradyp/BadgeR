@@ -150,10 +150,11 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
         parseTriggers(section, achievement);
         final Relation relation = parseRelation(section, achievement.getTrigger());
         achievement.setRelation(relation);
+        achievement.setCategory(section.get("category"));
         return achievement;
     }
 
-    private void parseEvents(Profile.Section section, CompositeAchievementBean achievement) {
+    private void parseEvents(Profile.Section section, IAchievementBean achievement) {
         final String[] events = section.getAll("event", String[].class);
         achievement.setEvent(events);
     }
@@ -184,8 +185,7 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
         final String[] triggers = section.getAll("trigger", String[].class);
         final List<ITrigger> parsedTriggers = triggerParsers.get(achievement.getType()).parse(triggers);
         achievement.setTrigger(parsedTriggers);
-        final String[] events = section.getAll("event", String[].class);
-        achievement.setEvent(events);
+        parseEvents(section, achievement);
         achievement.setCategory(section.get("category"));
         return achievement;
     }
@@ -194,7 +194,11 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
         return section != null && section.childrenNames() != null;
     }
 
-    public void setTriggerParsers(final Map<AchievementType, ITriggerParser> triggerParsers) {
+    void setTriggerParsers(final Map<AchievementType, ITriggerParser> triggerParsers) {
         this.triggerParsers = triggerParsers;
+    }
+
+    void setRelationParser(RelationParser relationParser) {
+        this.relationParser = relationParser;
     }
 }

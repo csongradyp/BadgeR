@@ -7,18 +7,11 @@ import java.util.Set;
 import net.csongradyp.badger.AchievementDefinition;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IAchievementBean;
-import net.csongradyp.badger.domain.IRelationalAchievement;
 
 public class AchievementDefinitionFileStub implements AchievementDefinition {
     @Override
     public Collection<IAchievement> getAll() {
         return null;
-    }
-
-    @Override
-    public void setRelations(Collection<IRelationalAchievement> relations) {
-
     }
 
     @Override
@@ -43,11 +36,6 @@ public class AchievementDefinitionFileStub implements AchievementDefinition {
 
     @Override
     public Collection<IAchievement> getAchievementsForCategory(String category) {
-        return null;
-    }
-
-    @Override
-    public Collection<IAchievementBean> getDateAchievementsWithoutEvents() {
         return null;
     }
 

@@ -6,14 +6,10 @@ import java.util.Optional;
 import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IAchievementBean;
-import net.csongradyp.badger.domain.IRelationalAchievement;
 
 public interface AchievementDefinition {
 
     Collection<IAchievement> getAll();
-
-    void setRelations(final Collection<IRelationalAchievement> relations);
 
     void setEvents(String[] events);
 
@@ -24,8 +20,6 @@ public interface AchievementDefinition {
     Collection<IAchievement> getAchievementsSubscribedFor(String event);
 
     Collection<IAchievement> getAchievementsForCategory(String category);
-
-    Collection<IAchievementBean> getDateAchievementsWithoutEvents();
 
     public Map<String, Set<IAchievement>> getAllByEvents();
 

@@ -7,12 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.domain.IAchievementBean;
-import net.csongradyp.badger.domain.IRelationalAchievement;
-import net.csongradyp.badger.domain.achievement.DateAchievementBean;
 import net.csongradyp.badger.exception.AchievementNotFoundException;
 
 public class AchievementBundle implements AchievementDefinition {
@@ -79,15 +75,6 @@ public class AchievementBundle implements AchievementDefinition {
     }
 
     @Override
-    public void setRelations(final Collection<IRelationalAchievement> relations) {
-//        relations.stream().forEach(compositeBean -> {
-//            relationMap.put(compositeBean.getId(), compositeBean);
-//            compositeBean.getChildren().keySet().forEach(type -> addToTypeMap(type, compositeBean));
-//            addToEventMap(compositeBean);
-//        });
-    }
-
-    @Override
     public Collection<IAchievement> getAchievementsSubscribedFor(final String event) {
         return achievementEventMap.get(event);
     }
@@ -98,19 +85,9 @@ public class AchievementBundle implements AchievementDefinition {
     }
 
     @Override
-    public Collection<IAchievementBean> getDateAchievementsWithoutEvents() {
-        final Map<String, IAchievement> dateAchievements = achievementTypeMap.get(AchievementType.DATE);
-        return (dateAchievements.values().stream()
-                .filter(achievementBean -> achievementBean.getEvent() == null || achievementBean.getEvent().isEmpty())
-                .map(achievementBean -> (DateAchievementBean) achievementBean)
-                .collect(Collectors.toList()));
-    }
-
-    @Override
     public Collection<IAchievement> getAll() {
         Collection<IAchievement> allAchievements = new HashSet<>();
         achievementTypeMap.values().forEach(achievementMap -> allAchievements.addAll(achievementMap.values()));
-//        relationMap.values().forEach(allAchievements::add);
         return allAchievements;
     }
 

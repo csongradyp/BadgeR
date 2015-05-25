@@ -2,6 +2,7 @@ package net.csongradyp.badger.provider.date;
 
 import java.util.Date;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
@@ -38,6 +39,12 @@ public class DateProviderTest {
     }
 
     @Test
+    public void testParseDateReturnsGivenDateInDayPrecisionAsAString() {
+        final Date currentDate = underTest.parseDate("12-12");
+        assertThat(currentDate, is(equalTo(new DateTime(2000, 12, 12, 0,0).toDate())));
+    }
+
+    @Test
     public void testGetDateReturnsGivenDateInDayPrecisionAsAString() {
         final DateTime date = new DateTime(2015, 10, 15, 12, 0);
         final String result = underTest.getDate(date.toDate());
@@ -54,6 +61,12 @@ public class DateProviderTest {
     public void testCurrentTimeReturnsCurrentTimeOnlyInMinutePrecision() {
         final Date currentTime = underTest.currentTime();
         assertThat(currentTime, is(equalTo(new Date())));
+    }
+
+    @Test
+    public void testParseTimeReturnsGivenTimeOnlyInMinutePrecisionAsAString() {
+        final LocalTime currentTime = underTest.parseTime("14:15");
+        assertThat(currentTime, is(equalTo(new LocalTime(14, 15))));
     }
 
     @Test

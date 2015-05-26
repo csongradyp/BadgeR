@@ -1,15 +1,10 @@
 package net.csongradyp.badger;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
-import net.csongradyp.badger.exception.AchievementNotFoundException;
+import net.csongradyp.badger.exception.MalformedAchievementDefinition;
+
+import java.util.*;
 
 public class AchievementBundle implements AchievementDefinition {
 
@@ -32,9 +27,7 @@ public class AchievementBundle implements AchievementDefinition {
 
     @Override
     public void setEvents(final String[] events) {
-        for (String event : events) {
-            achievementEventMap.put(event, new HashSet<>());
-        }
+        setEvents(Arrays.asList(events));
     }
 
     @Override
@@ -60,8 +53,11 @@ public class AchievementBundle implements AchievementDefinition {
     private void addToEventMap(final IAchievement achievementBean) {
         final List<String> eventSubscriptions = achievementBean.getEvent();
         if (eventSubscriptions != null && !eventSubscriptions.isEmpty()) {
-            eventSubscriptions.forEach(achievementEventSubscription -> {
-                achievementEventMap.get(achievementEventSubscription).add(achievementBean);
+            eventSubscriptions.forEach(event -> {
+                if(!achievementEventMap.containsKey(event)) {
+                    throw new MalformedAchievementDefinition("Event declaration is missing for event: " + event);
+                }
+                achievementEventMap.get(event).add(achievementBean);
             });
         }
     }
@@ -97,12 +93,13 @@ public class AchievementBundle implements AchievementDefinition {
     }
 
     @Override
-    public IAchievement get(final AchievementType type, final String id) {
+    public Optional<IAchievement> get(final AchievementType type, final String id) {
+        Optional<IAchievement> achievement = Optional.empty();
         final Map<String, IAchievement> achievementBeanMap = achievementTypeMap.get(type);
         if (achievementBeanMap.containsKey(id)) {
-            return achievementBeanMap.get(id);
+            achievement = Optional.of(achievementBeanMap.get(id));
         }
-        throw new AchievementNotFoundException(type, id);
+        return achievement;
     }
 
     @Override

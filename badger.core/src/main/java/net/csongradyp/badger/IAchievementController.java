@@ -29,7 +29,7 @@ public interface IAchievementController {
 
     Map<String, Set<IAchievement>> getAllByEvents();
 
-    void unlockAllUnlockable();
+    void checkAndUnlock();
 
     void triggerEventWithHighScore(final String event, final Long score);
 

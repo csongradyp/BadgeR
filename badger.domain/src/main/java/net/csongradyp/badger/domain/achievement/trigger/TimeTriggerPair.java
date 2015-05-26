@@ -1,9 +1,10 @@
 package net.csongradyp.badger.domain.achievement.trigger;
 
-import java.util.Date;
 import net.csongradyp.badger.domain.AchievementType;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
+
+import java.util.Date;
 
 public class TimeTriggerPair implements ITrigger<Date> {
     private final LocalTime startTrigger;
@@ -17,17 +18,17 @@ public class TimeTriggerPair implements ITrigger<Date> {
     @Override
     public Boolean fire(final Date triggerValue) {
         Boolean triggered;
-        final LocalTime time = new DateTime(triggerValue).toLocalTime();
+        final LocalTime currentTime = new DateTime(triggerValue).toLocalTime();
         if (startTrigger.isBefore(endTrigger)) {
-            triggered = isWithinStartAndEndTime(time);
+            triggered = isInRange(startTrigger, endTrigger, currentTime);
         } else {
-            triggered = !isWithinStartAndEndTime(time);
+            triggered = !isInRange(endTrigger, startTrigger, currentTime);
         }
         return triggered;
     }
 
-    private Boolean isWithinStartAndEndTime(LocalTime time) {
-        return (time.isAfter(startTrigger) || time.isEqual(startTrigger)) && (time.isBefore(endTrigger) || time.isEqual(endTrigger));
+    private Boolean isInRange(final LocalTime startTrigger, final LocalTime endTrigger, final LocalTime currentTime) {
+        return (currentTime.isAfter(startTrigger) || currentTime.isEqual(startTrigger)) && (currentTime.isBefore(endTrigger) || currentTime.isEqual(endTrigger));
     }
 
     @Override

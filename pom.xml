@@ -107,7 +107,6 @@
                 <configuration>
                     <excludes>
                         <exclude>**/net/csongradyp/bdd/**/*</exclude>
-                        <exclude>**/Badger.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>

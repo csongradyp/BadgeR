@@ -76,7 +76,8 @@ public class EventBusTest {
         final String text = "text";
         final String score = "value";
         final int level = 3;
-        final AchievementUnlockedEvent achievementUnlockedEvent = new AchievementUnlockedEvent(id, title, text, score, level);
+        final AchievementUnlockedEvent achievementUnlockedEvent = new AchievementUnlockedEvent(id, title, text, score);
+        achievementUnlockedEvent.setLevel(level);
 
         EventBus.publishUnlocked(achievementUnlockedEvent);
 
@@ -124,6 +125,6 @@ public class EventBusTest {
     @Test
     public void testCheckAllCallsControllerMethod() throws Exception {
         EventBus.checkAll();
-        verify(mockController).unlockAllUnlockable();
+        verify(mockController).checkAndUnlock();
     }
 }

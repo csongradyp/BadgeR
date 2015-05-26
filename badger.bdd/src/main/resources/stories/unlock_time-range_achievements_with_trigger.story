@@ -21,7 +21,7 @@ Examples:
 |     id     |  event  |start| end | time|
 |time-01-02  |timeEvent|01:30|02:00|01:59|
 |time-14-15  |timeEvent|14:59|15:00|15:00|
-|time-reverse|timeEvent|23:00|22:00|22:11|
+|time-reverse|timeEvent|23:00|22:00|07:11|
 
 Scenario: Related event triggered so that date based achievement is unlocked
 

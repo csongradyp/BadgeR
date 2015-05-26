@@ -1,16 +1,5 @@
 package net.csongradyp.badger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.achievement.ScoreAchievementBean;
@@ -24,6 +13,7 @@ import net.csongradyp.badger.factory.UnlockedEventFactory;
 import net.csongradyp.badger.parser.IAchievementDefinitionFileParser;
 import net.csongradyp.badger.persistence.AchievementDao;
 import net.csongradyp.badger.persistence.EventDao;
+import net.csongradyp.badger.persistence.entity.AchievementEntity;
 import net.csongradyp.badger.provider.unlock.AchievementUnlockProviderFacade;
 import org.junit.After;
 import org.junit.Before;
@@ -32,18 +22,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AchievementControllerTest {
@@ -115,6 +103,17 @@ public class AchievementControllerTest {
     }
 
     @Test
+    public void testSetLocaleLoadsNewMessageSourceWithNewLocale() {
+        underTest.setInternationalizationBaseName("msg");
+        final Locale locale = new Locale("hu");
+
+        underTest.setLocale(locale);
+
+        verify(mockUnlockedEventFactory).setResourceBundle(any(ResourceBundle.class));
+        assertThat(underTest.getResourceBundle().getLocale(), is(locale));
+    }
+
+    @Test
     public void testGetAllReturnsAllAchievementsFromAchievementDefinition() {
         final ArrayList<IAchievement> achievements = new ArrayList<>();
         given(mockAchievementDefinition.getAll()).willReturn(achievements);
@@ -131,12 +130,19 @@ public class AchievementControllerTest {
         final ScoreAchievementBean testAchievement = new ScoreAchievementBean();
         testAchievement.setId(ACHIEVEMENT_ID);
         final AchievementType type = AchievementType.SCORE;
-        given(mockAchievementDefinition.get(type, ACHIEVEMENT_ID)).willReturn(testAchievement);
+        given(mockAchievementDefinition.get(type, ACHIEVEMENT_ID)).willReturn(Optional.of(testAchievement));
 
         final Optional<IAchievement> result = underTest.get(type, ACHIEVEMENT_ID);
 
         assertThat(result.isPresent(), is(true));
         assertThat(result.get(), is(testAchievement));
+    }
+
+    @Test
+    public void testGetReturnsEmptyWhenNoAchievementIsPresentInTheAchievementDefinition() {
+        given(mockAchievementDefinition.get(AchievementType.SCORE, ACHIEVEMENT_ID)).willReturn(Optional.<IAchievement>empty());
+        final Optional<IAchievement> result = underTest.get(AchievementType.SCORE, ACHIEVEMENT_ID);
+        assertThat(result.isPresent(), is(false));
     }
 
     @Test
@@ -158,15 +164,23 @@ public class AchievementControllerTest {
     public void testGetAllByEventsReturnsAchievementDefinitionProvidedCollection() {
         final HashMap<String, Set<IAchievement>> achievements = new HashMap<>();
         given(mockAchievementDefinition.getAllByEvents()).willReturn(achievements);
-
         final Map<String, Set<IAchievement>> result = underTest.getAllByEvents();
-
         assertThat(achievements, is(result));
     }
 
     @Test
-    public void testCheckAll() {
-        // TODO
+    public void testGetAllUnlocked() {
+        final String testId = "testId";
+        final AchievementEntity entity = new AchievementEntity();
+        entity.setId(testId);
+        given(mockAchievementDao.getAll()).willReturn(Arrays.asList(entity));
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
+        given(mockAchievementDefinition.get(testId)).willReturn(Optional.of(achievementBean));
+
+        final Collection<IAchievement> result = underTest.getAllUnlocked();
+
+        assertThat(result.size(), is(1));
+        assertThat(result.iterator().next(), is(achievementBean));
     }
 
     @Test
@@ -229,8 +243,29 @@ public class AchievementControllerTest {
         verify(mockAchievementDao).unlock(ACHIEVEMENT_ID, 1, Collections.emptySet());
         EventBus.unSubscribeOnUnlock(handler.getWrapped());
     }
-    @Test
 
+    @Test
+    public void testCheckAndUnlockUnlocksAllPossibleAchievements() {
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
+        achievementBean.setId(ACHIEVEMENT_ID);
+        final String triggerValue = "value";
+        final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
+        final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(
+                achievement -> verifyUnlocalizedAchievement(achievement, triggerValue, Collections.emptySet())
+        );
+        when(mockAchievementUnlockProviderFacade.findAll()).thenReturn(Arrays.asList(unlockedEvent));
+        when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
+        when(mockUnlockedEventFactory.createEvent(achievementBean, triggerValue)).thenReturn(unlockedEvent);
+        EventBus.subscribeOnUnlock(handler);
+
+        underTest.checkAndUnlock();
+
+        verify(mockAchievementDao).isUnlocked(ACHIEVEMENT_ID, 1);
+        verify(mockAchievementDao).unlock(ACHIEVEMENT_ID, 1, Collections.emptySet());
+        EventBus.unSubscribeOnUnlock(handler.getWrapped());
+    }
+
+    @Test
     public void testUnlockWithGivenOwnersPublishUnlockedEventWithProperData() {
         final String triggerValue = "value";
         final Set<String> owners = new HashSet<>();

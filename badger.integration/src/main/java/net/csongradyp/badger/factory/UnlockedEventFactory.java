@@ -49,7 +49,9 @@ public class UnlockedEventFactory {
             text = achievementBean.getTextKey();
         }
         LOG.info("Achievement created with id: {}", achievementBean.getId());
-        return new AchievementUnlockedEvent(achievementBean.getId(), achievementBean.getCategory(), title, text, triggeredValue);
+        final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(achievementBean.getId(), title, text, triggeredValue);
+        unlockedEvent.setCategory(achievementBean.getCategory());
+        return unlockedEvent;
     }
 
     public void setResourceBundle(final ResourceBundle resourceBundle) {

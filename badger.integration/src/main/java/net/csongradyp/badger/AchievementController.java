@@ -80,7 +80,7 @@ public class AchievementController implements IAchievementController {
         final Collection<AchievementEntity> unlockedEntities = achievementDao.getAll();
         unlockedEntities.parallelStream().forEach(entity -> {
             final Optional<IAchievement> achievement = achievementDefinition.get(entity.getId());
-            if(achievement.isPresent()) {
+            if (achievement.isPresent()) {
                 unlocked.add(achievement.get());
             }
         });
@@ -102,11 +102,7 @@ public class AchievementController implements IAchievementController {
 
     @Override
     public Optional<IAchievement> get(final AchievementType type, final String id) {
-        final IAchievement achievement = achievementDefinition.get(type, id);
-        if (achievement != null) {
-            return Optional.of(achievement);
-        }
-        return Optional.empty();
+        return achievementDefinition.get(type, id);
     }
 
     @Override
@@ -115,7 +111,7 @@ public class AchievementController implements IAchievementController {
     }
 
     @Override
-    public void unlockAllUnlockable() {
+    public void checkAndUnlock() {
         final Collection<IAchievementUnlockedEvent> unlockableAchievements = achievementUnlockFinder.findAll();
         unlockableAchievements.forEach(this::unlock);
     }
@@ -183,18 +179,22 @@ public class AchievementController implements IAchievementController {
     @Override
     public void unlock(final AchievementType type, final String achievementId, String triggeredValue) {
         if (!isUnlocked(achievementId)) {
-            final IAchievement achievementBean = achievementDefinition.get(type, achievementId);
-            final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(achievementBean, triggeredValue);
-            unlock(achievementUnlockedEvent);
+            final Optional<IAchievement> matchingAchievement = achievementDefinition.get(type, achievementId);
+            if (matchingAchievement.isPresent()) {
+                final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(matchingAchievement.get(), triggeredValue);
+                unlock(achievementUnlockedEvent);
+            }
         }
     }
 
     @Override
     public void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners) {
         if (!isUnlocked(achievementId)) {
-            final IAchievement achievementBean = achievementDefinition.get(type, achievementId);
-            final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(achievementBean, triggeredValue, owners);
-            unlock(achievementUnlockedEvent);
+            final Optional<IAchievement> matchingAchievement = achievementDefinition.get(type, achievementId);
+            if (matchingAchievement.isPresent()) {
+                final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(matchingAchievement.get(), triggeredValue, owners);
+                unlock(achievementUnlockedEvent);
+            }
         }
     }
 

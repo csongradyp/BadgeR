@@ -1,11 +1,12 @@
 package net.csongradyp.badger;
 
+import net.csongradyp.badger.domain.AchievementType;
+import net.csongradyp.badger.domain.IAchievement;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import net.csongradyp.badger.domain.AchievementType;
-import net.csongradyp.badger.domain.IAchievement;
 
 public interface AchievementDefinition {
 
@@ -21,9 +22,9 @@ public interface AchievementDefinition {
 
     Collection<IAchievement> getAchievementsForCategory(String category);
 
-    public Map<String, Set<IAchievement>> getAllByEvents();
+    Map<String, Set<IAchievement>> getAllByEvents();
 
-    public IAchievement get(AchievementType type, String id);
+    Optional<IAchievement> get(AchievementType type, String id);
 
-    public Optional<IAchievement> get(String id);
+    Optional<IAchievement> get(String id);
 }

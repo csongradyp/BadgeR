@@ -32,26 +32,6 @@ public class AchievementUnlockedEvent implements IAchievementUnlockedEvent {
         category = "default";
     }
 
-    public AchievementUnlockedEvent(final String id, final String category, final String title, final String text, final String triggerScore) {
-        this(id, title, text, triggerScore);
-        this.category = category;
-        eventType = AchievementEventType.UNLOCK;
-    }
-
-    public AchievementUnlockedEvent(final String id, final String title, final String text, final String triggerScore, final Integer level) {
-        this(id, title, text, triggerScore);
-        this.level = level;
-        category = "default";
-        if (level > 1) {
-            eventType = AchievementEventType.LEVEL_UP;
-        }
-    }
-
-    public AchievementUnlockedEvent(final String id, final String category, final String title, final String text, final String triggerScore, final Integer level) {
-        this(id, title, text, triggerScore, level);
-        this.category = category;
-    }
-
     /**
      * Returns the ID of the unlocked achievement.
      *
@@ -142,6 +122,17 @@ public class AchievementUnlockedEvent implements IAchievementUnlockedEvent {
     @Override
     public AchievementEventType getEventType() {
         return eventType;
+    }
+
+    /**
+     * Sets the category of the achievement. Default category is {@literal "default"}.
+     * Category could be useful to sort achievements by some conventions which is not present.
+     * (E.g.: Positive or negative badges)
+     *
+     * @param category New category of the achievement.
+     */
+    public void setCategory(final String category) {
+        this.category = category;
     }
 
     @Override

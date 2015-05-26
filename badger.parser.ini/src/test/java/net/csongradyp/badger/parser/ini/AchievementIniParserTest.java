@@ -1,9 +1,5 @@
 package net.csongradyp.badger.parser.ini;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
 import net.csongradyp.badger.AchievementDefinition;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
@@ -16,17 +12,19 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import java.io.File;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AchievementIniParserTest {
@@ -92,12 +90,13 @@ public class AchievementIniParserTest {
         final AchievementDefinition result = underTest.parse(achievementFile);
 
         verify(mockRelationParser, times(2)).parse(anyString(), anyCollection());
-        final IAchievement simple = result.get(AchievementType.SINGLE, "simple");
-        assertThat(simple, notNullValue());
-        assertThat(simple.getEvent(), is(equalTo(Collections.<String>emptyList())));
-        assertThat(simple.getCategory(), is("default"));
-        assertThat(result.get("simple").get(), is(simple));
-        assertThat(result.get(AchievementType.SCORE, "first"), notNullValue());
+        final Optional<IAchievement> simple = result.get(AchievementType.SINGLE, "simple");
+        assertThat(simple.isPresent(), is(true));
+        assertThat(simple.get().getEvent(), is(equalTo(Collections.<String>emptyList())));
+        assertThat(simple.get().getCategory(), is("default"));
+        assertThat(result.get("simple"), is(simple));
+        final Optional<IAchievement> first1 = result.get(AchievementType.SCORE, "first");
+        assertThat(first1.isPresent(), is(true));
         final IAchievement first = result.get("first").get();
         verify(mockTriggerParser, times(1)).parse(new String[]{"3", "7"});
         assertThat(first, notNullValue());

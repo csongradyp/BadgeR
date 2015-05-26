@@ -23,6 +23,8 @@ public class AchievementDefinitionFileParserTest {
 
     @Mock
     private IAchievementDefinitionFileParser mockFileParser;
+    @Mock
+    private AchievementDefinition mockAchievementDefinition;
 
     private AchievementDefinitionFileParser underTest;
 
@@ -41,32 +43,23 @@ public class AchievementDefinitionFileParserTest {
 
     @Test
     public void testParseReturnsDefinitionFileParsedByUnderlyingParsersWhenInputFilePathIsGivenAsAString() throws Exception {
-        AchievementDefinitionFileStub achievementDefinitionFile = new AchievementDefinitionFileStub();
-        given(mockFileParser.parse(Matchers.any(File.class))).willReturn(achievementDefinitionFile);
-
+        given(mockFileParser.parse(Matchers.any(File.class))).willReturn(mockAchievementDefinition);
         AchievementDefinition result = underTest.parse("definitionfile.ini");
-
-        assertThat(result, is(achievementDefinitionFile));
+        assertThat(result, is(mockAchievementDefinition));
     }
 
     @Test
     public void testParseReturnsDefinitionFileParsedByUnderlyingParsersWhenInputFilePathIsGivenAsAnURL() throws Exception {
-        AchievementDefinitionFileStub achievementDefinitionFile = new AchievementDefinitionFileStub();
-        given(mockFileParser.parse(Matchers.any(File.class))).willReturn(achievementDefinitionFile);
-
+        given(mockFileParser.parse(Matchers.any(File.class))).willReturn(mockAchievementDefinition);
         AchievementDefinition result = underTest.parse(new URL("http", "localhost", "definitionfile.ini"));
-
-        assertThat(result, is(achievementDefinitionFile));
+        assertThat(result, is(mockAchievementDefinition));
     }
 
     @Test
     public void testParseReturnsDefinitionFileParsedByUnderlyingParsersWhenInputFileIsGivenDirectly() throws Exception {
-        AchievementDefinitionFileStub achievementDefinitionFile = new AchievementDefinitionFileStub();
-        given(mockFileParser.parse(Matchers.any(File.class))).willReturn(achievementDefinitionFile);
-
+        given(mockFileParser.parse(Matchers.any(File.class))).willReturn(mockAchievementDefinition);
         AchievementDefinition result = underTest.parse(new File("definitionfile.ini"));
-
-        assertThat(result, is(achievementDefinitionFile));
+        assertThat(result, is(mockAchievementDefinition));
     }
 
     @Test(expected = UnsupportedAchievementDefinitionFileType.class)

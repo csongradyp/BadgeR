@@ -15,5 +15,7 @@ public interface IAchievementUnlockFinderFacade {
 
     Collection<IAchievementUnlockedEvent> findUnlockables(String event, Collection<String> owners);
 
+    Collection<IAchievementUnlockedEvent> findUnlockables(String event, Long score, Collection<String> owners);
+
     Optional<IAchievementUnlockedEvent> getUnlockable(IAchievement achievementBean);
 }

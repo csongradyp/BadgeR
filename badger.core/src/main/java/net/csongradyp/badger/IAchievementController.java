@@ -35,15 +35,9 @@ public interface IAchievementController {
 
     void triggerEvent(final String event, final Long score);
 
-    void triggerEvent(final String event, final String... owners);
-
     void triggerEvent(final String event, final Collection<String> owners);
 
     void triggerEvent(final String event);
-
-    void unlock(final AchievementType type, final String achievementId, String triggeredValue);
-
-    void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners);
 
     void unlock(final String achievementId, final String triggerValue, final Collection<String> owners);
 

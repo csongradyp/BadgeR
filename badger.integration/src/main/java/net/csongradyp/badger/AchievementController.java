@@ -150,11 +150,6 @@ public class AchievementController implements IAchievementController {
     }
 
     @Override
-    public void triggerEvent(final String event, final String... owners) {
-        triggerEvent(event, Arrays.asList(owners));
-    }
-
-    @Override
     public void triggerEvent(final String event, final Collection<String> owners) {
         LOG.debug("Achievement event triggered: {} with owners {} ", event, owners);
         publishIncremented(event);
@@ -174,28 +169,6 @@ public class AchievementController implements IAchievementController {
         final Long currentValue = eventDao.increment(event);
         EventBus.publishScoreChanged(new ScoreUpdatedEvent(event, currentValue));
         return currentValue;
-    }
-
-    @Override
-    public void unlock(final AchievementType type, final String achievementId, String triggeredValue) {
-        if (!isUnlocked(achievementId)) {
-            final Optional<IAchievement> matchingAchievement = achievementDefinition.get(type, achievementId);
-            if (matchingAchievement.isPresent()) {
-                final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(matchingAchievement.get(), triggeredValue);
-                unlock(achievementUnlockedEvent);
-            }
-        }
-    }
-
-    @Override
-    public void unlock(final AchievementType type, final String achievementId, final String triggeredValue, final String... owners) {
-        if (!isUnlocked(achievementId)) {
-            final Optional<IAchievement> matchingAchievement = achievementDefinition.get(type, achievementId);
-            if (matchingAchievement.isPresent()) {
-                final AchievementUnlockedEvent achievementUnlockedEvent = unlockedEventFactory.createEvent(matchingAchievement.get(), triggeredValue, owners);
-                unlock(achievementUnlockedEvent);
-            }
-        }
     }
 
     @Override

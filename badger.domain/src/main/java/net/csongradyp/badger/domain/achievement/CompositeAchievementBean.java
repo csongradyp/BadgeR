@@ -1,15 +1,15 @@
 package net.csongradyp.badger.domain.achievement;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import net.csongradyp.badger.domain.AbstractAchievementBean;
 import net.csongradyp.badger.domain.AchievementType;
-import net.csongradyp.badger.domain.IRelation;
 import net.csongradyp.badger.domain.ITriggerableAchievementBean;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
 import net.csongradyp.badger.domain.achievement.trigger.ITrigger;
 
-import java.util.*;
-
-public class CompositeAchievementBean extends AbstractAchievementBean implements ITriggerableAchievementBean<ITrigger>, IRelation {
+public class CompositeAchievementBean extends AbstractAchievementBean implements ITriggerableAchievementBean<ITrigger> {
 
     private Relation relation;
     private List<ITrigger> triggers;
@@ -33,16 +33,15 @@ public class CompositeAchievementBean extends AbstractAchievementBean implements
         return AchievementType.COMPOSITE;
     }
 
-    @Override
-    public Boolean evaluate(final Long score, final Date date, final Date time) {
-        return relation.evaluate(score, date, time);
-    }
-
     public void addTrigger(final Collection<ITrigger> triggers) {
         triggers.stream().forEach(this.triggers::add);
     }
 
     public void setRelation(final Relation relation) {
         this.relation = relation;
+    }
+
+    public Relation getRelation() {
+        return relation;
     }
 }

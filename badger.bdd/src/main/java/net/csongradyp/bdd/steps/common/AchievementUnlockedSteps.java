@@ -97,7 +97,7 @@ public class AchievementUnlockedSteps {
 
     @When("an achievement with $id id is unlocked")
     public void unlockManually(final @Named("id") String id) {
-        controller.unlock(AchievementType.SINGLE, id, "");
+        controller.unlock(id, "");
         assertThat(controller.isUnlocked(id), is(true));
     }
 

@@ -87,29 +87,6 @@ public class Badger {
     }
 
     /**
-     * Unlock achievement directly without triggering any events.
-     *
-     * @param type           Type of the achievement: Single, Counter, Time, Time range, Date or Composite. See more at {@link AchievementType}
-     * @param id             Defined unique id of the achievement.
-     * @param triggeredValue Optional attribute to provide more information of the unlock.
-     */
-    public void unlock(final AchievementType type, final String id, final String triggeredValue) {
-        controller.unlock(type, id, triggeredValue);
-    }
-
-    /**
-     * Unlock achievement directly without triggering any events.
-     *
-     * @param type           Type of the achievement: Single, Counter, Time, Time range, Date or Composite. See more at {@link AchievementType}
-     * @param id             Defined unique id of the achievement.
-     * @param triggeredValue Optional attribute to provide more information of the unlock.
-     * @param owners         Owners of the unlocked achievement. Basically the source of the event, the player, the newly created thing ...
-     */
-    public void unlock(final AchievementType type, final String id, final String triggeredValue, final String... owners) {
-        controller.unlock(type, id, triggeredValue, owners);
-    }
-
-    /**
      * Returns all defined achievements without any sorting.
      *
      * @return {@link Collection} of {@link IAchievement} instances.
@@ -185,16 +162,6 @@ public class Badger {
      * @param owners Owners of the unlocked achievement. Basically the source of the event, the player, the newly created thing ...
      */
     public void triggerEvent(final String event, final Collection<String> owners) {
-        controller.triggerEvent(event, owners);
-    }
-
-    /**
-     * Triggers the given event and increment its counter by one.
-     *
-     * @param event  Previously defined event in the achievement definition file.
-     * @param owners Owners of the unlocked achievement. Basically the source of the event, the player, the newly created thing ...
-     */
-    public void triggerEvent(final String event, final String... owners) {
         controller.triggerEvent(event, owners);
     }
 

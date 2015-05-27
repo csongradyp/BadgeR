@@ -37,6 +37,7 @@ import static org.mockito.Mockito.*;
 public class AchievementControllerTest {
 
     private static final String ACHIEVEMENT_ID = "test";
+    private static final String EVENT_ID = "event";
 
     @Mock
     private IAchievementDefinitionFileParser mockAchievementParser;
@@ -123,6 +124,21 @@ public class AchievementControllerTest {
         assertThat(result, notNullValue());
         assertThat(result, is(achievements));
         assertThat(result.size(), is(equalTo(achievements.size())));
+    }
+
+    @Test
+    public void testGetAllByOwnerReturnsAllAchievementsFromAchievementDefinitionBelongingToGivenOwner() {
+        final String owner = "owner";
+        final AchievementEntity entity = new AchievementEntity();
+        entity.setId(ACHIEVEMENT_ID);
+        given(mockAchievementDao.getAllByOwner(owner)).willReturn(Arrays.asList(entity));
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
+        given(mockAchievementDefinition.get(ACHIEVEMENT_ID)).willReturn(Optional.of(achievementBean));
+
+        final Collection<IAchievement> result = underTest.getAllByOwner(owner);
+
+        assertThat(result.size(), is(equalTo(1)));
+        assertThat(result.iterator().next(), is(achievementBean));
     }
 
     @Test
@@ -272,9 +288,9 @@ public class AchievementControllerTest {
         owners.add("owner");
         final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
         unlockedEvent.addOwners(owners);
-        final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(achievement -> {
-            assertThat(achievement, is(unlockedEvent));
-        });
+        final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(
+                achievement -> assertThat(achievement, is(unlockedEvent))
+        );
         final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
        achievementBean.setId(ACHIEVEMENT_ID);
         when(mockAchievementDefinition.get(ACHIEVEMENT_ID)).thenReturn(Optional.of(achievementBean));
@@ -288,6 +304,88 @@ public class AchievementControllerTest {
         verify(mockAchievementDao).isUnlocked(ACHIEVEMENT_ID, 1);
         verify(mockAchievementDao).unlock(ACHIEVEMENT_ID, 1, owners);
         EventBus.unSubscribeOnUnlock(handler.getWrapped());
+    }
+
+    @Test
+    public void testTriggerEventIncrementsEventScoreAndUnlocksAllPossibleAchievementsWithNewScore() {
+        final long newScore = 42L;
+        final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
+        final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(achievement -> assertThat(achievement, is(unlockedEvent)));
+        final ScoreUpdateHandlerWrapper scoreHandler = new ScoreUpdateHandlerWrapper(e -> {
+            assertThat(e.getEvent(), is(EVENT_ID));
+            assertThat(e.getValue(), is(equalTo(newScore)));
+        });
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
+        achievementBean.setId(ACHIEVEMENT_ID);
+        when(mockEventDao.increment(EVENT_ID)).thenReturn(newScore);
+        when(mockAchievementUnlockProviderFacade.findUnlockables(EVENT_ID)).thenReturn(Collections.singletonList(unlockedEvent));
+        when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
+        when(mockUnlockedEventFactory.createEvent(any(IAchievement.class), anyString(), anyCollection())).thenReturn(unlockedEvent);
+        EventBus.subscribeOnUnlock(handler);
+        EventBus.subscribeOnScoreChanged(scoreHandler);
+
+        underTest.triggerEvent(EVENT_ID);
+
+        verify(mockEventDao).increment(EVENT_ID);
+        verify(mockAchievementDao).isUnlocked(ACHIEVEMENT_ID, 1);
+        verify(mockAchievementDao).unlock(ACHIEVEMENT_ID, 1, Collections.emptySet());
+        EventBus.unSubscribeOnUnlock(handler.getWrapped());
+        EventBus.unSubscribeOnScoreChanged(scoreHandler.getWrapped());
+    }
+
+    @Test
+    public void testTriggerEventSetsEventScoreAndUnlocksAllPossibleAchievementsWithNewScore() {
+        final long newScore = 42L;
+        final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
+        final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(achievement -> assertThat(achievement, is(unlockedEvent)));
+        final ScoreUpdateHandlerWrapper scoreHandler = new ScoreUpdateHandlerWrapper(e -> {
+            assertThat(e.getEvent(), is(EVENT_ID));
+            assertThat(e.getValue(), is(equalTo(newScore)));
+        });
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
+        achievementBean.setId(ACHIEVEMENT_ID);
+        when(mockEventDao.setScore(EVENT_ID, newScore)).thenReturn(newScore);
+        when(mockAchievementUnlockProviderFacade.findUnlockables(EVENT_ID, newScore)).thenReturn(Collections.singletonList(unlockedEvent));
+        when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
+        when(mockUnlockedEventFactory.createEvent(any(IAchievement.class), anyString(), anyCollection())).thenReturn(unlockedEvent);
+        EventBus.subscribeOnUnlock(handler);
+        EventBus.subscribeOnScoreChanged(scoreHandler);
+
+        underTest.triggerEvent(EVENT_ID, newScore);
+
+        verify(mockEventDao).setScore(EVENT_ID, newScore);
+        verify(mockAchievementDao).isUnlocked(ACHIEVEMENT_ID, 1);
+        verify(mockAchievementDao).unlock(ACHIEVEMENT_ID, 1, Collections.emptySet());
+        EventBus.unSubscribeOnUnlock(handler.getWrapped());
+        EventBus.unSubscribeOnScoreChanged(scoreHandler.getWrapped());
+    }
+
+    @Test
+    public void testTriggerEventWithOwnersIncrementsEventScoreAndUnlocksAllPossibleAchievementsWithNewScore() {
+        final long newScore = 42L;
+        final List<String> owners = Arrays.asList("owner1", "owner2");
+        final AchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
+        final AchievementUnlockedHandlerWrapper handler = new AchievementUnlockedHandlerWrapper(e -> assertThat(e, is(unlockedEvent)));
+        final ScoreUpdateHandlerWrapper scoreHandler = new ScoreUpdateHandlerWrapper(e -> {
+            assertThat(e.getEvent(), is(EVENT_ID));
+            assertThat(e.getValue(), is(equalTo(newScore)));
+        });
+        final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
+        achievementBean.setId(ACHIEVEMENT_ID);
+        when(mockEventDao.increment(EVENT_ID)).thenReturn(newScore);
+        when(mockAchievementUnlockProviderFacade.findUnlockables(EVENT_ID, owners)).thenReturn(Collections.singletonList(unlockedEvent));
+        when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
+        when(mockUnlockedEventFactory.createEvent(any(IAchievement.class), anyString(), anyCollection())).thenReturn(unlockedEvent);
+        EventBus.subscribeOnUnlock(handler);
+        EventBus.subscribeOnScoreChanged(scoreHandler);
+
+        underTest.triggerEvent(EVENT_ID, owners);
+
+        verify(mockEventDao).increment(EVENT_ID);
+        verify(mockAchievementDao).isUnlocked(ACHIEVEMENT_ID, 1);
+        verify(mockAchievementDao).unlock(ACHIEVEMENT_ID, 1, Collections.emptySet());
+        EventBus.unSubscribeOnUnlock(handler.getWrapped());
+        EventBus.unSubscribeOnScoreChanged(scoreHandler.getWrapped());
     }
 
     @Test
@@ -312,7 +410,6 @@ public class AchievementControllerTest {
     @Test
     public void testResetCallsDaosDeleteAllMethods() {
         underTest.reset();
-
         verify(mockAchievementDao).deleteAll();
         verify(mockEventDao).deleteAll();
     }

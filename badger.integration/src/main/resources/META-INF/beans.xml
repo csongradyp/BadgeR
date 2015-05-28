@@ -27,6 +27,7 @@
     <util:map id="unlockedProviders" map-class="java.util.HashMap">
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).COMPOSITE}" value-ref="compositeUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).SCORE}" value-ref="scoreUnlockedProvider" />
+        <entry key="#{T(net.csongradyp.badger.domain.AchievementType).SCORE_RANGE}" value-ref="scoreRangeUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).DATE}" value-ref="dateUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).TIME}" value-ref="timeUnlockedProvider" />
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).TIME_RANGE}" value-ref="timeRangeUnlockedProvider" />

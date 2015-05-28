@@ -26,8 +26,11 @@ public class AchievementTypeTest {
         AchievementType single = AchievementType.parse("single");
         assertThat(single, is(AchievementType.SINGLE));
 
-        AchievementType counter = AchievementType.parse("score");
-        assertThat(counter, is(AchievementType.SCORE));
+        AchievementType score = AchievementType.parse("score");
+        assertThat(score, is(AchievementType.SCORE));
+
+        AchievementType scoreRange = AchievementType.parse("scoreRange");
+        assertThat(scoreRange, is(AchievementType.SCORE_RANGE));
 
         AchievementType composite = AchievementType.parse("composite");
         assertThat(composite, is(AchievementType.COMPOSITE));

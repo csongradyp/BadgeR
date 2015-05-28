@@ -125,6 +125,9 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
                 case SCORE:
                     achievementBean = parseBean(id, section, new ScoreAchievementBean());
                     break;
+                case SCORE_RANGE:
+                    achievementBean = parseBean(id, section, new ScoreRangeAchievementBean());
+                    break;
                 case COMPOSITE:
                     achievementBean = parseCompositeSection(id, section, new CompositeAchievementBean());
                     break;

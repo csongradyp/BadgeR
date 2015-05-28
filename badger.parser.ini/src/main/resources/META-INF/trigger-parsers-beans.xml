@@ -9,6 +9,7 @@
 
     <util:map id="triggerParsers" map-class="java.util.HashMap">
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).SCORE}" value-ref="scoreTriggerParser"/>
+        <entry key="#{T(net.csongradyp.badger.domain.AchievementType).SCORE_RANGE}" value-ref="scoreRangeTriggerParser"/>
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).DATE}" value-ref="dateTriggerParser"/>
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).TIME}" value-ref="timeTriggerParser"/>
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).TIME_RANGE}" value-ref="timeRangeTriggerParser"/>

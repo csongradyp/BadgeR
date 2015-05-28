@@ -70,14 +70,13 @@ public class AchievementUnlockedSteps {
         assertThat("Achievement is not defined with id: " + id + "and type: " + type, achievement.isPresent(), is(true));
     }
 
-    @Given("has a child with $id id and $type type bounded to $event event with trigger $trigger")
-    public void checkChildAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
+    @Given("has a achievement with $id id is bounded to $event event with trigger $trigger")
+    public void checkChildAchievementExistence(final @Named("id") String id, final @Named("event") String event, final @Named("trigger") String trigger) {
         final Optional<IAchievement> achievement = controller.get(AchievementType.COMPOSITE, id);
         if (achievement.isPresent()) {
             final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
             assertThat("Achievement is subscribed to event" + event, composite.getEvent().contains(event), is(true));
-//            final Collection<ITrigger> child = composite.getTriggersByType().get(type);
-//            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent((ITriggerableAchievementBean) child, type, trigger), is(true));
+            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(composite, AchievementType.COMPOSITE, trigger), is(true));
         } else {
             fail("Achievement is not defined with id: " + id + "and type: composite ");
         }

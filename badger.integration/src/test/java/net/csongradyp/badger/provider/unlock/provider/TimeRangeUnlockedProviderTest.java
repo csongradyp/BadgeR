@@ -46,6 +46,8 @@ public class TimeRangeUnlockedProviderTest {
     @Test
     public void testGetUnlockableReturnsEmptyWhenCurrentTimeIsNotWithinTheGivenRange() throws Exception {
         final TimeRangeAchievementBean timeRangeAchievementBean = givenTimeAchievementBean("08:00", "09:00");
+        given(mockDateProvider.currentTime()).willReturn(new LocalTime(7, 31).toDateTimeToday().toDate());
+        given(mockDateProvider.currentTimeString()).willReturn("");
         final Optional<IAchievementUnlockedEvent> result = underTest.getUnlockable(timeRangeAchievementBean, 0L);
         assertThat(result.isPresent(), is(false));
 

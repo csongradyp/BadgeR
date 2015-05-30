@@ -1,0 +1,41 @@
+{
+	"events" : ["sample", "sample2", "sample3", "compositeEvent", "dateEvent", "timeEvent"],
+	"achievements" : {
+		"single":[
+		  { "id" : "simple"}
+		],
+        "score":[
+			{ "id" : "first", "subscription" : ["sample"], "trigger" : ["3","7"] },
+			{ "id" : "second", "subscription" : ["sample2"], "trigger" : ["2","5","10"] }
+		],
+		"scoreRange":[
+			{ "id" : "score-range", "subscription" : ["sample2"], "trigger" : [{"start":0, "end":10}] },
+			{ "id" : "score-reverse", "subscription" : ["sample2"], "trigger" : [{"start":10, "end":0}] }
+		],
+		"date":[
+			{ "id" : "date-test-05-05", "subscription" : ["dateEvent"], "trigger" : ["05-05"] },
+			{ "id" : "date-test-12-30", "subscription" : ["dateEvent"], "trigger" : ["12-30"] }
+		],
+		"time":[
+			{ "id" : "time-test-0815", "subscription" : ["timeEvent"], "trigger" : ["08:15"] },
+			{ "id" : "time-test-2357", "subscription" : ["timeEvent"], "trigger" : ["23:57"] }
+		],
+		"timeRange":[
+			{ "id" : "time-01-02", "subscription" : ["timeEvent"], "trigger" : [{"start":"01:30", "end":"02:00"}] },
+			{ "id" : "time-14-15", "subscription" : ["timeEvent"], "trigger" : [{"start":"14:59", "end":"15:00"}] },
+            { "id" : "time-reverse", "subscription" : ["timeEvent"], "trigger" : [{"start":"23:00", "end":"22:00"}] }
+		],
+		"composite":[
+			{ 	"id" : "composite-dateTime", "subscription" : ["compositeEvent"],
+				"relation" : "timeRange & date",
+				"dateTrigger" : ["05-04", "06-22"],
+				"timeRangeTrigger" : [{"start":"04:00", "end":"05:00"}]
+			},
+			{ 	"id" : "composite-dateCounter", "subscription" : ["compositeEvent"],
+				"relation" : "date & score",
+				"scoreTrigger" : ["100+"],
+				"dateTrigger" : ["01-23"]
+			}
+		]
+	}
+}

@@ -9,6 +9,7 @@
 
     <util:map id="definitionFileParsers" map-class="java.util.HashMap">
         <entry key="#{T(net.csongradyp.badger.parser.file.FileType).INI}" value-ref="achievementIniParser"/>
+        <entry key="#{T(net.csongradyp.badger.parser.file.FileType).JSON}" value-ref="achievementJsonParser"/>
     </util:map>
 
 </beans>

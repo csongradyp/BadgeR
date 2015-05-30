@@ -1,31 +1,34 @@
 package net.csongradyp.badger.parser.ini;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.inject.Named;
 import net.csongradyp.badger.AchievementBundle;
 import net.csongradyp.badger.AchievementDefinition;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.IAchievementBean;
 import net.csongradyp.badger.domain.ITriggerableAchievementBean;
-import net.csongradyp.badger.domain.achievement.*;
+import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
+import net.csongradyp.badger.domain.achievement.SingleAchievementBean;
 import net.csongradyp.badger.domain.achievement.relation.Relation;
 import net.csongradyp.badger.domain.achievement.trigger.ITrigger;
 import net.csongradyp.badger.exception.AchievementNotFoundException;
 import net.csongradyp.badger.exception.MalformedAchievementDefinition;
 import net.csongradyp.badger.parser.IAchievementDefinitionFileParser;
-import net.csongradyp.badger.parser.ini.trigger.ITriggerParser;
+import net.csongradyp.badger.parser.api.AchievementFactory;
+import net.csongradyp.badger.parser.api.RelationParser;
+import net.csongradyp.badger.parser.api.trigger.ITriggerParser;
 import org.ini4j.Ini;
 import org.ini4j.Profile;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @Named
 public class AchievementIniParser implements IAchievementDefinitionFileParser {
@@ -111,29 +114,16 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
 
     private IAchievement parse(final String id, final AchievementType type, final Profile.Section section) {
         if (section != null) {
-            IAchievement achievementBean = null;
-            switch (type) {
-                case DATE:
-                    achievementBean = parseBean(id, section, new DateAchievementBean());
-                    break;
-                case TIME:
-                    achievementBean = parseBean(id, section, new TimeAchievementBean());
-                    break;
-                case TIME_RANGE:
-                    achievementBean = parseBean(id, section, new TimeRangeAchievementBean());
-                    break;
-                case SCORE:
-                    achievementBean = parseBean(id, section, new ScoreAchievementBean());
-                    break;
-                case SCORE_RANGE:
-                    achievementBean = parseBean(id, section, new ScoreRangeAchievementBean());
-                    break;
-                case COMPOSITE:
-                    achievementBean = parseCompositeSection(id, section, new CompositeAchievementBean());
-                    break;
-                case SINGLE:
-                    achievementBean = parseSingle(id, section);
-                    break;
+            IAchievement achievementBean = AchievementFactory.create(type);
+
+            if (type == AchievementType.COMPOSITE) {
+                achievementBean = parseCompositeSection(id, section, (CompositeAchievementBean) achievementBean);
+
+            } else if (type == AchievementType.SINGLE) {
+                achievementBean = parseSingle(id, section);
+
+            } else {
+                achievementBean = parseBean(id, section, (ITriggerableAchievementBean) achievementBean);
             }
             return achievementBean;
         }
@@ -166,16 +156,16 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
         AchievementType type;
         final String[] scoreTriggers = section.getAll("scoreTrigger", String[].class);
         type = AchievementType.SCORE;
-        achievement.addTrigger(triggerParsers.get(type).parse(scoreTriggers));
+        achievement.addTrigger(triggerParsers.get(type).parse(Arrays.asList(scoreTriggers)));
         final String[] dateTriggers = section.getAll("dateTrigger", String[].class);
         type = AchievementType.DATE;
-        achievement.addTrigger(triggerParsers.get(type).parse(dateTriggers));
+        achievement.addTrigger(triggerParsers.get(type).parse(Arrays.asList(dateTriggers)));
         final String[] timeTriggers = section.getAll("timeTrigger", String[].class);
         type = AchievementType.TIME;
-        achievement.addTrigger(triggerParsers.get(type).parse(timeTriggers));
+        achievement.addTrigger(triggerParsers.get(type).parse(Arrays.asList(timeTriggers)));
         final String[] timeRangeTriggers = section.getAll("timeRangeTrigger", String[].class);
         type = AchievementType.TIME_RANGE;
-        achievement.addTrigger(triggerParsers.get(type).parse(timeRangeTriggers));
+        achievement.addTrigger(triggerParsers.get(type).parse(Arrays.asList(timeRangeTriggers)));
     }
 
     private Relation parseRelation(Profile.Section section, List<ITrigger> triggers) {
@@ -186,7 +176,7 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
     private IAchievementBean parseBean(final String id, final Profile.Section section, final ITriggerableAchievementBean achievement) {
         achievement.setId(id);
         final String[] triggers = section.getAll("trigger", String[].class);
-        final List<ITrigger> parsedTriggers = triggerParsers.get(achievement.getType()).parse(triggers);
+        final List<ITrigger> parsedTriggers = triggerParsers.get(achievement.getType()).parse(Arrays.asList(triggers));
         achievement.setTrigger(parsedTriggers);
         parseEvents(section, achievement);
         achievement.setCategory(section.get("category"));

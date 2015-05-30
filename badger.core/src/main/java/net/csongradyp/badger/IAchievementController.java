@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
-import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 
 public interface IAchievementController {
@@ -25,9 +24,9 @@ public interface IAchievementController {
 
     Collection<IAchievement> getAllByOwner(final String owner);
 
-    Optional<IAchievement> get(final AchievementType type, final String id);
-
     Map<String, Set<IAchievement>> getAllByEvents();
+
+    Optional<IAchievement> get(String id);
 
     void checkAndUnlock();
 

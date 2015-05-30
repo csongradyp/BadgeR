@@ -16,7 +16,7 @@ public class BeforeAfterSteps {
 
     @BeforeStories
     public void beforeStories() {
-        controller.setAchievementDefinition(parser.parse("badger.bdd/src/main/resources/test.ini"));
+        controller.setAchievementDefinition(parser.parse("badger.bdd/src/main/resources/test.json"));
     }
 
 }

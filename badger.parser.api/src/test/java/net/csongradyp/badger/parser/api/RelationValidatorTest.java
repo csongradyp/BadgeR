@@ -1,6 +1,7 @@
-package net.csongradyp.badger.parser.ini;
+package net.csongradyp.badger.parser.api;
 
 import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
+import net.csongradyp.badger.parser.api.RelationValidator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +14,7 @@ public class RelationValidatorTest {
         underTest = new RelationValidator();
     }
 
+    @Test(expected = MalformedAchievementRelationDefinition.class)
     public void testParseThrowExceptionWhenRelationContainsInvalidOperators() throws Exception {
         final String missingBracketRelation = "score + (date * time)";
         underTest.validate(missingBracketRelation);

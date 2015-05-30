@@ -1,5 +1,6 @@
 package net.csongradyp.badger.parser.ini.trigger;
 
+import java.util.Arrays;
 import java.util.List;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.achievement.trigger.TimeTriggerPair;
@@ -30,7 +31,7 @@ public class TimeRangeTriggerParserTest {
 
     @Test(expected = MalformedAchievementDefinition.class)
     public void testParseThrowsExceptionWhenGivenTriggerDoesNotHaveARangePair() throws Exception {
-        underTest.parse(new String[]{"11:11"});
+        underTest.parse(Arrays.asList("11:11"));
     }
 
     @Test
@@ -42,7 +43,7 @@ public class TimeRangeTriggerParserTest {
         given(mockDateProvider.parseTime(start)).willReturn(new LocalTime(11, 11));
         given(mockDateProvider.parseTime(end)).willReturn(new LocalTime(22, 22));
 
-        final List<TimeTriggerPair> result = underTest.parse(new String[]{start, end});
+        final List<TimeTriggerPair> result = underTest.parse(Arrays.asList(start, end));
 
         assertThat(result.isEmpty(), is(false));
         assertThat(result.get(0).getType(), is(AchievementType.TIME_RANGE));

@@ -1,6 +1,18 @@
 package net.csongradyp.badger;
 
-import net.csongradyp.badger.domain.AchievementType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.achievement.ScoreAchievementBean;
 import net.csongradyp.badger.event.AchievementEventType;
@@ -22,16 +34,18 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.*;
-
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AchievementControllerTest {
@@ -145,10 +159,9 @@ public class AchievementControllerTest {
     public void testGetReturnsAchievementsFromAchievementDefinition() {
         final ScoreAchievementBean testAchievement = new ScoreAchievementBean();
         testAchievement.setId(ACHIEVEMENT_ID);
-        final AchievementType type = AchievementType.SCORE;
-        given(mockAchievementDefinition.get(type, ACHIEVEMENT_ID)).willReturn(Optional.of(testAchievement));
+        given(mockAchievementDefinition.get(ACHIEVEMENT_ID)).willReturn(Optional.of(testAchievement));
 
-        final Optional<IAchievement> result = underTest.get(type, ACHIEVEMENT_ID);
+        final Optional<IAchievement> result = underTest.get(ACHIEVEMENT_ID);
 
         assertThat(result.isPresent(), is(true));
         assertThat(result.get(), is(testAchievement));
@@ -156,8 +169,8 @@ public class AchievementControllerTest {
 
     @Test
     public void testGetReturnsEmptyWhenNoAchievementIsPresentInTheAchievementDefinition() {
-        given(mockAchievementDefinition.get(AchievementType.SCORE, ACHIEVEMENT_ID)).willReturn(Optional.<IAchievement>empty());
-        final Optional<IAchievement> result = underTest.get(AchievementType.SCORE, ACHIEVEMENT_ID);
+        given(mockAchievementDefinition.get(ACHIEVEMENT_ID)).willReturn(Optional.<IAchievement>empty());
+        final Optional<IAchievement> result = underTest.get(ACHIEVEMENT_ID);
         assertThat(result.isPresent(), is(false));
     }
 

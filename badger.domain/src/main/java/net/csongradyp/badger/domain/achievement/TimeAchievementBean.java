@@ -26,11 +26,6 @@ public class TimeAchievementBean extends AbstractAchievementBean implements ITri
     }
 
     @Override
-    public String toString() {
-        return super.toString() + "trigger=" + trigger + '}';
-    }
-
-    @Override
     public AchievementType getType() {
         return AchievementType.TIME;
     }

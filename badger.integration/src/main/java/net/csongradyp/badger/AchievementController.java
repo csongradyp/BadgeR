@@ -1,6 +1,14 @@
 package net.csongradyp.badger;
 
-import net.csongradyp.badger.domain.AchievementType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
+import javax.inject.Inject;
+import javax.inject.Named;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.IAchievementUnlockedEvent;
@@ -13,10 +21,6 @@ import net.csongradyp.badger.persistence.entity.AchievementEntity;
 import net.csongradyp.badger.provider.unlock.AchievementUnlockProviderFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
 
 @Named
 public class AchievementController implements IAchievementController {
@@ -101,8 +105,8 @@ public class AchievementController implements IAchievementController {
     }
 
     @Override
-    public Optional<IAchievement> get(final AchievementType type, final String id) {
-        return achievementDefinition.get(type, id);
+    public Optional<IAchievement> get(final String id) {
+        return achievementDefinition.get(id);
     }
 
     @Override

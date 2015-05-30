@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.handler.IAchievementUnlockedHandler;
@@ -114,8 +113,8 @@ public class Badger {
         return controller.getAllByEvents();
     }
 
-    public Optional<IAchievement> getAchievement(final AchievementType type, final String id) {
-        return controller.get(type, id);
+    public Optional<IAchievement> getAchievement(final String id) {
+        return controller.get(id);
     }
 
     public Boolean isUnlocked(final String id) {

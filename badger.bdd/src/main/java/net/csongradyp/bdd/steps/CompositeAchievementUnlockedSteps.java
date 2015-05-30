@@ -41,10 +41,24 @@ public class CompositeAchievementUnlockedSteps {
     private TestDateProvider dateProvider;
 
 
-    @Given("has a child with $id id and $type type bounded to $event event with start trigger $start and end trigger $end")
+    @Given("composite achievement with $id id and with trigger $trigger")
+    public void checkCompositeTriggerExistence(final @Named("id") String id, final @Named("event") String event, final @Named("trigger") String trigger) {
+        final Optional<IAchievement> achievement = controller.get(id);
+        if (achievement.isPresent()) {
+            assertThat(achievement.get().getType(), is(AchievementType.COMPOSITE));
+            final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
+            assertThat("Achievement is subscribed to event" + event, composite.getEvent().contains(event), is(true));
+            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(composite, AchievementType.COMPOSITE, trigger), is(true));
+        } else {
+            fail("Achievement is not defined with id: " + id + "and type: composite ");
+        }
+    }
+
+    @Given("composite achievement with $id id and with start trigger $start and end trigger $end")
     public void checkhildTimeRangekAchievementExistence(final @Named("id") String id, final @Named("event") String event, final @Named("start") String start, final @Named("end") String end) {
-        final Optional<IAchievement> achievement = controller.get(AchievementType.COMPOSITE, id);
+        final Optional<IAchievement> achievement = controller.get(id);
         if(achievement.isPresent()) {
+            assertThat(achievement.get().getType(), is(AchievementType.COMPOSITE));
             final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
             assertThat("Achievement is subscribed to event: " + event, composite.getEvent().contains(event), is(true));
             final Collection<ITrigger> triggers = composite.getTrigger().stream().filter(t -> t.getType()==AchievementType.TIME_RANGE).collect(Collectors.toList());

@@ -14,6 +14,8 @@
         <module>badger.domain</module>
         <module>badger.persistence</module>
         <module>badger.event</module>
+        <module>badger.parser.api</module>
+        <module>badger.parser.json</module>
         <module>badger.parser.ini</module>
         <module>badger.parser</module>
         <module>badger.integration</module>

@@ -1,6 +1,8 @@
 package net.csongradyp.badger.event;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWrapper;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
@@ -126,5 +128,26 @@ public class EventBusTest {
     public void testCheckAllCallsControllerMethod() throws Exception {
         EventBus.checkAll();
         verify(mockController).checkAndUnlock();
+    }
+
+    @Test
+    public void testUnlockCallsControllerMethod() throws Exception {
+        final String id = "testId";
+        final String triggerValue = "value";
+
+        EventBus.unlock(id, triggerValue);
+
+        verify(mockController).unlock(id, triggerValue);
+    }
+
+    @Test
+    public void testUnlockWithOwnersCallsControllerMethod() throws Exception {
+        final String id = "testId";
+        final String triggerValue = "value";
+        final List<String> owners = Collections.singletonList("owner");
+
+        EventBus.unlock(id, triggerValue, owners);
+
+        verify(mockController).unlock(id, triggerValue, owners);
     }
 }

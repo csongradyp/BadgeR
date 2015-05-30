@@ -1,5 +1,7 @@
 package net.csongradyp.badger.domain;
 
+import java.util.List;
+
 public interface IAchievementBean extends IAchievement {
 
     String PROP_ID = "id";
@@ -14,4 +16,6 @@ public interface IAchievementBean extends IAchievement {
     void setEvent(String[] event);
 
     void setMaxLevel(Integer maxLevels);
+
+    void setEvent( List<String> event );
 }

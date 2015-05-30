@@ -4,7 +4,8 @@ import net.csongradyp.badger.parser.excpetion.UnsupportedAchievementDefinitionFi
 
 public enum FileType {
 
-    INI("ini");
+    INI("ini"),
+    JSON("json");
 
     private final String extension;
 

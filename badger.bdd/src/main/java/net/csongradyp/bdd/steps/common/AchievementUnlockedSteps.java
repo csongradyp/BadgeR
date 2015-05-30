@@ -1,10 +1,13 @@
 package net.csongradyp.bdd.steps.common;
 
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Resource;
+import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.ITriggerableAchievementBean;
-import net.csongradyp.badger.domain.achievement.CompositeAchievementBean;
 import net.csongradyp.badger.domain.achievement.ScoreRangeAchievementBean;
 import net.csongradyp.badger.domain.achievement.TimeRangeAchievementBean;
 import net.csongradyp.badger.domain.achievement.trigger.ScoreTriggerPair;
@@ -14,12 +17,14 @@ import net.csongradyp.badger.event.handler.wrapper.AchievementUnlockedHandlerWra
 import net.csongradyp.badger.persistence.AchievementDao;
 import net.csongradyp.bdd.Steps;
 import net.csongradyp.bdd.provider.TriggerChecker;
-import org.jbehave.core.annotations.*;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.AsParameterConverter;
+import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -52,7 +57,7 @@ public class AchievementUnlockedSteps {
 
     @Given("an achievement with $id id and $type type bounded to $event event with trigger $trigger")
     public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
-        final Optional<IAchievement> achievement = controller.get(type, id);
+        final Optional<IAchievement> achievement = controller.get(id);
         if (achievement.isPresent()) {
             assertThat("Achievement is subscribed to event" + event, achievement.get().getEvent().contains(event), is(true));
             assertThat("Trigger:" + trigger + " is present for achievement", triggerChecker.isTriggerPresent((ITriggerableAchievementBean) achievement.get(), type, trigger), is(true));
@@ -63,32 +68,30 @@ public class AchievementUnlockedSteps {
 
     @Given("an achievement with $id id and $type type")
     public void checkCompositeAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type) {
-        final Optional<IAchievement> achievement = controller.get(type, id);
+        final Optional<IAchievement> achievement = controller.get(id);
         assertThat("Achievement is not defined with id: " + id + "and type: " + type, achievement.isPresent(), is(true));
     }
 
-    @Given("has a achievement with $id id is bounded to $event event with trigger $trigger")
-    public void checkChildAchievementExistence(final @Named("id") String id, final @Named("event") String event, final @Named("trigger") String trigger) {
-        final Optional<IAchievement> achievement = controller.get(AchievementType.COMPOSITE, id);
+    @Given("an achievement with $id id is subscribed to $event event")
+    public void checkAchievementSubscriptionExistence(final @Named("id") String id, final @Named("event") String event) {
+        final Optional<IAchievement> achievement = controller.get(id);
         if (achievement.isPresent()) {
-            final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
-            assertThat("Achievement is subscribed to event" + event, composite.getEvent().contains(event), is(true));
-            assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(composite, AchievementType.COMPOSITE, trigger), is(true));
+            assertThat("Achievement is subscribed to event: " + event, achievement.get().getEvent().contains(event), is(true));
         } else {
-            fail("Achievement is not defined with id: " + id + "and type: composite ");
+            fail("Achievement is not defined with id: " + id);
         }
     }
 
     @Given("an achievement with $id id and $type type bounded to $event event with start trigger $start and end trigger $end")
     public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("start") String start, final @Named("end") String end) {
-        final Optional<IAchievement> achievement = controller.get(type, id);
-        if(achievement.isPresent()) {
+        final Optional<IAchievement> achievement = controller.get(id);
+        if (achievement.isPresent()) {
             final IAchievement iAchievement = achievement.get();
-            if(iAchievement.getType() == AchievementType.TIME_RANGE) {
+            if (iAchievement.getType() == AchievementType.TIME_RANGE) {
                 TimeRangeAchievementBean timeRangeAchievementBean = (TimeRangeAchievementBean) iAchievement;
                 assertThat("Achievement is subscribed to event: " + event, timeRangeAchievementBean.getEvent().contains(event), is(true));
                 assertThat("Trigger is present for time-range achievement", triggerChecker.isTimeRangeTriggerPresent(timeRangeAchievementBean.getTrigger(), start, end), is(true));
-            } else if(iAchievement.getType() == AchievementType.SCORE_RANGE) {
+            } else if (iAchievement.getType() == AchievementType.SCORE_RANGE) {
                 ScoreRangeAchievementBean scoreRangeAchievementBean = (ScoreRangeAchievementBean) iAchievement;
                 final Optional<ScoreTriggerPair> matchingTrigger = scoreRangeAchievementBean.getTrigger().stream().filter(t -> t.getStartTrigger().equals(Long.valueOf(start)) && t.getEndTrigger().equals(Long.valueOf(end))).findAny();
                 assertThat("Trigger is present for score-range achievement " + event, matchingTrigger.isPresent(), is(true));

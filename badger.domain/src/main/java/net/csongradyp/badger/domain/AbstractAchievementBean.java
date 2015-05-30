@@ -60,6 +60,11 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
     }
 
     @Override
+    public void setEvent(List<String> event) {
+        this.event = event;
+    }
+
+    @Override
     public String getTitleKey() {
         return String.format("%s.%s", id, "title");
     }
@@ -73,7 +78,8 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
     public String toString() {
         return "AchievementBean {" +
                "id='" + id + '\'' +
-               ", category='" + category + '\'' +
+                ", type='" + getType() + '\'' +
+                ", category='" + category + '\'' +
                '}';
     }
 }

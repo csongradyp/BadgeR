@@ -22,11 +22,6 @@ public class ScoreRangeAchievementBean extends AbstractAchievementBean implement
     }
 
     @Override
-    public String toString() {
-        return super.toString() + "trigger=" + triggers + '}';
-    }
-
-    @Override
     public AchievementType getType() {
         return AchievementType.SCORE_RANGE;
     }

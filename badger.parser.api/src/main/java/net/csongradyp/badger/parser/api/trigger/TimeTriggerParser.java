@@ -1,4 +1,4 @@
-package net.csongradyp.badger.parser.ini.trigger;
+package net.csongradyp.badger.parser.api.trigger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class TimeTriggerParser implements ITriggerParser<TimeTrigger> {
     }
 
     @Override
-    public List<TimeTrigger> parse(final String[] triggers) {
+    public List<TimeTrigger> parse(final List<String> triggers) {
         final List<TimeTrigger> timeTriggers = new ArrayList<>();
         for (String trigger : triggers) {
             final LocalTime date = dateProvider.parseTime(trigger);

@@ -1,4 +1,4 @@
-package net.csongradyp.badger.parser.ini;
+package net.csongradyp.badger.parser.api;
 
 import java.util.ArrayList;
 import java.util.Collection;

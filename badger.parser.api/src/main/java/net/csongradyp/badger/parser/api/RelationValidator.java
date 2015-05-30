@@ -1,16 +1,17 @@
-package net.csongradyp.badger.parser.ini;
+package net.csongradyp.badger.parser.api;
 
 
-import javax.inject.Named;
 import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
 import org.springframework.util.StringUtils;
+
+import javax.inject.Named;
 
 @Named
 public class RelationValidator {
 
     private static final String SYNTACTICS_REGEX = "^(?:(?![&|]).)(\\(*\\w*[&|]+\\w*\\)*)*(?:(?![&|]).)$";
 
-    void validate(final String relation) {
+    public void validate(final String relation) {
         String normalizedRelation = relation.toLowerCase().replaceAll("\\s", "");
         ValidateSyntactics(normalizedRelation);
         validateSemantics(normalizedRelation);
@@ -26,7 +27,7 @@ public class RelationValidator {
     private void validateSemantics(final String normalizedRelation) {
         final String sequenceString = normalizedRelation.toLowerCase()
                                                         .replaceAll("\\s", "")
-                                                        .replaceAll( "(date|timerange|time|score|single)", "")
+                                                        .replaceAll( "(date|timerange|time|scorerange|score|single)", "")
                                                         .replaceAll("[&|()]", "");
         if(!sequenceString.isEmpty()) {
             throw new MalformedAchievementRelationDefinition("Relation contains unwanted characters.");

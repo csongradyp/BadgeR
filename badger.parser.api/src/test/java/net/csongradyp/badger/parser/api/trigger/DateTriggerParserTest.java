@@ -1,5 +1,6 @@
-package net.csongradyp.badger.parser.ini.trigger;
+package net.csongradyp.badger.parser.api.trigger;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import net.csongradyp.badger.domain.AchievementType;
@@ -34,7 +35,7 @@ public class DateTriggerParserTest {
         final String secondDateString = "02-22";
         final Date firstDate = new DateTime(2000, 1, 11, 0, 0).toDate();
         final Date secondDate = new DateTime(2000, 2, 22, 0, 0).toDate();
-        final String[] iniTrigger = {firstDateString, secondDateString};
+        final List<String> iniTrigger = Arrays.asList(firstDateString, secondDateString);
         given(mockDateProvider.parseDate(firstDateString)).willReturn(firstDate);
         given(mockDateProvider.parseDate(secondDateString)).willReturn(secondDate);
 

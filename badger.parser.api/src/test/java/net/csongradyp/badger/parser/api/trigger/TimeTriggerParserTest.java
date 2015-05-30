@@ -1,8 +1,10 @@
-package net.csongradyp.badger.parser.ini.trigger;
+package net.csongradyp.badger.parser.api.trigger;
 
+import java.util.Arrays;
 import java.util.List;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.achievement.trigger.TimeTrigger;
+import net.csongradyp.badger.parser.api.trigger.TimeTriggerParser;
 import net.csongradyp.badger.provider.date.DateProvider;
 import org.joda.time.LocalTime;
 import org.junit.Before;
@@ -33,7 +35,7 @@ public class TimeTriggerParserTest {
         final String secondTimeString = "02:22";
         final LocalTime firstDate = new LocalTime(1, 11);
         final LocalTime secondDate = new LocalTime(2, 22);
-        final String[] iniTrigger = {firstTimeString, secondTimeString};
+        final List<String> iniTrigger = Arrays.asList(firstTimeString, secondTimeString);
         given(mockDateProvider.parseTime(firstTimeString)).willReturn(firstDate);
         given(mockDateProvider.parseTime(secondTimeString)).willReturn(secondDate);
 

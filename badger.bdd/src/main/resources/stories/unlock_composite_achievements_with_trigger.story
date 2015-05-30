@@ -10,8 +10,9 @@ Given there is subscription for achievement unlocked events
 Scenario: Related event triggered so that composite achievement is unlocked - date & time
 
 Given an achievement with <id> id and composite type
-And has a achievement with <id> id is bounded to <event> event with trigger <date>
-And has a child with <id> id and timerange type bounded to <event> event with start trigger <start> and end trigger <end>
+And an achievement with <id> id is subscribed to <event> event
+And composite achievement with <id> id and with trigger <date>
+And composite achievement with <id> id and with start trigger <start> and end trigger <end>
 And the achievement with <id> is not unlocked
 And current date is <date> and current time is <time>
 When event named <event> is triggered
@@ -26,9 +27,8 @@ Examples:
 
 Scenario: Related event triggered so that composite achievement is unlocked - date & score
 
-Given an achievement with <id> id and composite type
-And has a achievement with <id> id is bounded to <event> event with trigger <date>
-And has a achievement with <id> id is bounded to <event> event with trigger <trigger>
+Given composite achievement with <id> id and with trigger <date>
+And composite achievement with <id> id and with trigger <trigger>
 And the achievement with <id> is not unlocked
 And the current <event> event score is 0
 And the current date is <date>

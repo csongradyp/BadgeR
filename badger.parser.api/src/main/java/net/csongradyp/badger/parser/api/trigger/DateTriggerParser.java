@@ -1,13 +1,11 @@
-package net.csongradyp.badger.parser.ini.trigger;
+package net.csongradyp.badger.parser.api.trigger;
 
 import net.csongradyp.badger.domain.achievement.trigger.DateTrigger;
 import net.csongradyp.badger.provider.date.DateProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Named
 public class DateTriggerParser implements ITriggerParser<DateTrigger> {
@@ -20,7 +18,7 @@ public class DateTriggerParser implements ITriggerParser<DateTrigger> {
     }
 
     @Override
-    public List<DateTrigger> parse(final String[] triggers) {
+    public List<DateTrigger> parse(final List<String> triggers) {
         final List<DateTrigger> timeTriggers = new ArrayList<>();
         for (String trigger : triggers) {
             final Date date = dateProvider.parseDate(trigger);

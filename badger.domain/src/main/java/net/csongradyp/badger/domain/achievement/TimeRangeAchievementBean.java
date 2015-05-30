@@ -22,11 +22,6 @@ public class TimeRangeAchievementBean extends AbstractAchievementBean implements
     }
 
     @Override
-    public String toString() {
-        return super.toString() + "trigger=" + triggers + '}';
-    }
-
-    @Override
     public AchievementType getType() {
         return AchievementType.TIME_RANGE;
     }

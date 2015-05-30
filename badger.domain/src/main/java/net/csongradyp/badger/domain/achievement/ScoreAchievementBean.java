@@ -27,11 +27,6 @@ public class ScoreAchievementBean extends AbstractAchievementBean implements ITr
     }
 
     @Override
-    public String toString() {
-        return super.toString() + "trigger=" + trigger + '}';
-    }
-
-    @Override
     public AchievementType getType() {
         return AchievementType.SCORE;
     }

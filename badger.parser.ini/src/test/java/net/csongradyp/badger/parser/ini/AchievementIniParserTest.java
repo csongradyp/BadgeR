@@ -1,10 +1,17 @@
 package net.csongradyp.badger.parser.ini;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import net.csongradyp.badger.AchievementDefinition;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.exception.MalformedAchievementDefinition;
-import net.csongradyp.badger.parser.ini.trigger.ITriggerParser;
+import net.csongradyp.badger.parser.api.RelationParser;
+import net.csongradyp.badger.parser.api.trigger.ITriggerParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,19 +19,17 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AchievementIniParserTest {
@@ -65,7 +70,7 @@ public class AchievementIniParserTest {
 
     @Test
     public void testParseReturnsAchievementDefinitionWhenIniFileURLIsGiven() throws Exception {
-        final URL achievementFile = new File(getClass().getClassLoader().getResource("test.ini").getPath()).toURI().toURL();
+        final URL achievementFile = getClass().getClassLoader().getResource("test.ini");
         try {
             underTest.parse(achievementFile);
         } catch (Exception e) {
@@ -98,7 +103,7 @@ public class AchievementIniParserTest {
         final Optional<IAchievement> first1 = result.get(AchievementType.SCORE, "first");
         assertThat(first1.isPresent(), is(true));
         final IAchievement first = result.get("first").get();
-        verify(mockTriggerParser, times(1)).parse(new String[]{"3", "7"});
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("3", "7"));
         assertThat(first, notNullValue());
         assertThat(first.getType(), is(AchievementType.SCORE));
         assertThat(first.getId(), is("first"));
@@ -107,14 +112,14 @@ public class AchievementIniParserTest {
         assertThat(first.getCategory(), is("something"));
         final IAchievement date = result.get("date-test").get();
         assertThat(date, notNullValue());
-        verify(mockTriggerParser, times(1)).parse(new String[]{"12-30"});
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("12-30"));
         assertThat(date.getType(), is(AchievementType.DATE));
         assertThat(date.getCategory(), is("default"));
         assertThat(date.getEvent().size(), is(equalTo(1)));
         assertThat(date.getEvent().get(0), is("sample"));
         final IAchievement time = result.get("time-test").get();
         assertThat(time, notNullValue());
-        verify(mockTriggerParser, times(1)).parse(new String[]{"08:15"});
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("08:15"));
         assertThat(time.getType(), is(AchievementType.TIME));
         assertThat(time.getCategory(), is("default"));
         assertThat(time.getEvent().size(), is(equalTo(1)));
@@ -122,23 +127,23 @@ public class AchievementIniParserTest {
         final IAchievement timeRange = result.get("time-range-test").get();
         assertThat(timeRange, notNullValue());
         assertThat(timeRange.getType(), is(AchievementType.TIME_RANGE));
-        verify(mockTriggerParser, times(1)).parse(new String[]{"01:30", "02:00"});
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("01:30", "02:00"));
         assertThat(timeRange.getCategory(), is("default"));
         assertThat(timeRange.getEvent().size(), is(equalTo(1)));
         assertThat(timeRange.getEvent().get(0), is("sample2"));
         final IAchievement composite1 = result.get("composite-dateTime").get();
         assertThat(composite1, notNullValue());
         assertThat(composite1.getType(), is(AchievementType.COMPOSITE));
-        verify(mockTriggerParser, times(1)).parse(new String[]{"04:00", "05:00"});
-        verify(mockTriggerParser, times(1)).parse(new String[]{"05-04", "06-22"});
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("04:00", "05:00"));
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("05-04", "06-22"));
         assertThat(composite1.getCategory(), is("default"));
         assertThat(composite1.getEvent().size(), is(equalTo(1)));
         assertThat(composite1.getEvent().get(0), is("sample2"));
         final IAchievement composite2 = result.get("composite-dateTime").get();
         assertThat(composite2, notNullValue());
         assertThat(composite2.getType(), is(AchievementType.COMPOSITE));
-        verify(mockTriggerParser, times(1)).parse(new String[]{"01-23"});
-        verify(mockTriggerParser, times(1)).parse(new String[]{"100+"});
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("01-23"));
+        verify(mockTriggerParser, times(1)).parse(Arrays.asList("100+"));
         assertThat(composite2.getCategory(), is("default"));
         assertThat(composite2.getEvent().size(), is(equalTo(1)));
         assertThat(composite2.getEvent().get(0), is("sample2"));

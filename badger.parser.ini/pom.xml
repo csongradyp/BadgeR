@@ -20,12 +20,7 @@
 
         <dependency>
             <groupId>net.csongradyp</groupId>
-            <artifactId>badger.domain</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.csongradyp</groupId>
-            <artifactId>badger.core</artifactId>
+            <artifactId>badger.parser.api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

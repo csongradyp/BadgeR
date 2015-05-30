@@ -16,6 +16,15 @@ public class ScoreTrigger implements ITrigger<Long> {
         public String getOperator() {
             return operator;
         }
+
+        public static Operation parse(String operator) {
+            for (Operation operation : values()) {
+                if(operation.getOperator().equals(operator)) {
+                    return operation;
+                }
+            }
+            throw new IllegalArgumentException("Invalid operator: " + operator);
+        }
     }
 
     private final Long trigger;

@@ -1,4 +1,4 @@
-package net.csongradyp.badger.parser.ini;
+package net.csongradyp.badger.parser.api;
 
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IRelation;
@@ -10,7 +10,10 @@ import net.csongradyp.badger.exception.MalformedAchievementRelationDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 @Named
@@ -72,7 +75,7 @@ public class RelationParser {
         return Collections.min( Arrays.asList( and, or, open, close ) );
     }
 
-    void setRelationValidator(final RelationValidator relationValidator) {
+    public void setRelationValidator(final RelationValidator relationValidator) {
         this.relationValidator = relationValidator;
     }
 

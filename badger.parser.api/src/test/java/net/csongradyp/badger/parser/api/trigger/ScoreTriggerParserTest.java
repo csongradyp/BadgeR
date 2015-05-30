@@ -1,5 +1,6 @@
-package net.csongradyp.badger.parser.ini.trigger;
+package net.csongradyp.badger.parser.api.trigger;
 
+import java.util.Arrays;
 import java.util.List;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.achievement.trigger.ScoreTrigger;
@@ -22,7 +23,7 @@ public class ScoreTriggerParserTest {
 
     @Test
     public void testParseCreatesTriggersFromIniSourceWithEqualOperation() throws Exception {
-        final List<ScoreTrigger> scoreTriggers = underTest.parse(new String[]{"1", "42"});
+        final List<ScoreTrigger> scoreTriggers = underTest.parse(Arrays.asList("1", "42"));
 
         assertThat(scoreTriggers.size(), is(equalTo(2)));
         assertThat(scoreTriggers.get(0).getType(), is(AchievementType.SCORE));
@@ -35,7 +36,7 @@ public class ScoreTriggerParserTest {
 
     @Test
     public void testParseCreatesTriggersFromIniSourceWithGreaterThanOperation() throws Exception {
-        final List<ScoreTrigger> scoreTriggers = underTest.parse(new String[]{"10+", "42+"});
+        final List<ScoreTrigger> scoreTriggers = underTest.parse(Arrays.asList("10+", "42+"));
 
         assertThat(scoreTriggers.size(), is(equalTo(2)));
         assertThat(scoreTriggers.get(0).getType(), is(AchievementType.SCORE));
@@ -48,7 +49,7 @@ public class ScoreTriggerParserTest {
 
     @Test
     public void testParseCreatesTriggersFromIniSourceWithLessThanOperation() throws Exception {
-        final List<ScoreTrigger> scoreTriggers = underTest.parse(new String[]{"10-", "42-"});
+        final List<ScoreTrigger> scoreTriggers = underTest.parse(Arrays.asList("10-", "42-"));
 
         assertThat(scoreTriggers.size(), is(equalTo(2)));
         assertThat(scoreTriggers.get(0).getType(), is(AchievementType.SCORE));
@@ -61,7 +62,7 @@ public class ScoreTriggerParserTest {
 
     @Test(expected = MalformedAchievementDefinition.class)
     public void testParseThrowsExceptionWhenAnyOfTheGivenTriggersAreMalformed() {
-        underTest.parse(new String[]{"10+-", "-42"});
+        underTest.parse(Arrays.asList("10+-", "-42"));
     }
 
 }

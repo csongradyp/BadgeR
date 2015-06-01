@@ -6,7 +6,7 @@
     <title>BadgeR by csongradyp</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
     <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
@@ -31,22 +31,27 @@
       </header>
       <section>
         <h1>
-<a id="badger-achievement-engine-overview" class="anchor" href="#badger-achievement-engine-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>BadgeR achievement engine Overview</h1>
+<a id="badger-achievement-engine-" class="anchor" href="#badger-achievement-engine-" aria-hidden="true"><span class="octicon octicon-link"></span></a>BadgeR achievement engine <img src="https://dl.dropboxusercontent.com/u/6057082/BagdeR_icon.png" alt="Image of BadgeR">
+</h1>
 
-<p>BadgeR is a java based achievement engine.</p>
+<p><a href="https://travis-ci.org/csongradyp/badgeR"><img src="https://travis-ci.org/csongradyp/badgeR.svg" alt="Build Status"></a>
+<a href="https://coveralls.io/r/csongradyp/badgeR?branch=master"><img src="https://coveralls.io/repos/csongradyp/badgeR/badge.svg?branch=master" alt="Coverage Status"></a></p>
+
+<h4>
+<a id="keep-the-codebase-clean-by-separating-achievement-handling-from-your-code" class="anchor" href="#keep-the-codebase-clean-by-separating-achievement-handling-from-your-code" aria-hidden="true"><span class="octicon octicon-link"></span></a><em>Keep the codebase clean by separating achievement handling from your code.</em>
+</h4>
 
 <ul>
-<li>It makes achiement registration and handling easier</li>
-<li>Developers can separate achivement operations from production code with the provided annotations</li>
-<li>It needs only one file for achievement declaration and language (i18n) files for internationalization</li>
+<li>You can separate achievement operations from production code with annotations</li>
+<li>It needs only one *.json or *.ini file for achievement declaration</li>
+<li>Supports internationalization (i18n)</li>
 </ul>
 
 <h2>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
 
-<ul>
-<li><strong>Annotation driven</strong></li>
-</ul>
+<h4>
+<a id="1-annotation-support" class="anchor" href="#1-annotation-support" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Annotation support</h4>
 
 <p>You can avoid mixing the achievement related codes with the real functional codes.</p>
 
@@ -67,67 +72,87 @@
 <td align="left">Triggers a defined event by setting the event counter by the given score and checks for possible unlocked achievements</td>
 </tr>
 <tr>
-<td align="left"><code>@AchievementCheck</code></td>
-<td align="left">Checks for possible unlocked achievements</td>
-</tr>
-<tr>
 <td align="left"><code>@AchievementUnlock</code></td>
 <td align="left">Unlock achievement manually</td>
+</tr>
+<tr>
+<td align="left"><code>@AchievementCheck</code></td>
+<td align="left">Checks for possible unlocked achievements</td>
 </tr>
 </tbody>
 </table>
 
-<ul>
-<li><strong>Easy achievement definition</strong></li>
-</ul>
+<h4>
+<a id="2-easy-achievement-declaration" class="anchor" href="#2-easy-achievement-declaration" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Easy achievement declaration</h4>
 
-<p>Achievements can be given with a single ini file.
+<p>Achievements can be given with a single <strong>*.ini</strong> or <strong>*.json</strong> file.
 There are only few conventions to follow:</p>
 
 <ol>
-<li>All achievements should have a type</li>
-<li>Achievement should have a unique id within a type</li>
-<li>If there are more than one achievement with the same id with different types there should be a relation defined.</li>
+<li>Achievements should have a unique id</li>
+<li>Achievements should belong to one type</li>
 </ol>
 
-<p>There are 5 predefined achievement types which can be used to define a the unlock behavior of the achievement:</p>
+<h5>
+<a id="21-json-definition" class="anchor" href="#21-json-definition" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 Json definition</h5>
+
+<p><a href="JSON.md">Define achievement in JSon format</a></p>
+
+<h5>
+<a id="21-ini-definition" class="anchor" href="#21-ini-definition" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 Ini definition</h5>
+
+<p><a href="INI.md">Define achievement in Ini format</a></p>
+
+<p>Achievement properties:</p>
+
+<ul>
+<li>id</li>
+<li>subscription</li>
+<li>trigger</li>
+<li>category</li>
+</ul>
+
+<p>There are 6 predefined achievement types which can be used to define a the unlock behavior of the achievement:</p>
 
 <table>
 <thead>
 <tr>
-<th align="left">Type</th>
+<th align="center">Type</th>
 <th align="left">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left"><strong>single</strong></td>
-<td align="left">Achievement with no triggers. They can be unlocked by directly telling to unlock.</td>
+<td align="center"><strong>single</strong></td>
+<td align="left">Achievement with no triggers, can be unlocked only directly.</td>
 </tr>
 <tr>
-<td align="left"><strong>counter</strong></td>
-<td align="left">Achievements with score based triggers. These achievements are bonded with the defined events. Event counters can be incremented by one or with a given score.</td>
+<td align="center"><strong>score</strong></td>
+<td align="left">Unlocked when one of the subscribed event counter scores are meeting trigger requirements</td>
 </tr>
 <tr>
-<td align="left"><strong>date</strong></td>
-<td align="left">Achievements with date trigger. These achievements are bonded with the defined events. If one of the given events are triggered within (one of) the given day(s), the achievement will be unlocked.</td>
+<td align="center"><strong>scoreRange</strong></td>
+<td align="left">Unlocked when one of the subscribed event counter scores are within defined score range</td>
 </tr>
 <tr>
-<td align="left"><strong>time</strong></td>
-<td align="left">Achievements with time trigger. These achievements are bonded with the defined events. If one of the given events are triggered within (one of) the given minutes(s), the achievement will be unlocked.</td>
+<td align="center"><strong>date</strong></td>
+<td align="left">Unlocked when one of the given events are triggered one of the given days</td>
 </tr>
 <tr>
-<td align="left"><strong>timeRange</strong></td>
-<td align="left">Achievements with time trigger. These achievements are bonded with the defined events. If one of the given events are triggered within the given time ranges the achievement will be unlocked.</td>
+<td align="center"><strong>time</strong></td>
+<td align="left">Unlocked when one of the given events are triggered within the given minutes</td>
+</tr>
+<tr>
+<td align="center"><strong>timeRange</strong></td>
+<td align="left">Unlocked when one of the given events are triggered within the given time ranges</td>
 </tr>
 </tbody>
 </table>
 
-<ul>
-<li>
-<strong>Get notified of unlocked achivements or updated events</strong>
-Badger will notify every time when an achievement is unlocked or a counter is updated.</li>
-</ul>
+<h4>
+<a id="3-get-notified-of-unlocked-achievements-or-updated-events" class="anchor" href="#3-get-notified-of-unlocked-achievements-or-updated-events" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Get notified of unlocked achievements or updated events</h4>
+
+<p>Badger will notify every time when an achievement is unlocked or an  event counter is updated.</p>
 
 <p>To subscribe just implement a handler and pass is to Badger. See more at usage section.</p>
 
@@ -137,308 +162,183 @@ Badger will notify every time when an achievement is unlocked or a counter is up
 <h2>
 <a id="1--achievement-definition" class="anchor" href="#1--achievement-definition" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.  Achievement definition</h2>
 
-<p>There are Two sections which are not directly defining the achievement but the events (or counters) and optionally the relation between achievements.</p>
-
-<h3>
-<a id="11-events" class="anchor" href="#11-events" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1. Events</h3>
-
-<p>Most of the achievements (single achievements not) should be subscribe one or more events. If an event is triggered all BadgeR will check for unlock from all the subscribed achievements
-All the events are also a counter. They can be triggered with a concrete value.</p>
-
-<pre><code>[events]
-event=level completed
-event=earned score per level
-</code></pre>
-
-<h3>
-<a id="12-relations" class="anchor" href="#12-relations" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2. Relations</h3>
-
-<p>There is an option to create complex achievements by making multiple diffferent typed achiecements with the same ID and telling the relationship between them.
- In the "relations" section you can add the relation definition of the achievements with same ID. There should be only one relation definition for an achievement Id.
-Allowed oprators are <strong>&amp;</strong> (and) <strong>|</strong> (or) and simple brackets <strong>(</strong> and <strong>)</strong>. Make shure to use brackets for proper precedency evaluation.</p>
-
-<pre><code>[relations]
-achievementId= timeRange &amp; counter
-otherAchievementId= counter &amp; (time | date)
-</code></pre>
-
-<h3>
-<a id="13-achievements" class="anchor" href="#13-achievements" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3. Achievements</h3>
-
-<p>All Achievements have its own section.
-The achievement section is defined with its type and its unique id: <em>[type/id]</em>
-Within the section are the event subscriptions and the triggers.</p>
-
-<p><strong>1.3.1 Event subscriptions</strong></p>
-
-<p>An achievement can subscribe for one or more events. By following the ini strucure multiple evet subscription should be given in multiple lines.
-Make sure that all event is defined in the <strong>[events]</strong> section!</p>
-
-<pre><code>[counter/sample]
-event=event one
-event=event two
-event=event three
-
-</code></pre>
-
-<p><strong>1.3.1 Triggers</strong></p>
-
-<p>An achievement can have multiple trigger definitions. Triggers are defined differently for every types.
-Note: Single achievements does not have any triggers.</p>
-
-<table>
-<thead>
-<tr>
-<th align="left">Trigger</th>
-<th align="left">Properties</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><strong>counter</strong></td>
-<td align="left">Should be given a number or a number post-fixed with '<strong>+</strong>' or '<strong>-</strong>'. (e.g.: 20- or 30 or 50+) With no post-fix: trigger will fire only when the counter is equal to the given number. With '+' post-fix the trigger will fire only when the counter is greater than the given number. With '-' post-fix the trigger will fire only when the counter is less thanthe given number.</td>
-</tr>
-<tr>
-<td align="left"><strong>date</strong></td>
-<td align="left">Should be given with pattern <strong><em>MM-dd</em></strong> (e.g.: 12-24 is 24th of december)</td>
-</tr>
-<tr>
-<td align="left"><strong>time</strong></td>
-<td align="left">Should be given with pattern <strong><em>HH:mm</em></strong> (e.g.: 23:42)</td>
-</tr>
-<tr>
-<td align="left"><strong>timeRange</strong></td>
-<td align="left">Should be given even lines of triggers defined with the same pattern as the time trigger. All odd trigger will be a start trigger and all even triggers will be an end trigger. If the start time stamp is a time after the end trigger, they will be recognized as one trigger from the start trigger to midnight and another one from midnight to the end trigger. (e.g.: 20:00 - 08:00 will be used as 20:00 - 00:00 and 00:00 - 08:00)</td>
-</tr>
-</tbody>
-</table>
+<p>Achievement can be defined in two formats: JSON or INI.</p>
 
 <h2>
-<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Examples</strong>
-</h2>
+<a id="2-internationalization-localization-i18n" class="anchor" href="#2-internationalization-localization-i18n" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Internationalization, localization (i18n)</h2>
 
-<p><strong>Counter achievement examples</strong></p>
+<p>There is an option to get i18n messages for unlocked achievements. Just create the i18n message *.properties and give the base name to Badger.
+For i18n message properties files find some examples <a href="https://docs.oracle.com/javase/tutorial/i18n/intro/steps.html">here</a></p>
 
-<pre><code>[counter/sample]
-event=my event
-trigger=3
-trigger=5
-</code></pre>
+<h4>
+<a id="21-localization-keys" class="anchor" href="#21-localization-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 localization keys</h4>
 
-<p>A counter achievement is defined with id "sample". Badger will check whether it can be unlocked or not if "my event" event is triggered. Achievement (level 1) will be unlocked if 'my event' was triggered 3 times all together. (Level 2 when it was triggered 5 times all together)</p>
+<p>To let BangeR give you the resolved messages in the achievement information you should follow the following naming convention:</p>
 
-<pre><code>[counter/postfixsample]
-event=my event
-trigger=10-
-trigger=20
-trigger=30+
-</code></pre>
-
-<p>A counter achievement is defined with id "postfixsample". Badger will check whether it can be unlocked or not if "my event" event is triggered. Achievement (level 1) will be unlocked if the event is triggered with a score less than 10. If 'my event' is only triggered without any score, level 1 achievement will be unlocked because the counter will set automatically to 1 at the first time (in this case). Level 2 will be unlocked if the counter is equal to 20 and level 3 will be unlocked if the counter will be greater or equal to 30.</p>
-
-<p><strong>Date achievement examples</strong></p>
-
-<pre><code>[date/dateExample]
-event=event1
-event=event2
-trigger=01-25
-trigger=01-30
-</code></pre>
-
-<p>A date achievement is defined with id "dateExample". It will be unlocked if one of the given events ('event1' or 'event2') is triggered on the 25th or 30th of January (Doesn't matter which year).</p>
-
-<p><strong>Time achievement examples</strong></p>
-
-<pre><code>[date/timeExample]
-event=event1
-event=event2
-trigger=08:00
-trigger=20:00
-</code></pre>
-
-<p>A time achievement is defined with id "timeExample". It will be unlocked if one of the given events ('event1' or 'event2') is triggered at 08:00 or 20:00 (Doesn't matter which year, month or day).</p>
-
-<p><strong>Time range achievement examples</strong></p>
-
-<pre><code>[date/timeRangeExample]
-event=event1
-event=event2
-trigger=08:00
-trigger=20:00
-trigger=21:00
-trigger=07:00
-</code></pre>
-
-<p>A time achievement is defined with id "timeRangeExample". It will be unlocked if one of the given events ('event1' or 'event2') is triggered between 08:00 and 20:00, 21:00 and 00:00 or 00:00 and 07:00 (Doesn't matter which year, month or day).</p>
-
-<h2>
-<a id="2-internatiolazation-localization-i18n" class="anchor" href="#2-internatiolazation-localization-i18n" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Internatiolazation, localization (i18n)</h2>
-
-<p>There is an option to get i18n messages directly when achievements are unlocked. For this you should create the i18n message properties and give the base name to Badger.
-Find some examples <a href="https://docs.oracle.com/javase/tutorial/i18n/intro/steps.html">here</a></p>
-
-<p>By following BangeR convention to give messages with key <em>achieventId</em> <strong>.title</strong> and <em>achieventId</em> <strong>.text</strong> in the messages properties file BadgeR will give directly the resolved messages in the achievement information. </p>
+<ul>
+<li>Achievement title key is: <strong><em>[ID]</em>.title</strong>
+</li>
+<li>Achievement description key is: <strong><em>[ID]</em>.text</strong>
+</li>
+</ul>
 
 <p>BadgeR's locale can be changed at any time or just let it to use the default locale of your JVM.</p>
+
+<p>Without adding i18n basename Badger will pass the keys as value.</p>
 
 <h2>
 <a id="3-wire-into-code" class="anchor" href="#3-wire-into-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Wire into code</h2>
 
-<h3>
-<a id="31-instantiate-badger" class="anchor" href="#31-instantiate-badger" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Instantiate BadgeR</h3>
+<h4>
+<a id="31-instantiate-badger" class="anchor" href="#31-instantiate-badger" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Instantiate BadgeR</h4>
 
-<p>Create only** one instance** of BadgeR</p>
+<p>Create only <strong>one instance</strong> of BadgeR!</p>
 
-<p>The following example requires an achievement definition file 'achievements.ini' and i18n messages properties files starting with achievementsMsg (e.g.: achievementsMsg_en.properties)</p>
+<p>Create BadgeR with definition file 'achievements.json' and i18n messages properties files starting with achievementsMsg (e.g.: achievementsMsg_en.properties):</p>
 
-<pre><code>final InputStream inStream = getClass().getClassLoader().getResourceAsStream("achievements.ini");
-final Badger badger = new Badger(inStream, "achievementsMsg");
-</code></pre>
+<div class="highlight highlight-java"><pre><span class="pl-k">final</span> <span class="pl-smi">InputStream</span> inStream <span class="pl-k">=</span> getClass()<span class="pl-k">.</span>getClassLoader()<span class="pl-k">.</span>getResourceAsStream(<span class="pl-s"><span class="pl-pds">"</span>achievements.ini<span class="pl-pds">"</span></span>);
+<span class="pl-k">final</span> <span class="pl-smi">Badger</span> badger <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Badger</span>(inStream, <span class="pl-s"><span class="pl-pds">"</span>achievementsMsg<span class="pl-pds">"</span></span>);</pre></div>
 
-<h3>
-<a id="31-subscribe-for-badger-events" class="anchor" href="#31-subscribe-for-badger-events" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Subscribe for BadgeR events</h3>
+<p>Or just with the definition file:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-k">final</span> <span class="pl-smi">Badger</span> badger <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Badger</span>(<span class="pl-s"><span class="pl-pds">"</span>relative/path/to/definition/achievements.json<span class="pl-pds">"</span></span>);</pre></div>
+
+<h4>
+<a id="32-subscribe-for-badger-events" class="anchor" href="#32-subscribe-for-badger-events" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 Subscribe for BadgeR events</h4>
 
 <p>Subscribe for unlock events with a simple callback method.</p>
 
-<pre><code>badger.subscribeOnUnlock(new IAchievementUnlockedHandler() {
-    @Override
-    public void onUnlocked(final Achievement achievement) {
-        final String title = achievement.getTitle(); // localized title
-        final String text = achievement.getText();  // localized description
-        final Integer level = achievement.getLevel(); // unlocked level
-        final Date acquireDate = achievement.getAcquireDate(); // unlock time stamp
-        final String triggerValue = achievement.getTriggerValue(); // submitted value which unlocked the achievement
+<div class="highlight highlight-java"><pre>badger<span class="pl-k">.</span>subscribeOnUnlock(<span class="pl-k">new</span> <span class="pl-smi">IAchievementUnlockedHandler</span>() {
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onUnlocked</span>(<span class="pl-k">final</span> <span class="pl-smi">AchievementUnlockedEvent</span> <span class="pl-v">unlockEvent</span>) {
+        <span class="pl-k">final</span> <span class="pl-smi">String</span> title <span class="pl-k">=</span> unlockEvent<span class="pl-k">.</span>getTitle(); <span class="pl-c">// localized title</span>
+        <span class="pl-k">final</span> <span class="pl-smi">String</span> text <span class="pl-k">=</span> unlockEvent<span class="pl-k">.</span>getText();  <span class="pl-c">// localized description</span>
+        <span class="pl-k">final</span> <span class="pl-smi">Integer</span> level <span class="pl-k">=</span> unlockEvent<span class="pl-k">.</span>getLevel(); <span class="pl-c">// unlocked level</span>
+        <span class="pl-k">final</span> <span class="pl-smi">Date</span> acquireDate <span class="pl-k">=</span> unlockEvent<span class="pl-k">.</span>getAcquireDate(); <span class="pl-c">// unlock time stamp</span>
+        <span class="pl-k">final</span> <span class="pl-smi">String</span> triggerValue <span class="pl-k">=</span> unlockEvent<span class="pl-k">.</span>getTriggerValue(); <span class="pl-c">// submitted value which unlocked the achievement</span>
 
-        // show achievement notification
+        <span class="pl-c">// show achievement notification</span>
     }
 });
-</code></pre>
+
+badger<span class="pl-k">.</span>subscribeOnUnlock(<span class="pl-k">new</span> <span class="pl-smi">IScoreUpdateHandler</span>() {
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">onUnlocked</span>(<span class="pl-k">final</span> <span class="pl-smi">ScoreUpdatedEvent</span> <span class="pl-v">scoreUpdatedEvent</span>) {
+        <span class="pl-k">final</span> <span class="pl-smi">String</span> event <span class="pl-k">=</span> unlockEvent<span class="pl-k">.</span>getEvent(); <span class="pl-c">// event name</span>
+        <span class="pl-k">final</span> <span class="pl-smi">String</span> newValue <span class="pl-k">=</span> unlockEvent<span class="pl-k">.</span>getValue();  <span class="pl-c">// new value of event counter</span>
+
+        <span class="pl-c">// update something ...</span>
+    }
+});</pre></div>
 
 <p>with lambda expression</p>
 
-<pre><code>badger.subscribeOnUnlock((IAchievementUnlockedHandler) achievement -&gt; {
-    final String title = achievement.getTitle(); // localized title
-    final String text = achievement.getText();  // localized description
-    final Integer level = achievement.getLevel(); // unlocked level
-    final Date acquireDate = achievement.getAcquireDate(); // unlock time stamp
-    final String triggerValue = achievement.getTriggerValue(); // submitted value which unlocked the achievement
-
-    // show achievement notification
+<div class="highlight highlight-java"><pre>badger<span class="pl-k">.</span>subscribeOnUnlock(unlockEvent <span class="pl-k">-</span><span class="pl-k">&gt;</span> {
+    <span class="pl-c">// show achievement notification</span>
 } );
-</code></pre>
 
-<h3>
-<a id="31-trigger-events" class="anchor" href="#31-trigger-events" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Trigger events</h3>
+badger<span class="pl-k">.</span>subscribeOnUnlock(scoreUpdatedEvent <span class="pl-k">-</span><span class="pl-k">&gt;</span> {
+    <span class="pl-c">// update something ...</span>
+} );</pre></div>
 
-<p><strong>Simple trigger</strong></p>
+<h4>
+<a id="33-trigger-events" class="anchor" href="#33-trigger-events" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.3 Trigger events</h4>
+
+<p><strong>trigger simply</strong></p>
 
 <p>Trigger an event and increment its counter by one.</p>
 
-<pre><code>@AchievementEventTrigger(name = "myEvent")
-public void myMethod() {
-    // doesn't matter what the method do, only that it is called.
-}
-</code></pre>
+<div class="highlight highlight-java"><pre>@AchievementEventTrigger(name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>myEvent<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod() {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
+}</pre></div>
 
 <p>equivalent with </p>
 
-<pre><code>badger.triggerEvent("myEvent");
-</code></pre>
+<div class="highlight highlight-java"><pre>badger<span class="pl-k">.</span>triggerEvent(<span class="pl-s"><span class="pl-pds">"</span>myEvent<span class="pl-pds">"</span></span>);</pre></div>
 
-<p><strong>Score trigger</strong></p>
+<p><strong>Trigger with score</strong></p>
 
-<p>Trigger an event and set the counter score.</p>
+<p>Trigger an event and set the counter score with parameter annotation</p>
 
-<pre><code>@AchievementScore(counter = "myEvent")
-public void myMethod(final @AchievementScoreParam Long newScore) {
-    // doesn't matter what the method do, only that it is called.
-}
-</code></pre>
+<div class="highlight highlight-java"><pre>@AchievementScore(counter <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>myEvent<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod(<span class="pl-k">final</span> @<span class="pl-smi">AchievementScoreParam</span> <span class="pl-smi">Long</span> newScore) {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
+}</pre></div>
 
-<p>equivalent with </p>
+<p>or in case of other Object arguments by giving the score getter method</p>
 
-<pre><code>final Long newScore = 100L; // the new score to be set
-badger.triggerEvent("myEvent", newScore);
-</code></pre>
+<div class="highlight highlight-java"><pre><span class="pl-c">// myObject.getMyScore(); - returns a Long</span>
 
-<p>You can retrieve score value from an Object argument by telling the getter method for it. It can be useful when the annotated methods are event receivers or some other methods with complex type arguments.</p>
-
-<pre><code>@AchievementScore(counter = "myEvent")
-public void myMethod(final @AchievementScoreParam(getter = "getHighscore") Player player) {
-    // doesn't matter what the method do, only that it is called.
-}
-</code></pre>
+@AchievementScore(counter <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>myEvent<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod(<span class="pl-k">final</span> @AchievementScoreParam(getter <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>getMyScore<span class="pl-pds">"</span></span>) <span class="pl-smi">MyObject</span> myObject) {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
+}</pre></div>
 
 <p>equivalent with </p>
 
-<pre><code>badger.triggerEvent("myEvent", player.getHighscore());
-</code></pre>
+<div class="highlight highlight-java"><pre><span class="pl-k">final</span> <span class="pl-smi">Long</span> newScore <span class="pl-k">=</span> <span class="pl-c1">100L</span>; <span class="pl-c">// the new score to be set</span>
+badger<span class="pl-k">.</span>triggerEvent(<span class="pl-s"><span class="pl-pds">"</span>myEvent<span class="pl-pds">"</span></span>, newScore);</pre></div>
 
-<p><strong>Unlock achievement directly</strong></p>
+<h4>
+<a id="34-unlock-achievement-directly" class="anchor" href="#34-unlock-achievement-directly" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.4 Unlock achievement directly</h4>
 
-<p>Achievements can be unlocked directly.</p>
+<p>Unlocked achievement directly by id. Optionally a trigger value will be stored only to provide information during unlock procedure.</p>
 
-<p>The type, id of the achievement should be given and optionally a trigger/score value as a String can be stored. The given "triggerValue" will not be evaluated, it will be stored only to provide information during unlock procedure.</p>
-
-<p>Achievements without trigger can be only unlocked with the following way:</p>
-
-<pre><code>// unlock single achievement with id 'achievementId' that has no triggers
-@AchievementUnlock(type = AchievementType.SINGLE, achievement = "achievementId")
-public void myMethod1() {
-    // doesn't matter what the method do, only that it is called.
+<div class="highlight highlight-java"><pre><span class="pl-c">// unlock single achievement with id 'achievementId'</span>
+@AchievementUnlock(achievement <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod1() {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
 }
 
-// unlock single achievement with id 'achievementId' that has no triggers and provide unlock information
-@AchievementUnlock(type = AchievementType.SINGLE, achievement = "achievementId", triggerValue = "special thing happened")
-public void myMethod2() {
-    // doesn't matter what the method do, only that it is called.
+<span class="pl-c">// unlock single achievement with id 'achievementId' and provide unlock information</span>
+@AchievementUnlock(achievement <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>, triggerValue <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>special thing happened<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod2() {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
 }
 
-// unlock counter achievement with id 'achievementId' with value 10
-@AchievementUnlock(type = AchievementType.COUNTER, achievement = "achievementId", triggerValue = "10")
-public void myMethod3() {
-    // doesn't matter what the method do, only that it is called.
+<span class="pl-c">// unlock counter achievement with id 'achievementId' with value 10</span>
+@AchievementUnlock(achievement <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>, triggerValue <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>10<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod3() {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
 }
 
-// unlock date achievement with id 'achievementId' with value/date 30th of January
-@AchievementUnlock(type = AchievementType.DATE, achievement = "achievementId", triggerValue = "01-30")
-public void myMethod4() {
-    // doesn't matter what the method do, only that it is called.
-}
-</code></pre>
+<span class="pl-c">// unlock date achievement with id 'achievementId' with date value of 30th of January</span>
+@AchievementUnlock(achievement <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>, triggerValue <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>01-30<span class="pl-pds">"</span></span>)
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod4() {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
+}</pre></div>
 
 <p>equivalent with </p>
 
-<pre><code>// unlock single achievement with id 'achievementId' that has no triggers
-badger.unlock(AchievementType.SINGLE, "achievementId");
+<div class="highlight highlight-java"><pre><span class="pl-c">// unlock achievement with id 'achievementId'</span>
+badger<span class="pl-k">.</span>unlock(<span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>);
 
-// unlock single achievement with id 'achievementId' that has no triggers and provide unlock information
-badger.unlock(AchievementType.SINGLE, "achievementId", "special thing happened");
+<span class="pl-c">// unlock achievement with id 'achievementId' and provide unlock information</span>
+badger<span class="pl-k">.</span>unlock(<span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>special thing happened<span class="pl-pds">"</span></span>);
 
-// unlock counter achievement with id 'achievementId' with value 10
-badger.unlock(AchievementType.COUNTER, "achievementId", "10");
+<span class="pl-c">// unlock achievement with id 'achievementId' with value 10</span>
+badger<span class="pl-k">.</span>unlock(<span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>10<span class="pl-pds">"</span></span>);
 
-// unlock date achievement with id 'achievementId' with value/date 30th of January
-badger.unlock(AchievementType.DATE, "achievementId", "01-30");
-</code></pre>
+<span class="pl-c">// unlock achievement with id 'achievementId' with date value of 30th of January</span>
+badger<span class="pl-k">.</span>unlock(<span class="pl-s"><span class="pl-pds">"</span>achievementId<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>01-30<span class="pl-pds">"</span></span>);</pre></div>
 
-<p><strong>Check for unlocked achievements</strong></p>
+<h4>
+<a id="35-check-for-unlocked-achievements" class="anchor" href="#35-check-for-unlocked-achievements" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.5 Check for unlocked achievements</h4>
 
 <p>Achievement check runs every time when an event is triggered. Nevertheless the checking can be done directly.</p>
 
-<pre><code>@AchievementCheck
-public void myMethod() {
-    // doesn't matter what the method do, only that it is called.
-}
-</code></pre>
+<div class="highlight highlight-java"><pre>@<span class="pl-smi">AchievementCheck</span>
+<span class="pl-k">public</span> <span class="pl-k">void</span> myMethod() {
+    <span class="pl-c">// doesn't matter what the method do, only that it is called.</span>
+}</pre></div>
 
 <p>equivalent with </p>
 
-<pre><code>badger.check();
-</code></pre>
+<div class="highlight highlight-java"><pre>badger<span class="pl-k">.</span>check();</pre></div>
 
 <h1>
-<a id="make-it-work" class="anchor" href="#make-it-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Make it work</h1>
+<a id="enable-annotation-processing" class="anchor" href="#enable-annotation-processing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Enable annotation processing</h1>
 
 <p>To enable annotation driven features make sure you use AspectJ veawing.</p>
 
@@ -465,7 +365,7 @@ public void myMethod() {
             &lt;phase&gt;process-classes&lt;/phase&gt;
             &lt;goals&gt;
                 &lt;goal&gt;compile&lt;/goal&gt;
-                &lt;goal&gt;test-compile&lt;/goal&gt;
+                &lt;goal&gt;test-compile&lt;/goal&gt;  &lt;!-- for testing --&gt;
             &lt;/goals&gt;
         &lt;/execution&gt;
     &lt;/executions&gt;
@@ -475,7 +375,7 @@ public void myMethod() {
         &lt;complianceLevel&gt;1.8&lt;/complianceLevel&gt;
         &lt;weaveDependencies&gt;
             &lt;weaveDependency&gt;
-                &lt;groupId&gt;badger&lt;/groupId&gt;
+                &lt;groupId&gt;net.csongradyp&lt;/groupId&gt;
                 &lt;artifactId&gt;badger&lt;/artifactId&gt;
             &lt;/weaveDependency&gt;
         &lt;/weaveDependencies&gt;
@@ -494,9 +394,8 @@ public void myMethod() {
 <h2>
 <a id="author" class="anchor" href="#author" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author</h2>
 
-<p><strong>Peter Csongrady</strong></p>
-
-<p><a href="csongrady.p@gmail.com">csongrady.p@gmail.com</a></p>
+<p><strong>Peter Csongrady</strong>
+(<a href="csongrady.p@gmail.com">csongrady.p@gmail.com</a>)</p>
 
 <p><a href="hu.linkedin.com/in/csongradyp">LinkedIn profile</a></p>
       </section>

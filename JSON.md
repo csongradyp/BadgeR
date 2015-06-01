@@ -11,9 +11,9 @@ All the events are also a counter. They can be triggered with a concrete value.
 
 ```json
 "events" : [
-    "sample",
-    "myEvent",
-    "other Event"
+  "sample",
+  "myEvent",
+  "other Event"
 ]
 ```
 
@@ -23,8 +23,6 @@ All Achievements are JSon objects.
 ```json
 { "id" : "myAchievement",
   "category": "myGroup1"
-  "subscription" : [ ... ],
-  "trigger" : [ ... ] 
 }
 ```
 Within each achievement section can be the event subscriptions, triggers, category.
@@ -37,7 +35,7 @@ Make sure that all used event is defined in the **events** section!
 ```json
 { "id" : "myAchievement",
   "subscription" : [ "sample", "myEvent"],
-  "trigger" : [ ... ] 
+  "trigger" : [ ] 
 }
 ```
 
@@ -57,7 +55,7 @@ Note: Single achievements does not have any triggers. If it is defined, it will 
 #### 2.3. Relations ####
 
 There is an option to create composite achievements with multiple triggers with different types.
-The composite achievements have a special **"relation"** section where you can add the relation between the trigger types.
+The composite achievements have a special **"relation"** property where you can add the relation between the trigger types.
 Allowed operators are **&** (and), **|** (or) and simple brackets **(** and **)**. Make sure to use brackets for proper precedence evaluation.
 
 Examples:
@@ -72,7 +70,7 @@ or
 ## **Examples** ##
 
 **Complete example**
-```
+```json
 {
 	"events" : ["sample", "sample2", "sample3", "compositeEvent", "dateEvent", "timeEvent"],
 	"achievements" : {

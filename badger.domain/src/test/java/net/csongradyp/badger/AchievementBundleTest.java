@@ -60,7 +60,7 @@ public class AchievementBundleTest {
         underTest.setEvents(events);
         final SingleAchievementBean single = new SingleAchievementBean();
         single.setId("single");
-        single.setEvent(new String[]{"notRegistered"});
+        single.setSubscriptions(new String[]{"notRegistered"});
         final List<IAchievement> achievements = Arrays.asList(single);
 
         underTest.setAchievements(achievements);
@@ -74,23 +74,23 @@ public class AchievementBundleTest {
         final SingleAchievementBean single = new SingleAchievementBean();
         single.setId("single");
         single.setCategory("A");
-        single.setEvent(new String[]{event1});
+        single.setSubscriptions(new String[]{event1});
         final ScoreAchievementBean score = new ScoreAchievementBean();
         score.setId("score");
         score.setCategory("A");
-        score.setEvent(new String[]{event1});
+        score.setSubscriptions(new String[]{event1});
         final DateAchievementBean date = new DateAchievementBean();
         date.setId("date");
         date.setCategory("B");
-        date.setEvent(new String[]{event1});
+        date.setSubscriptions(new String[]{event1});
         final TimeAchievementBean time = new TimeAchievementBean();
         time.setId("time");
         time.setCategory("B");
-        time.setEvent(new String[]{event2});
+        time.setSubscriptions(new String[]{event2});
         final TimeRangeAchievementBean timeRange = new TimeRangeAchievementBean();
         timeRange.setId("timeRange");
         timeRange.setCategory("B");
-        timeRange.setEvent(new String[]{event2});
+        timeRange.setSubscriptions(new String[]{event2});
         final List<IAchievement> achievements = Arrays.asList(single, score, date, time, timeRange);
         underTest.setEvents(events);
 

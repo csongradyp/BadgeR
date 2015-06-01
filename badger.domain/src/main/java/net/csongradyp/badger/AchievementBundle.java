@@ -51,7 +51,7 @@ public class AchievementBundle implements AchievementDefinition {
     }
 
     private void addToEventMap(final IAchievement achievementBean) {
-        final List<String> eventSubscriptions = achievementBean.getEvent();
+        final List<String> eventSubscriptions = achievementBean.getSubscriptions();
         if (eventSubscriptions != null && !eventSubscriptions.isEmpty()) {
             eventSubscriptions.forEach(event -> {
                 if(!achievementEventMap.containsKey(event)) {

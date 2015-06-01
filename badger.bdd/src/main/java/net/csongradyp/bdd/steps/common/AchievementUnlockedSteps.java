@@ -59,7 +59,7 @@ public class AchievementUnlockedSteps {
     public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
         final Optional<IAchievement> achievement = controller.get(id);
         if (achievement.isPresent()) {
-            assertThat("Achievement is subscribed to event" + event, achievement.get().getEvent().contains(event), is(true));
+            assertThat("Achievement is subscribed to event" + event, achievement.get().getSubscriptions().contains(event), is(true));
             assertThat("Trigger:" + trigger + " is present for achievement", triggerChecker.isTriggerPresent((ITriggerableAchievementBean) achievement.get(), type, trigger), is(true));
         } else {
             fail("Achievement is not defined with id: " + id + "and type: " + type);
@@ -76,7 +76,7 @@ public class AchievementUnlockedSteps {
     public void checkAchievementSubscriptionExistence(final @Named("id") String id, final @Named("event") String event) {
         final Optional<IAchievement> achievement = controller.get(id);
         if (achievement.isPresent()) {
-            assertThat("Achievement is subscribed to event: " + event, achievement.get().getEvent().contains(event), is(true));
+            assertThat("Achievement is subscribed to event: " + event, achievement.get().getSubscriptions().contains(event), is(true));
         } else {
             fail("Achievement is not defined with id: " + id);
         }
@@ -89,7 +89,7 @@ public class AchievementUnlockedSteps {
             final IAchievement iAchievement = achievement.get();
             if (iAchievement.getType() == AchievementType.TIME_RANGE) {
                 TimeRangeAchievementBean timeRangeAchievementBean = (TimeRangeAchievementBean) iAchievement;
-                assertThat("Achievement is subscribed to event: " + event, timeRangeAchievementBean.getEvent().contains(event), is(true));
+                assertThat("Achievement is subscribed to event: " + event, timeRangeAchievementBean.getSubscriptions().contains(event), is(true));
                 assertThat("Trigger is present for time-range achievement", triggerChecker.isTimeRangeTriggerPresent(timeRangeAchievementBean.getTrigger(), start, end), is(true));
             } else if (iAchievement.getType() == AchievementType.SCORE_RANGE) {
                 ScoreRangeAchievementBean scoreRangeAchievementBean = (ScoreRangeAchievementBean) iAchievement;

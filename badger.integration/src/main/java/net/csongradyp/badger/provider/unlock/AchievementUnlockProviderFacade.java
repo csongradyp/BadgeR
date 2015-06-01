@@ -72,7 +72,7 @@ public class AchievementUnlockProviderFacade implements IAchievementUnlockFinder
 
     @Override
     public Optional<IAchievementUnlockedEvent> getUnlockable(final IAchievement achievementBean) {
-        final Long bestScore = getBestScoreOf(achievementBean.getEvent());
+        final Long bestScore = getBestScoreOf(achievementBean.getSubscriptions());
         return getUnlockable(achievementBean, bestScore);
     }
 

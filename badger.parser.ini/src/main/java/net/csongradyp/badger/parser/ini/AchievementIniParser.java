@@ -148,8 +148,8 @@ public class AchievementIniParser implements IAchievementDefinitionFileParser {
     }
 
     private void parseEvents(Profile.Section section, IAchievementBean achievement) {
-        final String[] events = section.getAll("event", String[].class);
-        achievement.setEvent(events);
+        final String[] subscriptions = section.getAll("subscription", String[].class);
+        achievement.setSubscriptions(subscriptions);
     }
 
     private void parseTriggers(Profile.Section section, CompositeAchievementBean achievement) {

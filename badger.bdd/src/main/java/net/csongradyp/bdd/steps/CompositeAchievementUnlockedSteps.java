@@ -47,7 +47,7 @@ public class CompositeAchievementUnlockedSteps {
         if (achievement.isPresent()) {
             assertThat(achievement.get().getType(), is(AchievementType.COMPOSITE));
             final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
-            assertThat("Achievement is subscribed to event" + event, composite.getEvent().contains(event), is(true));
+            assertThat("Achievement is subscribed to event" + event, composite.getSubscriptions().contains(event), is(true));
             assertThat("Trigger:" + trigger +" is present for achievement", triggerChecker.isTriggerPresent(composite, AchievementType.COMPOSITE, trigger), is(true));
         } else {
             fail("Achievement is not defined with id: " + id + "and type: composite ");
@@ -60,7 +60,7 @@ public class CompositeAchievementUnlockedSteps {
         if(achievement.isPresent()) {
             assertThat(achievement.get().getType(), is(AchievementType.COMPOSITE));
             final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
-            assertThat("Achievement is subscribed to event: " + event, composite.getEvent().contains(event), is(true));
+            assertThat("Achievement is subscribed to event: " + event, composite.getSubscriptions().contains(event), is(true));
             final Collection<ITrigger> triggers = composite.getTrigger().stream().filter(t -> t.getType()==AchievementType.TIME_RANGE).collect(Collectors.toList());
             assertThat("Trigger is present for time-range achievement", triggerChecker.isTimeRangeTriggerPresent(triggers, start, end), is(true));
         } else {

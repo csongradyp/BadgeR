@@ -201,7 +201,7 @@ public class AchievementJsonParser implements IAchievementDefinitionFileParser {
     private void mapBasicAttributes(final IAchievementJson json, final IAchievementBean bean) {
         bean.setId(json.getId());
         bean.setCategory(json.getCategory());
-        bean.setEvent(json.getSubscription());
+        bean.setSubscription(json.getSubscription());
     }
 
     void setJsonTriggerParsers(final Map<AchievementType, ITriggerParser> jsonTriggerParsers) {

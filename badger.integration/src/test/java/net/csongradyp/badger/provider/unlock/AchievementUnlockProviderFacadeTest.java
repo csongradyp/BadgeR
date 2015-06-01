@@ -54,7 +54,7 @@ public class AchievementUnlockProviderFacadeTest {
     public void testFindAllReturnsAllUnlockableAchievementsAsUnlockEvents() throws Exception {
         final Long score = 1L;
         final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
-        achievementBean.setEvent(new String[] {EVENT_ID});
+        achievementBean.setSubscriptions(new String[]{EVENT_ID});
         given(mockAchievementDefinition.getAll()).willReturn(Collections.singletonList(achievementBean));
         given(mockEventDao.scoreOf(EVENT_ID)).willReturn(score);
         given(mockUnlockedProviders.get(AchievementType.SCORE)).willReturn(mockUnlockedProvider);
@@ -72,7 +72,7 @@ public class AchievementUnlockProviderFacadeTest {
         final Long score = 1L;
         given(mockEventDao.scoreOf(EVENT_ID)).willReturn(score);
         final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
-        achievementBean.setEvent(new String[]{EVENT_ID});
+        achievementBean.setSubscriptions(new String[]{EVENT_ID});
         given(mockAchievementDefinition.getAchievementsSubscribedFor(EVENT_ID)).willReturn(Collections.singletonList(achievementBean));
         given(mockUnlockedProviders.get(AchievementType.SCORE)).willReturn(mockUnlockedProvider);
         final IAchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");
@@ -90,7 +90,7 @@ public class AchievementUnlockProviderFacadeTest {
         final Set<String> owners = new HashSet<>(Arrays.asList("owner"));
         given(mockEventDao.scoreOf(EVENT_ID)).willReturn(score);
         final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
-        achievementBean.setEvent(new String[]{EVENT_ID});
+        achievementBean.setSubscriptions(new String[]{EVENT_ID});
         given(mockAchievementDefinition.getAchievementsSubscribedFor(EVENT_ID)).willReturn(Collections.singletonList(achievementBean));
         given(mockUnlockedProviders.get(AchievementType.SCORE)).willReturn(mockUnlockedProvider);
         final IAchievementUnlockedEvent unlockedEvent = new AchievementUnlockedEvent(ACHIEVEMENT_ID, "", "", "");

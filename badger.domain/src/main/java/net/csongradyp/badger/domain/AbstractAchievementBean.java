@@ -8,11 +8,11 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
 
     private String id;
     private String category;
-    private List<String> event;
+    private List<String> subscriptions;
     private Integer maxLevel;
 
     public AbstractAchievementBean() {
-        event = new ArrayList<>();
+        subscriptions = new ArrayList<>();
         maxLevel = 1;
         category= "default";
     }
@@ -50,18 +50,18 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
     }
 
     @Override
-    public List<String> getEvent() {
-        return event;
+    public List<String> getSubscriptions() {
+        return subscriptions;
     }
 
     @Override
-    public void setEvent(String[] event) {
-        Collections.addAll(this.event, event);
+    public void setSubscriptions(String[] subscriptions) {
+        Collections.addAll(this.subscriptions, subscriptions);
     }
 
     @Override
-    public void setEvent(List<String> event) {
-        this.event = event;
+    public void setSubscription(List<String> events) {
+        this.subscriptions = events;
     }
 
     @Override

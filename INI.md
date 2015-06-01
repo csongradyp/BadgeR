@@ -28,10 +28,15 @@ An achievement can subscribe for one or more events. By following the ini struct
 Make sure that all used event is defined in the **[events]** section!
 
 ```ini
-[counter/sample]
+[events]
 event=event one
 event=event two
 event=event three
+
+[counter/sample]
+subscription=event one
+subscription=event two
+subscription=event three
 ```
 
 #### 2.2 Triggers ####
@@ -49,14 +54,22 @@ Note: Single achievements does not have any triggers. If it is defined, it will 
 
 #### 2.3. Relations ####
 
-There is an option to create complex achievements by making multiple different typed achievements with the same ID and telling the relationship between them.
- In the "relations" section you can add the relation definition of the achievements with same ID. There should be only one relation definition for an achievement Id.
-Allowed operators are **&** (and) **|** (or) and simple brackets **(** and **)**. Make sure to use brackets for proper precedence evaluation.
+There is an option to create composite achievements with multiple triggers with different types.
+The composite achievements have a special **"relation"** property where you can add the relation between the trigger types.
+Allowed operators are **&** (and), **|** (or) and simple brackets **(** and **)**. Make sure to use brackets for proper precedence evaluation.
 
 ```ini
-[relations]
-achievementId= timeRange & counter
-otherAchievementId= counter & (time | date)
+[composite/example]
+relation = timeRange & date
+dateTrigger = 01-23
+timeRangeTrigger = 11:00
+timeRangeTrigger = 16:00
+
+[composite/example2]
+relation = score & (time | date)
+dateTrigger = 01-23
+timeTrigger = 16:00
+scoreTrigger = 100+
 ```
 
 ## **Examples** ##
@@ -64,7 +77,7 @@ otherAchievementId= counter & (time | date)
 **Counter achievement examples**
 ```ini
 [counter/sample]
-event=my event
+subscription=my event
 trigger=3
 trigger=5
 ```
@@ -72,21 +85,21 @@ trigger=5
 A counter achievement is defined with id "sample". Badger will check whether it can be unlocked or not if "my event" event is triggered. Achievement (level 1) will be unlocked if 'my event' was triggered 3 times all together. (Level 2 when it was triggered 5 times all together)
 
 ```ini
-[counter/postfixsample]
-event=my event
+[counter/postfixSample]
+subscription=my event
 trigger=10-
 trigger=20
 trigger=30+
 ```
 
-A counter achievement is defined with id "postfixsample". Badger will check whether it can be unlocked or not if "my event" event is triggered. Achievement (level 1) will be unlocked if the event is triggered with a score less than 10. If 'my event' is only triggered without any score, level 1 achievement will be unlocked because the counter will set automatically to 1 at the first time (in this case). Level 2 will be unlocked if the counter is equal to 20 and level 3 will be unlocked if the counter will be greater or equal to 30.
+A counter achievement is defined with id "postfixSample". Badger will check whether it can be unlocked or not if "my event" event is triggered. Achievement (level 1) will be unlocked if the event is triggered with a score less than 10. If 'my event' is only triggered without any score, level 1 achievement will be unlocked because the counter will set automatically to 1 at the first time (in this case). Level 2 will be unlocked if the counter is equal to 20 and level 3 will be unlocked if the counter will be greater or equal to 30.
 
 **Date achievement examples**
 
 ```ini
 [date/dateExample]
-event=event1
-event=event2
+subscription=event1
+subscription=event2
 trigger=01-25
 trigger=01-30
 ```
@@ -97,8 +110,8 @@ A date achievement is defined with id "dateExample". It will be unlocked if one 
 
 ```ini
 [date/timeExample]
-event=event1
-event=event2
+subscription=event1
+subscription=event2
 trigger=08:00
 trigger=20:00
 ```
@@ -109,8 +122,8 @@ A time achievement is defined with id "timeExample". It will be unlocked if one 
 
 ```ini
 [date/timeRangeExample]
-event=event1
-event=event2
+subscription=event1
+subscription=event2
 trigger=08:00
 trigger=20:00
 trigger=21:00
@@ -123,7 +136,7 @@ A time achievement is defined with id "timeRangeExample". It will be unlocked if
 
 ```ini
 [composite/composite-dateCounter]
-event = compositeEvent
+subscription = compositeEvent
 relation = date & score
 dateTrigger = 01-23
 scoreTrigger = 100+

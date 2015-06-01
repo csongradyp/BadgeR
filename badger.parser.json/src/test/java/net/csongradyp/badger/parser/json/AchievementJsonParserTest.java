@@ -125,17 +125,17 @@ public class AchievementJsonParserTest {
         final IAchievement single = achievement.get();
         assertThat(single.getType(), is(AchievementType.SINGLE));
         assertThat(single.getCategory(), is("manual"));
-        assertThat(single.getEvent().size(), is(equalTo(1)));
-        assertThat(single.getEvent().get(0), is(equalTo("sample")));
+        assertThat(single.getSubscriptions().size(), is(equalTo(1)));
+        assertThat(single.getSubscriptions().get(0), is(equalTo("sample")));
 
         achievement = result.get("first");
         assertThat(achievement.isPresent(), is(true));
         final ITriggerableAchievementBean<ScoreTrigger> score = (ITriggerableAchievementBean<ScoreTrigger>) achievement.get();
         assertThat(score.getType(), is(AchievementType.SCORE));
         assertThat(score.getCategory(), is("default"));
-        assertThat(score.getEvent().size(), is(equalTo(2)));
-        assertThat(score.getEvent().get(0), is(equalTo("sample")));
-        assertThat(score.getEvent().get(1), is(equalTo("sample3")));
+        assertThat(score.getSubscriptions().size(), is(equalTo(2)));
+        assertThat(score.getSubscriptions().get(0), is(equalTo("sample")));
+        assertThat(score.getSubscriptions().get(1), is(equalTo("sample3")));
         assertThat(score.getTrigger().size(), is(equalTo(4)));
         assertThat(score.getTrigger().get(0).getTrigger(), is(equalTo(1L)));
         assertThat(score.getTrigger().get(0).getOperation(), is(ScoreTrigger.Operation.EQUALS));
@@ -151,9 +151,9 @@ public class AchievementJsonParserTest {
         final ITriggerableAchievementBean<ScoreTriggerPair> scoreRange = (ITriggerableAchievementBean<ScoreTriggerPair>) achievement.get();
         assertThat(scoreRange.getType(), is(AchievementType.SCORE_RANGE));
         assertThat(scoreRange.getCategory(), is("default"));
-        assertThat(scoreRange.getEvent().size(), is(equalTo(2)));
-        assertThat(scoreRange.getEvent().get(0), is(equalTo("sample")));
-        assertThat(scoreRange.getEvent().get(1), is(equalTo("sample2")));
+        assertThat(scoreRange.getSubscriptions().size(), is(equalTo(2)));
+        assertThat(scoreRange.getSubscriptions().get(0), is(equalTo("sample")));
+        assertThat(scoreRange.getSubscriptions().get(1), is(equalTo("sample2")));
         assertThat(scoreRange.getTrigger().size(), is(equalTo(2)));
         assertThat(scoreRange.getTrigger().get(0).getStartTrigger(), is(equalTo(0L)));
         assertThat(scoreRange.getTrigger().get(0).getEndTrigger(), is(equalTo(10L)));
@@ -165,8 +165,8 @@ public class AchievementJsonParserTest {
         final ITriggerableAchievementBean<TimeTriggerPair> timeRange = (ITriggerableAchievementBean<TimeTriggerPair>) achievement.get();
         assertThat(timeRange.getType(), is(AchievementType.TIME_RANGE));
         assertThat(timeRange.getCategory(), is("default"));
-        assertThat(timeRange.getEvent().size(), is(equalTo(1)));
-        assertThat(timeRange.getEvent().get(0), is(equalTo("sample3")));
+        assertThat(timeRange.getSubscriptions().size(), is(equalTo(1)));
+        assertThat(timeRange.getSubscriptions().get(0), is(equalTo("sample3")));
         assertThat(timeRange.getTrigger().size(), is(equalTo(1)));
         assertThat(timeRange.getTrigger().get(0).getStartTrigger(), is(equalTo(new LocalTime(0, 10))));
         assertThat(timeRange.getTrigger().get(0).getEndTrigger(), is(equalTo(new LocalTime(2, 0))));
@@ -176,9 +176,9 @@ public class AchievementJsonParserTest {
         final ITriggerableAchievementBean<TimeTrigger> time = (ITriggerableAchievementBean<TimeTrigger>) achievement.get();
         assertThat(time.getType(), is(AchievementType.TIME));
         assertThat(time.getCategory(), is("default"));
-        assertThat(time.getEvent().size(), is(equalTo(2)));
-        assertThat(time.getEvent().get(0), is(equalTo("sample2")));
-        assertThat(time.getEvent().get(1), is(equalTo("sample3")));
+        assertThat(time.getSubscriptions().size(), is(equalTo(2)));
+        assertThat(time.getSubscriptions().get(0), is(equalTo("sample2")));
+        assertThat(time.getSubscriptions().get(1), is(equalTo("sample3")));
         assertThat(time.getTrigger().size(), is(equalTo(2)));
         assertThat(time.getTrigger().get(0).getTime(), is(equalTo(new LocalTime(11, 11))));
         assertThat(time.getTrigger().get(1).getTime(), is(equalTo(new LocalTime(12, 12))));
@@ -188,8 +188,8 @@ public class AchievementJsonParserTest {
         final ITriggerableAchievementBean<DateTrigger> date = (ITriggerableAchievementBean<DateTrigger>) achievement.get();
         assertThat(date.getType(), is(AchievementType.DATE));
         assertThat(date.getCategory(), is("default"));
-        assertThat(date.getEvent().size(), is(equalTo(1)));
-        assertThat(date.getEvent().get(0), is(equalTo("sample2")));
+        assertThat(date.getSubscriptions().size(), is(equalTo(1)));
+        assertThat(date.getSubscriptions().get(0), is(equalTo("sample2")));
         assertThat(date.getTrigger().size(), is(equalTo(2)));
         assertThat(date.getTrigger().get(0).getDate(), is(equalTo(new DateTime(2000, 12, 12, 0, 0).toDate())));
         assertThat(date.getTrigger().get(1).getDate(), is(equalTo(new DateTime(2000, 5, 22, 0, 0).toDate())));
@@ -199,8 +199,8 @@ public class AchievementJsonParserTest {
         final CompositeAchievementBean composite = (CompositeAchievementBean) achievement.get();
         assertThat(composite.getType(), is(AchievementType.COMPOSITE));
         assertThat(composite.getCategory(), is("complex"));
-        assertThat(composite.getEvent().size(), is(equalTo(1)));
-        assertThat(composite.getEvent().get(0), is(equalTo("sample2")));
+        assertThat(composite.getSubscriptions().size(), is(equalTo(1)));
+        assertThat(composite.getSubscriptions().get(0), is(equalTo("sample2")));
         assertThat(composite.getTrigger().size(), is(equalTo(10)));
     }
 }

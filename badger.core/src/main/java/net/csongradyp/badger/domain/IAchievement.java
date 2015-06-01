@@ -8,7 +8,7 @@ public interface IAchievement {
 
     String getCategory();
 
-    List<String> getEvent();
+    List<String> getSubscriptions();
 
     String getTitleKey();
 

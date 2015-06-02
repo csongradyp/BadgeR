@@ -17,7 +17,7 @@ public @interface AchievementEventTrigger {
     /**
      * Name of event to trigger.
      */
-    String[] name();
+    String[] eventNames() default {};
 
     String[] owners() default {};
 

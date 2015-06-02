@@ -14,15 +14,15 @@ import java.lang.annotation.Target;
 public @interface AchievementUnlock {
 
     /**
-     * ID of achievement to unlock.
+     * IDs of achievement to unlock.
      */
-    String achievement();
+    String[] achievements() default {};
 
     /**
      * Value the achievement unlock with.
      * @return The value for the achievement for record.
      */
-    String scoreParam() default "";
+    String triggerValue() default "";
 
     String[] owners() default {};
 }

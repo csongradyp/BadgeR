@@ -3,7 +3,6 @@ package net.csongradyp.badger.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.event.exception.SubscriptionException;
 import net.csongradyp.badger.event.handler.IAchievementUnlockedHandler;
 import net.csongradyp.badger.event.handler.IScoreUpdateHandler;
@@ -19,12 +18,10 @@ public final class EventBus {
     private static final Logger LOG = LoggerFactory.getLogger(EventBus.class);
     private static final EventBus INSTANCE = new EventBus();
 
-    private IAchievementController controller;
-
     private final MBassador<ScoreUpdatedEvent> scoreUpdateBus;
     private final MBassador<IAchievementUnlockedEvent> unlockedBus;
     private static final Collection<AchievementUnlockedHandlerWrapper> unlockedSubscribers = new ArrayList<>();
-    private static final Collection<ScoreUpdateHandlerWrapper> scoreUpdateSubscribers= new ArrayList<>();
+    private static final Collection<ScoreUpdateHandlerWrapper> scoreUpdateSubscribers = new ArrayList<>();
 
     private EventBus() {
         scoreUpdateBus = new MBassador<>();
@@ -58,7 +55,7 @@ public final class EventBus {
 
     private static void unSubscribe(final AchievementUnlockedHandlerWrapper listener) {
         final boolean unsubscribe = INSTANCE.unlockedBus.unsubscribe(listener);
-        if(!unsubscribe) {
+        if (!unsubscribe) {
             throw new SubscriptionException("Unsubscribe failed for achievement unlocked handler" + listener.getWrapped());
         }
         unlockedSubscribers.remove(listener);
@@ -86,7 +83,7 @@ public final class EventBus {
 
     private static void unSubscribe(final ScoreUpdateHandlerWrapper listener) {
         final boolean unsubscribe = INSTANCE.scoreUpdateBus.unsubscribe(listener);
-        if(!unsubscribe) {
+        if (!unsubscribe) {
             throw new SubscriptionException("Unsubscribe failed for score changed handler" + listener.getWrapped());
         }
         scoreUpdateSubscribers.remove(listener);
@@ -97,35 +94,11 @@ public final class EventBus {
         LOG.info("Achievement score {} updated with value {}", scoreUpdatedEvent.getEvent(), scoreUpdatedEvent.getValue());
     }
 
-    public static void triggerEvent(final String id, final Long score) {
-        INSTANCE.controller.triggerEvent(id, score);
-    }
-
-    public static void triggerEvent(final String id, final Collection<String> owners) {
-        INSTANCE.controller.triggerEvent(id, owners);
-    }
-
-    public static void unlock(final String achievementId, final String triggerValue) {
-        INSTANCE.controller.unlock(achievementId, triggerValue);
-    }
-
-    public static void unlock(final String achievementId, final String triggerValue, final Collection<String> owners) {
-        INSTANCE.controller.unlock(achievementId, triggerValue, owners);
-    }
-
-    public static void checkAll() {
-        INSTANCE.controller.checkAndUnlock();
-    }
-
     public static Collection<AchievementUnlockedHandlerWrapper> getUnlockedSubscribers() {
         return unlockedSubscribers;
     }
 
     public static Collection<ScoreUpdateHandlerWrapper> getScoreUpdateSubscribers() {
         return scoreUpdateSubscribers;
-    }
-
-    public static void setController(final IAchievementController controller) {
-        INSTANCE.controller = controller;
     }
 }

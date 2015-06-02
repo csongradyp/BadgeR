@@ -15,10 +15,12 @@ import java.lang.annotation.Target;
 public @interface AchievementScore {
 
     /**
-     * Name of counter or event.
+     * Name of the event.
      */
-    String counter();
+    String[] events() default {};
 
     String[] owners() default {};
+
+    boolean highScore() default false;
 
 }

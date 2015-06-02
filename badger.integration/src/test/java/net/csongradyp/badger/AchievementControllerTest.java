@@ -358,7 +358,7 @@ public class AchievementControllerTest {
         final ScoreAchievementBean achievementBean = new ScoreAchievementBean();
         achievementBean.setId(ACHIEVEMENT_ID);
         when(mockEventDao.setScore(EVENT_ID, newScore)).thenReturn(newScore);
-        when(mockAchievementUnlockProviderFacade.findUnlockables(EVENT_ID, newScore)).thenReturn(Collections.singletonList(unlockedEvent));
+        when(mockAchievementUnlockProviderFacade.findUnlockables(EVENT_ID, newScore, Collections.emptySet())).thenReturn(Collections.singletonList(unlockedEvent));
         when(mockAchievementDao.isUnlocked(ACHIEVEMENT_ID, 1)).thenReturn(false);
         when(mockUnlockedEventFactory.createEvent(any(IAchievement.class), anyString(), anyCollection())).thenReturn(unlockedEvent);
         EventBus.subscribeOnUnlock(handler);

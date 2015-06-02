@@ -2,6 +2,8 @@ package net.csongradyp.bdd.steps.common;
 
 import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
+import net.csongradyp.badger.annotations.AchievementEventParam;
+import net.csongradyp.badger.annotations.AchievementEventTrigger;
 import net.csongradyp.badger.persistence.EventDao;
 import net.csongradyp.bdd.Steps;
 import org.jbehave.core.annotations.Alias;
@@ -31,5 +33,14 @@ public class EventScoreSteps {
     @When("event named $eventName is triggered")
     public void trigger(final String eventName) {
         controller.triggerEvent(eventName);
+    }
+
+    @When("event named $eventName is triggered via annotation")
+    public void triggerViaAnnotation(final String eventName) {
+        annotationTrigger(eventName);
+    }
+
+    @AchievementEventTrigger
+    private void annotationTrigger(@AchievementEventParam final String event) {
     }
 }

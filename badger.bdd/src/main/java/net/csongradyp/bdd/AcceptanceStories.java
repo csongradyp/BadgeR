@@ -24,7 +24,6 @@ import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.springframework.context.ApplicationContext;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
@@ -53,7 +52,7 @@ public class AcceptanceStories extends JUnitStories {
                         .withFailureTrace(false)
                         .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                         .withDefaultFormats()
-                        .withFormats(HTML, XML, CONSOLE, TXT))
+                        .withFormats(HTML, XML, TXT))
                 .useParameterControls(parameterControls)
                 .useStepCollector(stepCollector);
     }

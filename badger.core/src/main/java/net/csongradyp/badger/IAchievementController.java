@@ -10,19 +10,19 @@ import net.csongradyp.badger.domain.IAchievement;
 
 public interface IAchievementController {
 
-    void setAchievementDefinition(final AchievementDefinition definition);
+    void setAchievementDefinition(AchievementDefinition definition);
 
-    void setInternationalizationBaseName(final String internationalizationBaseName);
+    void setInternationalizationBaseName(String internationalizationBaseName);
 
-    void setResourceBundle(final ResourceBundle resourceBundle);
+    void setResourceBundle(ResourceBundle resourceBundle);
 
-    void setLocale(final Locale locale);
+    void setLocale(Locale locale);
 
     Collection<IAchievement> getAll();
 
     Collection<IAchievement> getAllUnlocked();
 
-    Collection<IAchievement> getAllByOwner(final String owner);
+    Collection<IAchievement> getAllByOwner(String owner);
 
     Map<String, Set<IAchievement>> getAllByEvents();
 
@@ -30,23 +30,27 @@ public interface IAchievementController {
 
     void checkAndUnlock();
 
-    void triggerEventWithHighScore(final String event, final Long score);
+    void triggerEventWithHighScore(String event, Long score);
 
-    void triggerEvent(final String event, final Long score);
+    void triggerEventWithHighScore(String event, Long score, Collection<String> owners);
 
-    void triggerEvent(final String event, final Collection<String> owners);
+    void triggerEvent(String event, Long score, Collection<String> owners);
 
-    void triggerEvent(final String event);
+    void triggerEvent(String event, Long score);
 
-    void unlock(final String achievementId, final String triggerValue, final Collection<String> owners);
+    void triggerEvent(String event, Collection<String> owners);
 
-    void unlock(final String achievementId, final String triggerValue);
+    void triggerEvent(String event);
 
-    Boolean isUnlocked(final String achievementId);
+    void unlock(String achievementId, String triggerValue, Collection<String> owners);
+
+    void unlock(String achievementId, String triggerValue);
+
+    Boolean isUnlocked(String achievementId);
 
     Boolean isUnlocked(String achievementId, Integer level);
 
-    Long getCurrentScore(final String id);
+    Long getCurrentScore(String id);
 
     void reset();
 }

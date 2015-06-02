@@ -24,6 +24,7 @@
     <import resource="parsers-beans.xml"/>
     <import resource="trigger-parsers-ini-beans.xml"/>
     <import resource="trigger-parsers-json-beans.xml"/>
+    <import resource="aspect-beans.xml"/>
 
     <util:map id="unlockedProviders" map-class="java.util.HashMap">
         <entry key="#{T(net.csongradyp.badger.domain.AchievementType).COMPOSITE}" value-ref="compositeUnlockedProvider" />

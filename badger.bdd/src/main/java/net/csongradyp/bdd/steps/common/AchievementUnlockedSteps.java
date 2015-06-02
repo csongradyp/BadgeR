@@ -5,6 +5,9 @@ import java.util.Optional;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
+import net.csongradyp.badger.annotations.AchievementId;
+import net.csongradyp.badger.annotations.AchievementOwnerParam;
+import net.csongradyp.badger.annotations.AchievementUnlock;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.domain.ITriggerableAchievementBean;
@@ -56,7 +59,7 @@ public class AchievementUnlockedSteps {
     }
 
     @Given("an achievement with $id id and $type type bounded to $event event with trigger $trigger")
-    public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("trigger") String trigger) {
+    public void checkAchievementExistence(final String id, final AchievementType type, final String event, final String trigger) {
         final Optional<IAchievement> achievement = controller.get(id);
         if (achievement.isPresent()) {
             assertThat("Achievement is subscribed to event" + event, achievement.get().getSubscriptions().contains(event), is(true));
@@ -67,13 +70,13 @@ public class AchievementUnlockedSteps {
     }
 
     @Given("an achievement with $id id and $type type")
-    public void checkCompositeAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type) {
+    public void checkCompositeAchievementExistence(final String id, final AchievementType type) {
         final Optional<IAchievement> achievement = controller.get(id);
         assertThat("Achievement is not defined with id: " + id + "and type: " + type, achievement.isPresent(), is(true));
     }
 
     @Given("an achievement with $id id is subscribed to $event event")
-    public void checkAchievementSubscriptionExistence(final @Named("id") String id, final @Named("event") String event) {
+    public void checkAchievementSubscriptionExistence(final String id, final String event) {
         final Optional<IAchievement> achievement = controller.get(id);
         if (achievement.isPresent()) {
             assertThat("Achievement is subscribed to event: " + event, achievement.get().getSubscriptions().contains(event), is(true));
@@ -83,7 +86,7 @@ public class AchievementUnlockedSteps {
     }
 
     @Given("an achievement with $id id and $type type bounded to $event event with start trigger $start and end trigger $end")
-    public void checkAchievementExistence(final @Named("id") String id, final @Named("type") AchievementType type, final @Named("event") String event, final @Named("start") String start, final @Named("end") String end) {
+    public void checkAchievementExistence(final String id, final AchievementType type, final String event, final String start, final String end) {
         final Optional<IAchievement> achievement = controller.get(id);
         if (achievement.isPresent()) {
             final IAchievement iAchievement = achievement.get();
@@ -102,21 +105,52 @@ public class AchievementUnlockedSteps {
     }
 
     @Given("the achievement with $id id is already unlocked with level $level")
-    public void unlockWithLevel(final @Named("id") String id, final @Named("level") Integer level) {
+    public void unlockWithLevel(final String id, final Integer level) {
         achievementDao.unlock(id, level);
         assertThat(achievementDao.isUnlocked(id, level), is(true));
     }
 
     @Given("the achievement with $id id is unlocked")
-    public void unlock(final @Named("id") String id) {
+    public void unlock(final String id) {
         achievementDao.unlock(id);
         assertThat(achievementDao.isUnlocked(id), is(true));
     }
 
     @When("an achievement with $id id is unlocked")
-    public void unlockManually(final @Named("id") String id) {
+    public void unlockManually(final String id) {
         controller.unlock(id, "");
         assertThat(controller.isUnlocked(id), is(true));
+    }
+
+    @When("an achievement with $id id is unlocked via annotation")
+    public void unlockViaAnnotation(final String id) {
+        annotationUnlock(id);
+        assertThat(controller.isUnlocked(id), is(true));
+    }
+
+    @AchievementUnlock(triggerValue = "some")
+    public void annotationUnlock(@AchievementId String id) {
+    }
+
+    @When("an achievement with $id id is unlocked via annotation with owner $owner")
+    public void unlockViaAnnotation(final String id, final String owner) {
+        annotationUnlock(id, owner);
+        assertThat(controller.isUnlocked(id), is(true));
+    }
+
+    @AchievementUnlock()
+    public void annotationUnlock(@AchievementId String id, @AchievementOwnerParam String owner) {
+    }
+
+    @When("an achievement with ids: $firstId, $secondId is unlocked via annotation")
+    public void unlockMultipleViaAnnotation(final String firstId, final String secondId) {
+        annotationUnlocks(firstId, secondId);
+        assertThat(controller.isUnlocked(firstId), is(true));
+        assertThat(controller.isUnlocked(secondId), is(true));
+    }
+
+    @AchievementUnlock
+    private void annotationUnlocks(@AchievementId String firstId, @AchievementId String secondId) {
     }
 
     @Given("the achievement with $id is not unlocked")
@@ -139,13 +173,18 @@ public class AchievementUnlockedSteps {
     }
 
     @Then("achievement id is $id")
-    public void checkAchievementId(final @Named("id") String id) {
+    public void checkAchievementId(final String id) {
         assertThat(receivedEvent.getId(), is(equalTo(id)));
     }
 
     @Then("the level of the unlocked achievement is $level")
-    public void checkAchievementLevel(final @Named("level") Integer level) {
+    public void checkAchievementLevel(final Integer level) {
         assertThat(receivedEvent.getLevel(), is(equalTo(level)));
+    }
+
+    @Then("the owner of the unlocked achievement is $owner")
+    public void checkAchievementOwner(final String owner) {
+        assertThat(receivedEvent.getOwners().contains(owner), is(true));
     }
 
     @AsParameterConverter

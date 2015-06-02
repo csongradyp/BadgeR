@@ -2,6 +2,7 @@ package net.csongradyp.badger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +43,6 @@ public class AchievementController implements IAchievementController {
 
     public AchievementController() {
         achievementDefinition = new AchievementBundle();
-        EventBus.setController(this);
     }
 
     @Override
@@ -116,15 +116,21 @@ public class AchievementController implements IAchievementController {
 
     @Override
     public void checkAndUnlock() {
+        LOG.debug("Checking achievements to unlock");
         final Collection<IAchievementUnlockedEvent> unlockableAchievements = achievementUnlockFinder.findAll();
         unlockableAchievements.forEach(this::unlock);
     }
 
     @Override
     public void triggerEventWithHighScore(final String event, final Long score) {
+        triggerEventWithHighScore(event, score, Collections.emptySet());
+    }
+
+    @Override
+    public void triggerEventWithHighScore(final String event, final Long score, final Collection<String> owners) {
         if (isNewHighScore(event, score)) {
             LOG.debug("New highscore submitted!");
-            triggerEvent(event, score);
+            triggerEvent(event, score, owners);
         }
     }
 
@@ -134,10 +140,15 @@ public class AchievementController implements IAchievementController {
 
     @Override
     public void triggerEvent(final String event, final Long score) {
+        triggerEvent(event, score, Collections.emptySet());
+    }
+
+    @Override
+    public void triggerEvent(final String event, final Long score, final Collection<String> owners) {
         if (isDifferentValueAsStored(event, score)) {
-            LOG.debug("Achievement event triggered: {} with score {} ", event, score);
+            LOG.debug("Achievement event named {} is triggered by owners {} with score: {}", event, owners, score);
             publishUpdatedScore(event, score);
-            final Collection<IAchievementUnlockedEvent> unlockables = achievementUnlockFinder.findUnlockables(event, score);
+            final Collection<IAchievementUnlockedEvent> unlockables = achievementUnlockFinder.findUnlockables(event, score, owners);
             unlockables.forEach(this::unlock);
         }
     }
@@ -155,7 +166,7 @@ public class AchievementController implements IAchievementController {
 
     @Override
     public void triggerEvent(final String event, final Collection<String> owners) {
-        LOG.debug("Achievement event triggered: {} with owners {} ", event, owners);
+        LOG.debug("Achievement event triggered: {} with owners {}", event, owners);
         publishIncremented(event);
         final Collection<IAchievementUnlockedEvent> unlockables = achievementUnlockFinder.findUnlockables(event, owners);
         unlockables.forEach(this::unlock);

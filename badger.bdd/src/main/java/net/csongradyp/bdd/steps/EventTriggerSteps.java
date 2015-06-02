@@ -2,6 +2,9 @@ package net.csongradyp.bdd.steps;
 
 import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
+import net.csongradyp.badger.annotations.AchievementEventParam;
+import net.csongradyp.badger.annotations.AchievementScore;
+import net.csongradyp.badger.annotations.AchievementScoreParam;
 import net.csongradyp.badger.event.EventBus;
 import net.csongradyp.badger.event.handler.wrapper.ScoreUpdateHandlerWrapper;
 import net.csongradyp.badger.event.message.ScoreUpdatedEvent;
@@ -49,6 +52,24 @@ public class EventTriggerSteps {
         } else {
             controller.triggerEvent(eventName, score);
         }
+    }
+
+    @When("$eventName event is triggered via annotation with $score as a $scoreType")
+    @Alias("<event> event is triggered via annotation with <input-score> as a <score-type>")
+    public void triggerScoreViaAnnotation(final @Named("event") String eventName, final @Named("input-score") Long score, final @Named("score-type") String scoreType) {
+        if (scoreType.equals("highscore")) {
+            annotationHighScoreTrigger(eventName, score);
+        } else {
+            annotationTrigger(eventName, score);
+        }
+    }
+
+    @AchievementScore(highScore = false)
+    private void annotationTrigger(@AchievementEventParam final String event, @AchievementScoreParam Long score) {
+    }
+
+    @AchievementScore(highScore = true)
+    private void annotationHighScoreTrigger(@AchievementEventParam final String event, @AchievementScoreParam Long score) {
     }
 
     @Then("the score event is received")

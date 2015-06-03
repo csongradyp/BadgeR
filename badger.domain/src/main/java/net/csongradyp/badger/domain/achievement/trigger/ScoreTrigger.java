@@ -69,9 +69,4 @@ public class ScoreTrigger implements ITrigger<Long> {
     public Operation getOperation() {
         return operation;
     }
-
-    @Override
-    public String toString() {
-        return trigger + operation.getOperator();
-    }
 }

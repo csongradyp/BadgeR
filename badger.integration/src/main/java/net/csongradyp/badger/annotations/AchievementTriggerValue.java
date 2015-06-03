@@ -1,0 +1,13 @@
+package net.csongradyp.badger.annotations;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention( RetentionPolicy.RUNTIME)
+@Target( ElementType.PARAMETER)
+public @interface AchievementTriggerValue {
+
+      String getter() default "";
+}

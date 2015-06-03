@@ -65,7 +65,7 @@ public class ScoreTriggerTest {
     }
 
     @Test
-    public void testGetTypeReturnsScoreType() throws Exception {
+    public void testGetTypeReturnsScoreType() {
         final ScoreTrigger trigger = new ScoreTrigger(0L);
         assertThat(trigger.getType(), is(AchievementType.SCORE));
     }
@@ -77,12 +77,28 @@ public class ScoreTriggerTest {
     }
 
     @Test
-    public void testGetOperation() throws Exception {
+    public void testGetOperation() {
         final ScoreTrigger triggerEqual = new ScoreTrigger(100L);
         assertThat(triggerEqual.getOperation(), is(ScoreTrigger.Operation.EQUALS));
         final ScoreTrigger triggerGreater = new ScoreTrigger(100L, ScoreTrigger.Operation.GREATER_THAN);
         assertThat(triggerGreater.getOperation(), is(ScoreTrigger.Operation.GREATER_THAN));
         final ScoreTrigger triggerLess = new ScoreTrigger(100L, ScoreTrigger.Operation.LESS_THAN);
         assertThat(triggerLess.getOperation(), is(ScoreTrigger.Operation.LESS_THAN));
+    }
+
+    @Test
+    public void testParseOperation() {
+        final ScoreTrigger.Operation equalTo = ScoreTrigger.Operation.parse("");
+        final ScoreTrigger.Operation greaterThan = ScoreTrigger.Operation.parse("+");
+        final ScoreTrigger.Operation lessThan = ScoreTrigger.Operation.parse("-");
+
+        assertThat(equalTo, is(ScoreTrigger.Operation.EQUALS));
+        assertThat(greaterThan, is(ScoreTrigger.Operation.GREATER_THAN));
+        assertThat(lessThan, is(ScoreTrigger.Operation.LESS_THAN));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseOperationThrowsExceptionWhenInvalidOperatorStringIsGiven() {
+        ScoreTrigger.Operation.parse("#");
     }
 }

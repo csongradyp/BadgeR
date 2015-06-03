@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.annotations.AchievementId;
 import net.csongradyp.badger.annotations.AchievementOwnerParam;
+import net.csongradyp.badger.annotations.AchievementTriggerValue;
 import net.csongradyp.badger.annotations.AchievementUnlock;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
@@ -133,13 +134,22 @@ public class AchievementUnlockedSteps {
     }
 
     @When("an achievement with $id id is unlocked via annotation with owner $owner")
-    public void unlockViaAnnotation(final String id, final String owner) {
-        annotationUnlock(id, owner);
+    public void unlockViaAnnotationWithOwner(final String id, final String owner) {
+        annotationUnlockWithOwner(id, owner);
         assertThat(controller.isUnlocked(id), is(true));
     }
 
-    @AchievementUnlock()
-    public void annotationUnlock(@AchievementId String id, @AchievementOwnerParam String owner) {
+    @AchievementUnlock
+    public void annotationUnlockWithOwner(@AchievementId String id, @AchievementOwnerParam String owner) {
+    }
+    @When("an achievement with $id id is unlocked via annotation with trigger value $value")
+    public void unlockViaAnnotationWithTriggerValue(final String id, final String value) {
+        annotationUnlockWithTriggerValue(id, value);
+        assertThat(controller.isUnlocked(id), is(true));
+    }
+
+    @AchievementUnlock
+    public void annotationUnlockWithTriggerValue(@AchievementId String id, @AchievementTriggerValue String value) {
     }
 
     @When("an achievement with ids: $firstId, $secondId is unlocked via annotation")
@@ -185,6 +195,11 @@ public class AchievementUnlockedSteps {
     @Then("the owner of the unlocked achievement is $owner")
     public void checkAchievementOwner(final String owner) {
         assertThat(receivedEvent.getOwners().contains(owner), is(true));
+    }
+
+    @Then("the trigger value of the unlocked achievement is $value")
+    public void checkAchievementTriggerValue(final String value) {
+        assertThat(receivedEvent.getTriggerValue(), is(equalTo(value)));
     }
 
     @AsParameterConverter

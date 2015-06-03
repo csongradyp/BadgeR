@@ -7,6 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.annotations.AchievementId;
+import net.csongradyp.badger.annotations.AchievementTriggerValue;
 import net.csongradyp.badger.annotations.AchievementUnlock;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -28,7 +29,7 @@ public class UnlockAspect extends AchievementAspect {
     public void unlock(final JoinPoint joinPoint, final AchievementUnlock achievementUnlock) {
         final List<String> owners = collectOwners(joinPoint, achievementUnlock.owners());
         final List<String> achievementIds = CollectIds(joinPoint, achievementUnlock.achievements());
-        final String triggerValue = achievementUnlock.triggerValue();
+        String triggerValue = getTriggerValue(joinPoint, achievementUnlock.triggerValue());
         for (String achievementId : achievementIds) {
             achievementController.unlock(achievementId, triggerValue, owners);
         }
@@ -56,4 +57,24 @@ public class UnlockAspect extends AchievementAspect {
         return achievementIds;
     }
 
+    private String getTriggerValue(final JoinPoint joinPoint, final String annotationTriggerValue) {
+        if (!annotationTriggerValue.isEmpty()) {
+            return annotationTriggerValue;
+        }
+        return getTriggerValue(joinPoint);
+    }
+
+    private String getTriggerValue(final JoinPoint joinPoint) {
+        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        final Object[] parameterValues = joinPoint.getArgs();
+
+        final Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            final AchievementTriggerValue paramAnnotation = getAnnotationByType(parameterAnnotations[i], AchievementTriggerValue.class);
+            if (paramAnnotation != null) {
+                return String.valueOf(parameterValues[i]);
+            }
+        }
+        return "";
+    }
 }

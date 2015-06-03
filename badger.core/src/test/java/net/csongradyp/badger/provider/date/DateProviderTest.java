@@ -35,13 +35,13 @@ public class DateProviderTest {
     @Test
     public void testCurrentDateReturnsCurrentDateInDayPrecision() {
         final Date currentDate = underTest.currentDate();
-        assertThat(currentDate, is(equalTo(new Date())));
+        assertThat(currentDate, is(equalTo(new DateTime().withTime(0, 0, 0, 0).toDate())));
     }
 
     @Test
     public void testParseDateReturnsGivenDateInDayPrecisionAsAString() {
         final Date currentDate = underTest.parseDate("12-12");
-        assertThat(currentDate, is(equalTo(new DateTime(2000, 12, 12, 0,0).toDate())));
+        assertThat(currentDate, is(equalTo(new DateTime(2000, 12, 12, 0, 0).toDate())));
     }
 
     @Test

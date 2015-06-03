@@ -9,6 +9,8 @@
     <artifactId>badger</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <description>BadgeR achievement engine</description>
+
     <modules>
         <module>badger.core</module>
         <module>badger.domain</module>

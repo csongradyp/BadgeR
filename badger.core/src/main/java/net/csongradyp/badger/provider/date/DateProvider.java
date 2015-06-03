@@ -2,6 +2,7 @@ package net.csongradyp.badger.provider.date;
 
 import java.util.Date;
 import javax.inject.Named;
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -24,7 +25,7 @@ public class DateProvider implements IDateProvider {
 
     @Override
     public Date currentDate() {
-        return new Date();
+        return new DateTime().toLocalDate().toDate();
     }
 
     @Override

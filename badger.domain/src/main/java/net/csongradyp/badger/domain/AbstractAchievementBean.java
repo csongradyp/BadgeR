@@ -1,11 +1,12 @@
 package net.csongradyp.badger.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractAchievementBean implements IAchievementBean {
 
+    private static final String KEY_FORMAT = "%s.%s";
     private String id;
     private String category;
     private List<String> subscriptions;
@@ -14,7 +15,7 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
     public AbstractAchievementBean() {
         subscriptions = new ArrayList<>();
         maxLevel = 1;
-        category= "default";
+        category = "default";
     }
 
     @Override
@@ -34,7 +35,7 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
 
     @Override
     public void setCategory(final String category) {
-        if(category != null && !category.isEmpty()) {
+        if (category != null && !category.isEmpty()) {
             this.category = category;
         }
     }
@@ -45,7 +46,7 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
     }
 
     @Override
-    public void setMaxLevel( Integer maxLevel ) {
+    public void setMaxLevel(final Integer maxLevel) {
         this.maxLevel = maxLevel;
     }
 
@@ -55,31 +56,22 @@ public abstract class AbstractAchievementBean implements IAchievementBean {
     }
 
     @Override
-    public void setSubscriptions(String[] subscriptions) {
-        Collections.addAll(this.subscriptions, subscriptions);
+    public void setSubscriptions(final String[] subscriptions) {
+        this.subscriptions.addAll(Arrays.asList(subscriptions));
     }
 
     @Override
-    public void setSubscription(List<String> events) {
+    public void setSubscription(final List<String> events) {
         this.subscriptions = events;
     }
 
     @Override
     public String getTitleKey() {
-        return String.format("%s.%s", id, "title");
+        return String.format(KEY_FORMAT, id, "title");
     }
 
     @Override
     public String getTextKey() {
-        return String.format("%s.%s", id, "text");
-    }
-
-    @Override
-    public String toString() {
-        return "AchievementBean {" +
-               "id='" + id + '\'' +
-                ", type='" + getType() + '\'' +
-                ", category='" + category + '\'' +
-               '}';
+        return String.format(KEY_FORMAT, id, "text");
     }
 }

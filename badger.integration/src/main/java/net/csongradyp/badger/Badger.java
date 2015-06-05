@@ -22,6 +22,7 @@ public class Badger {
 
     private final AchievementDefinitionFileParser parser;
     private final IAchievementController controller;
+    private final EventBus eventBus;
 
     /**
      * Default constructor to set up Spring environment.
@@ -31,6 +32,7 @@ public class Badger {
         applicationContext.registerShutdownHook();
         parser = applicationContext.getBean(AchievementDefinitionFileParser.class);
         controller = applicationContext.getBean(AchievementController.class);
+        eventBus = applicationContext.getBean(EventBus.class);
     }
 
     /**
@@ -180,7 +182,7 @@ public class Badger {
      * @param achievementUnlockedHandler {@link IAchievementUnlockedHandler} implementation to be register.
      */
     public void subscribeOnUnlock(final IAchievementUnlockedHandler achievementUnlockedHandler) {
-        EventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(achievementUnlockedHandler));
+        eventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(achievementUnlockedHandler));
     }
 
     /**
@@ -189,7 +191,7 @@ public class Badger {
      * @param achievementUnlockedHandler previously registered {@link IAchievementUnlockedHandler} implementation.
      */
     public void unSubscribeOnUnlock(final IAchievementUnlockedHandler achievementUnlockedHandler) {
-        EventBus.unSubscribeOnUnlock(achievementUnlockedHandler);
+        eventBus.unSubscribeOnUnlock(achievementUnlockedHandler);
     }
 
     /**
@@ -198,7 +200,7 @@ public class Badger {
      * @param achievementUpdateHandler {@link IScoreUpdateHandler} implementation to be register.
      */
     public void subscribeOnScoreChanged(final IScoreUpdateHandler achievementUpdateHandler) {
-        EventBus.subscribeOnScoreChanged(new ScoreUpdateHandlerWrapper(achievementUpdateHandler));
+        eventBus.subscribeOnScoreChanged(new ScoreUpdateHandlerWrapper(achievementUpdateHandler));
     }
 
     /**
@@ -207,7 +209,7 @@ public class Badger {
      * @param achievementUpdateHandler previously registered {@link IScoreUpdateHandler} implementation.
      */
     public void unSubscribeOnScoreChanged(final IScoreUpdateHandler achievementUpdateHandler) {
-        EventBus.unSubscribeOnScoreChanged(achievementUpdateHandler);
+        eventBus.unSubscribeOnScoreChanged(achievementUpdateHandler);
     }
 
     /**

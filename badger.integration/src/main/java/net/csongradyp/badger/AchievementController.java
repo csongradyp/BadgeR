@@ -36,6 +36,8 @@ public class AchievementController implements IAchievementController {
     private UnlockedEventFactory unlockedEventFactory;
     @Inject
     private AchievementUnlockProviderFacade achievementUnlockFinder;
+    @Inject
+    private EventBus eventBus;
     private ResourceBundle resourceBundle;
 
     private AchievementDefinition achievementDefinition;
@@ -156,7 +158,7 @@ public class AchievementController implements IAchievementController {
     private void publishUpdatedScore(final String event, final Long score) {
         final Long currentValue = eventDao.setScore(event, score);
         final ScoreUpdatedEvent updatedEvent = new ScoreUpdatedEvent(event, currentValue);
-        EventBus.publishScoreChanged(updatedEvent);
+        eventBus.publishScoreChanged(updatedEvent);
     }
 
     private boolean isDifferentValueAsStored(String event, Long score) {
@@ -182,7 +184,7 @@ public class AchievementController implements IAchievementController {
 
     private Long publishIncremented(final String event) {
         final Long currentValue = eventDao.increment(event);
-        EventBus.publishScoreChanged(new ScoreUpdatedEvent(event, currentValue));
+        eventBus.publishScoreChanged(new ScoreUpdatedEvent(event, currentValue));
         return currentValue;
     }
 
@@ -207,7 +209,7 @@ public class AchievementController implements IAchievementController {
     private void unlock(final IAchievementUnlockedEvent achievement) {
         if (!isLevelUnlocked(achievement.getId(), achievement.getLevel())) {
             achievementDao.unlock(achievement.getId(), achievement.getLevel(), achievement.getOwners());
-            EventBus.publishUnlocked(achievement);
+            eventBus.publishUnlocked(achievement);
         }
     }
 
@@ -252,4 +254,7 @@ public class AchievementController implements IAchievementController {
         this.unlockedEventFactory = unlockedEventFactory;
     }
 
+    void setEventBus(final EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 }

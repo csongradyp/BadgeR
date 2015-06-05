@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>badger</artifactId>
         <groupId>net.csongradyp</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>badger.bdd</artifactId>
 
@@ -16,7 +16,6 @@
 
         <embeddables>**/AcceptanceStories.java</embeddables>
         <ignore.failre.in.stories>false</ignore.failre.in.stories>
-        <meta.filter></meta.filter>
         <threads>1</threads>
         <story.timeout.in.secs>60</story.timeout.in.secs>
 
@@ -53,6 +52,15 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.jbehave</groupId>
                 <artifactId>jbehave-maven-plugin</artifactId>
                 <version>${jbehave-core.version}</version>
@@ -70,9 +78,6 @@
                             <generateViewAfterStories>true</generateViewAfterStories>
                             <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
                             <ignoreFailureInView>false</ignoreFailureInView>
-                            <metaFilters>
-                                <metaFilter>${meta.filter}</metaFilter>
-                            </metaFilters>
                         </configuration>
                         <goals>
                             <goal>run-stories-as-embeddables</goal>

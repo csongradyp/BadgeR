@@ -20,43 +20,46 @@ public class EventBusTest {
     private AchievementUnlockedEvent receivedAchievementUnlockedEvent;
     private ScoreUpdatedEvent receivedScoreUpdatedEvent;
 
+    EventBus underTest;
+
     @Before
     public void setUp() {
+        underTest = new EventBus();
         unlockedHandlerWrapper = new AchievementUnlockedHandlerWrapper(achievement -> receivedAchievementUnlockedEvent = achievement);
-        EventBus.subscribeOnUnlock(unlockedHandlerWrapper);
+        underTest.subscribeOnUnlock(unlockedHandlerWrapper);
         scoreUpdateHandlerWrapper = new ScoreUpdateHandlerWrapper(score -> receivedScoreUpdatedEvent = score);
-        EventBus.subscribeOnScoreChanged(scoreUpdateHandlerWrapper);
+        underTest.subscribeOnScoreChanged(scoreUpdateHandlerWrapper);
     }
 
     @After
     public void tearDown() {
-        EventBus.unSubscribeOnUnlock(unlockedHandlerWrapper.getWrapped());
-        EventBus.unSubscribeOnScoreChanged(scoreUpdateHandlerWrapper.getWrapped());
+        underTest.unSubscribeOnUnlock(unlockedHandlerWrapper.getWrapped());
+        underTest.unSubscribeOnScoreChanged(scoreUpdateHandlerWrapper.getWrapped());
         receivedAchievementUnlockedEvent = null;
     }
 
     @Test
     public void testOnUnlockedEventSubscriptions() throws Exception {
         final AchievementUnlockedHandlerWrapper handlerWrapper = new AchievementUnlockedHandlerWrapper(achievement -> receivedAchievementUnlockedEvent = achievement);
-        EventBus.subscribeOnUnlock(handlerWrapper);
-        assertThat(EventBus.getUnlockedSubscribers().size(), is(equalTo(2)));
-        assertThat(EventBus.getUnlockedSubscribers().contains(handlerWrapper), is(true));
+        underTest.subscribeOnUnlock(handlerWrapper);
+        assertThat(underTest.getUnlockedSubscribers().size(), is(equalTo(2)));
+        assertThat(underTest.getUnlockedSubscribers().contains(handlerWrapper), is(true));
 
-        EventBus.unSubscribeOnUnlock(handlerWrapper.getWrapped());
-        assertThat(EventBus.getUnlockedSubscribers().size(), is(equalTo(1)));
-        assertThat(EventBus.getUnlockedSubscribers().contains(handlerWrapper), is(false));
+        underTest.unSubscribeOnUnlock(handlerWrapper.getWrapped());
+        assertThat(underTest.getUnlockedSubscribers().size(), is(equalTo(1)));
+        assertThat(underTest.getUnlockedSubscribers().contains(handlerWrapper), is(false));
     }
 
     @Test
     public void testOnScoreChangedEventSubscriptions() throws Exception {
         final ScoreUpdateHandlerWrapper handlerWrapper = new ScoreUpdateHandlerWrapper(score -> receivedScoreUpdatedEvent = score);
-        EventBus.subscribeOnScoreChanged(handlerWrapper);
-        assertThat(EventBus.getScoreUpdateSubscribers().size(), is(equalTo(2)));
-        assertThat(EventBus.getScoreUpdateSubscribers().contains(handlerWrapper), is(true));
+        underTest.subscribeOnScoreChanged(handlerWrapper);
+        assertThat(underTest.getScoreUpdateSubscribers().size(), is(equalTo(2)));
+        assertThat(underTest.getScoreUpdateSubscribers().contains(handlerWrapper), is(true));
 
-        EventBus.unSubscribeOnScoreChanged(handlerWrapper.getWrapped());
-        assertThat(EventBus.getScoreUpdateSubscribers().size(), is(equalTo(1)));
-        assertThat(EventBus.getScoreUpdateSubscribers().contains(handlerWrapper), is(false));
+        underTest.unSubscribeOnScoreChanged(handlerWrapper.getWrapped());
+        assertThat(underTest.getScoreUpdateSubscribers().size(), is(equalTo(1)));
+        assertThat(underTest.getScoreUpdateSubscribers().contains(handlerWrapper), is(false));
     }
 
     @Test
@@ -69,7 +72,7 @@ public class EventBusTest {
         final AchievementUnlockedEvent achievementUnlockedEvent = new AchievementUnlockedEvent(id, title, text, score);
         achievementUnlockedEvent.setLevel(level);
 
-        EventBus.publishUnlocked(achievementUnlockedEvent);
+        underTest.publishUnlocked(achievementUnlockedEvent);
 
         assertThat(receivedAchievementUnlockedEvent, notNullValue());
         assertThat(receivedAchievementUnlockedEvent.getId(), is(equalTo(id)));
@@ -85,7 +88,7 @@ public class EventBusTest {
         final long value = 123L;
         final ScoreUpdatedEvent scoreUpdatedEvent = new ScoreUpdatedEvent(event, value);
 
-        EventBus.publishScoreChanged(scoreUpdatedEvent);
+        underTest.publishScoreChanged(scoreUpdatedEvent);
 
         assertThat(receivedScoreUpdatedEvent, notNullValue());
         assertThat(receivedScoreUpdatedEvent.getEvent(), is(equalTo(event)));

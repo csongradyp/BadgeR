@@ -39,6 +39,8 @@ import static org.junit.Assert.fail;
 public class AchievementUnlockedSteps {
 
     @Inject
+    private EventBus eventBus;
+    @Inject
     private AchievementController controller;
     @Inject
     private AchievementDao achievementDao;
@@ -56,7 +58,7 @@ public class AchievementUnlockedSteps {
 
     @Given("there is subscription for achievement unlocked events")
     public void subscribeOnUnlockEvents() {
-        EventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(eventList::add));
+        eventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(eventList::add));
     }
 
     @Given("an achievement with $id id and $type type bounded to $event event with trigger $trigger")

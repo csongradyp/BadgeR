@@ -28,6 +28,8 @@ import static org.hamcrest.core.IsEqual.equalTo;
 public class EventTriggerSteps {
 
     @Inject
+    private EventBus eventBus;
+    @Inject
     private AchievementController controller;
     @Inject
     private EventDao eventDao;
@@ -41,7 +43,7 @@ public class EventTriggerSteps {
 
     @Given("there is subscription for score events")
     public void subscribeOnScoreEvents() {
-        EventBus.subscribeOnScoreChanged(new ScoreUpdateHandlerWrapper(score -> receivedEvent = score));
+        eventBus.subscribeOnScoreChanged(new ScoreUpdateHandlerWrapper(score -> receivedEvent = score));
     }
 
     @When("$eventName event is triggered with $score as a $scoreType")

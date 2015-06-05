@@ -9,7 +9,24 @@
     <artifactId>badger</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <description>BadgeR achievement engine</description>
+    <name>BadgeR achievement engine</name>
+
+    <url>https://github.com/csongradyp/badgeR</url>
+    <licenses>
+        <license>
+            <name>MIT license</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>csongradyp</id>
+            <name>Peter Csongrady</name>
+            <timezone>+1</timezone>
+            <email>csongrady.p@gmail.com</email>
+        </developer>
+    </developers>
 
     <modules>
         <module>badger.core</module>
@@ -132,5 +149,34 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

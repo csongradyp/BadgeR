@@ -11,6 +11,7 @@
 
     <import resource="beans.xml" />
 
-    <bean id="eventList" class="java.util.ArrayList" />
+    <bean id="unlockEventList" class="java.util.ArrayList" />
+    <bean id="scoreEventList" class="java.util.ArrayList" />
 
 </beans>

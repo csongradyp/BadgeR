@@ -6,9 +6,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.csongradyp.badger.annotations.AchievementEventParam;
-import net.csongradyp.badger.annotations.AchievementOwnerParam;
-import net.csongradyp.badger.annotations.AchievementScoreParam;
+import net.csongradyp.badger.annotations.EventName;
+import net.csongradyp.badger.annotations.OwnerParam;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
@@ -32,7 +31,7 @@ public abstract class AchievementAspect {
 
         final Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
         for (int i = 0; i < parameterAnnotations.length; i++) {
-            final AchievementOwnerParam paramAnnotation = getAnnotationByType(parameterAnnotations[i], AchievementOwnerParam.class);
+            final OwnerParam paramAnnotation = getAnnotationByType(parameterAnnotations[i], OwnerParam.class);
             if (paramAnnotation != null) {
                 if (paramAnnotation.getter().isEmpty()) {
                     if (String.class.equals(parameterTypes[i])) {
@@ -62,7 +61,7 @@ public abstract class AchievementAspect {
 
         final Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
         for (int i = 0; i < parameterAnnotations.length; i++) {
-            final AchievementEventParam paramAnnotation = getAnnotationByType(parameterAnnotations[i], AchievementEventParam.class);
+            final EventName paramAnnotation = getAnnotationByType(parameterAnnotations[i], EventName.class);
             if (paramAnnotation != null && String.class.equals(parameterTypes[i])) {
                 events.add(String.valueOf(parameterValues[i]));
             }
@@ -83,7 +82,7 @@ public abstract class AchievementAspect {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T callGetter(final Object target, final String methodNameToCall, final Class<T> resultClass) {
+    <T> T callGetter(final Object target, final String methodNameToCall, final Class<T> resultClass) {
         T result = null;
         try {
             final Method ownerResolverMethod = target.getClass().getDeclaredMethod(methodNameToCall);
@@ -97,25 +96,4 @@ public abstract class AchievementAspect {
         return result;
     }
 
-    protected Long getScore(final JoinPoint joinPoint) {
-        Long score = Long.MIN_VALUE;
-        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        final Object[] parameterValues = joinPoint.getArgs();
-        final Class[] parameterTypes = signature.getParameterTypes();
-
-        final Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
-        for (int i = 0; i < parameterAnnotations.length; i++) {
-            final AchievementScoreParam paramAnnotation = getAnnotationByType(parameterAnnotations[i], AchievementScoreParam.class);
-            if (paramAnnotation != null) {
-                if (paramAnnotation.getter().isEmpty()) {
-                    if (Long.class.equals(parameterTypes[i])) {
-                        score = (Long) parameterValues[i];
-                    }
-                } else {
-                    score = callGetter(parameterValues[i], paramAnnotation.getter(), Long.class);
-                }
-            }
-        }
-        return score;
-    }
 }

@@ -6,8 +6,8 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.annotations.AchievementId;
-import net.csongradyp.badger.annotations.AchievementOwnerParam;
-import net.csongradyp.badger.annotations.AchievementTriggerValue;
+import net.csongradyp.badger.annotations.OwnerParam;
+import net.csongradyp.badger.annotations.TriggerValue;
 import net.csongradyp.badger.annotations.AchievementUnlock;
 import net.csongradyp.badger.domain.AchievementType;
 import net.csongradyp.badger.domain.IAchievement;
@@ -47,18 +47,18 @@ public class AchievementUnlockedSteps {
     @Inject
     private TriggerChecker triggerChecker;
     @Resource
-    private List<IAchievementUnlockedEvent> eventList;
+    private List<IAchievementUnlockedEvent> unlockEventList;
 
     private IAchievementUnlockedEvent receivedEvent;
 
     @BeforeScenario(uponType = ScenarioType.ANY)
     public void clearEvents() {
-        eventList.clear();
+        unlockEventList.clear();
     }
 
     @Given("there is subscription for achievement unlocked events")
     public void subscribeOnUnlockEvents() {
-        eventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(eventList::add));
+        eventBus.subscribeOnUnlock(new AchievementUnlockedHandlerWrapper(unlockEventList::add));
     }
 
     @Given("an achievement with $id id and $type type bounded to $event event with trigger $trigger")
@@ -142,7 +142,7 @@ public class AchievementUnlockedSteps {
     }
 
     @AchievementUnlock
-    public void annotationUnlockWithOwner(@AchievementId String id, @AchievementOwnerParam String owner) {
+    public void annotationUnlockWithOwner(@AchievementId String id, @OwnerParam String owner) {
     }
     @When("an achievement with $id id is unlocked via annotation with trigger value $value")
     public void unlockViaAnnotationWithTriggerValue(final String id, final String value) {
@@ -151,7 +151,7 @@ public class AchievementUnlockedSteps {
     }
 
     @AchievementUnlock
-    public void annotationUnlockWithTriggerValue(@AchievementId String id, @AchievementTriggerValue String value) {
+    public void annotationUnlockWithTriggerValue(@AchievementId String id, @TriggerValue String value) {
     }
 
     @When("an achievement with ids: $firstId, $secondId is unlocked via annotation")
@@ -173,15 +173,15 @@ public class AchievementUnlockedSteps {
 
     @Then("unlocked event received for achievement $id")
     public void unlockedEventReceived(final String id) {
-        assertThat(eventList.isEmpty(), is(false));
-        final Optional<IAchievementUnlockedEvent> relatedEvent = eventList.stream().filter(event -> event.getId().equals(id)).findAny();
+        assertThat(unlockEventList.isEmpty(), is(false));
+        final Optional<IAchievementUnlockedEvent> relatedEvent = unlockEventList.stream().filter(event -> event.getId().equals(id)).findAny();
         assertThat(relatedEvent.isPresent(), is(true));
         receivedEvent = relatedEvent.get();
     }
 
     @Then("no achievement unlocked event received related to $id")
     public void noUnlockedEventIsReceived(final String id) {
-        assertThat(eventList.stream().filter(e -> e.getId().equals(id)).findAny().isPresent(), is(false));
+        assertThat(unlockEventList.stream().filter(e -> e.getId().equals(id)).findAny().isPresent(), is(false));
     }
 
     @Then("achievement id is $id")

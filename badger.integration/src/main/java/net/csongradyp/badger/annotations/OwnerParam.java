@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface AchievementOwnerParam {
+public @interface OwnerParam {
 
     /**
      * If the parameter is not a {@link String} instance then a getter method should be called to get the owner information.

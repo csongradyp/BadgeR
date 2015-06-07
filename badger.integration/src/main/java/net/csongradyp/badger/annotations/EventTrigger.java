@@ -7,18 +7,19 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for trigger a specific event.
- * After annotated method execution Badger will increment the counter
- * of the given event and will check for achievements that may have triggered.
+ * After annotated method execution Badger will increment the counter or set the new given score of
+ * of the event and will check for achievements that may have triggered.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface AchievementEventTrigger {
+public @interface EventTrigger {
 
     /**
      * Name of event to trigger.
      */
-    String[] eventNames() default {};
+    String[] events() default {};
 
     String[] owners() default {};
 
+    boolean highScore() default false;
 }

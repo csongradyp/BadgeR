@@ -1,37 +1,22 @@
-package net.csongradyp.bdd.steps;
+package net.csongradyp.bdd.steps.annotation;
 
-import javax.inject.Inject;
-import net.csongradyp.badger.AchievementController;
 import net.csongradyp.badger.annotations.EventName;
 import net.csongradyp.badger.annotations.EventTrigger;
 import net.csongradyp.badger.persistence.EventDao;
 import net.csongradyp.bdd.Steps;
-import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.When;
+
+import javax.inject.Inject;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @Steps
-public class ScoreAchievementUnlockedSteps {
+public class AnnotationScoreAchievementUnlockedSteps {
 
-    @Inject
-    private AchievementController controller;
     @Inject
     private EventDao eventDao;
-
-    @BeforeScenario
-    public void beforeScoreAchievementUnlockedSteps() {
-        controller.reset();
-    }
-
-    @When("event named $event is triggered $times times")
-    public void triggerTimes(final String event, final Long times) {
-        for (int i = 0; i < times; i++) {
-            controller.triggerEvent(event);
-        }
-    }
 
     @When("event named $event is triggered $times times via annotation")
     public void annotationTriggerTimes(final String event, final Long times) {

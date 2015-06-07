@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention( RetentionPolicy.RUNTIME)
 @Target( ElementType.PARAMETER)
-public @interface AchievementTriggerValue {
+public @interface EventName {
 
-      String getter() default "";
 }

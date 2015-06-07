@@ -71,6 +71,11 @@ public class EventBus {
         scoreUpdateBus.subscribe(handler);
     }
 
+    public void unSubscribeAllOnScoreChanged() {
+        scoreUpdateSubscribers.stream().forEach( scoreUpdateBus::unsubscribe );
+        scoreUpdateSubscribers.clear();
+    }
+
     public void unSubscribeOnScoreChanged(final IScoreUpdateHandler handler) {
         final Optional<ScoreUpdateHandlerWrapper> registeredHandler = scoreUpdateSubscribers.stream()
                 .filter(wrapper -> wrapper.getWrapped().equals(handler))

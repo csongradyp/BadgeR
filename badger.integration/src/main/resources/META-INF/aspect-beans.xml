@@ -6,7 +6,6 @@
 
     <bean class="net.csongradyp.badger.aop.UnlockAspect" factory-method="aspectOf"/>
     <bean class="net.csongradyp.badger.aop.CheckAspect" factory-method="aspectOf"/>
-    <bean class="net.csongradyp.badger.aop.ScoreAspect" factory-method="aspectOf"/>
     <bean class="net.csongradyp.badger.aop.TriggerAspect" factory-method="aspectOf"/>
 
 </beans>

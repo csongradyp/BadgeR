@@ -17,8 +17,7 @@ You can avoid mixing the achievement related codes with the real functional code
 
 |Annotation|Function|
 |:-----|:-----|
-|`@AchievementEventTrigger`|Triggers a defined event by incrementing the event counter by one and checks for possible unlocked achievements|
-|`@AchievementScore`|Triggers a defined event by setting the event counter by the given score and checks for possible unlocked achievements|
+|`@EventTrigger`|Triggers a defined event by setting the event counter by the given score or incrementing the event counter by one and checks for possible unlocked achievements|
 |`@AchievementUnlock`|Unlock achievement manually|
 |`@AchievementCheck`|Checks for possible unlocked achievements|
 
@@ -118,11 +117,11 @@ badger.subscribeOnUnlock(new IAchievementUnlockedHandler() {
     }
 });
 
-badger.subscribeOnUnlock(new IScoreUpdateHandler() {
+badger.subscribeOnScoreChanged(new IScoreUpdateHandler() {
     @Override
     public void onUnlocked(final ScoreUpdatedEvent scoreUpdatedEvent) {
-        final String event = unlockEvent.getEvent(); // event name
-        final String newValue = unlockEvent.getValue();  // new value of event counter
+        final String event = scoreUpdatedEvent.getEvent(); // event name
+        final String newValue = scoreUpdatedEvent.getValue();  // new value of event counter
         
         // update something ...
     }
@@ -136,7 +135,7 @@ badger.subscribeOnUnlock(unlockEvent -> {
     // show achievement notification
 } );
 
-badger.subscribeOnUnlock(scoreUpdatedEvent -> {
+badger.subscribeOnScoreChanged(scoreUpdatedEvent -> {
     // update something ...
 } );
 ```
@@ -148,7 +147,7 @@ badger.subscribeOnUnlock(scoreUpdatedEvent -> {
 Trigger an event and increment its counter by one.
 
 ```java
-@AchievementEventTrigger(name = "myEvent")
+@EventTrigger(name = "myEvent")
 public void myMethod() {
     // doesn't matter what the method do, only that it is called.
 }
@@ -165,8 +164,8 @@ badger.triggerEvent("myEvent");
 Trigger an event and set the counter score with parameter annotation
 
 ```java
-@AchievementScore(counter = "myEvent")
-public void myMethod(final @AchievementScoreParam Long newScore) {
+@EventTrigger(event = "myEvent")
+public void myMethod(final @TriggerValue Long newScore) {
     // doesn't matter what the method do, only that it is called.
 }
 ```
@@ -187,6 +186,15 @@ equivalent with
 ```java
 final Long newScore = 100L; // the new score to be set
 badger.triggerEvent("myEvent", newScore);
+```
+
+Use Parameter annotations for full dynamic usage
+
+```java
+@EventTrigger
+public void myMethod(@EventName String eventName, @TriggerValue Long newScore, @OwnerParam String triggeredBy) {
+    // doesn't matter what the method do, only that it is called.
+}
 ```
 
 #### 3.4 Unlock achievement directly ####
@@ -235,6 +243,15 @@ badger.unlock("achievementId", "10");
 badger.unlock("achievementId", "01-30");
 ```
 
+or with parameter annotations
+
+```java
+@AchievementUnlock
+public void someMethod(@AchievementId String toUnlock, @TriggerValue String withValue) {
+    // doesn't matter what the method do, only that it is called.
+}
+```
+
 #### 3.5 Check for unlocked achievements ####
 
 Achievement check runs every time when an event is triggered. Nevertheless the checking can be done directly.
@@ -257,7 +274,7 @@ badger.check();
 
 To enable annotation driven features make sure you use AspectJ veawing.
 
-Here is my maven example from my other project where I use BadgeR:
+Here is an example from BadgeR behaviour test module:
 
 ```
 <plugin>
@@ -307,6 +324,12 @@ Here is my maven example from my other project where I use BadgeR:
 </plugin>
 ```
 
+## Contribute ##
+
+Any feature requests and feedback are more than welcome. You may suggest improvements either by submitting an issue or by forking the repo and creating a pull request.
+I will try to respond as quickly as possible.
+
+Sample code and documentation are both very appreciated contributions. Feel free and welcome to create Wiki pages to share your code and ideas.
 
 ## Author ##
 

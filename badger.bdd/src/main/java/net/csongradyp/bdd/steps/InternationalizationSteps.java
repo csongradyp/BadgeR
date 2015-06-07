@@ -26,7 +26,7 @@ public class InternationalizationSteps {
     private AchievementController controller;
     private TriggerChecker triggerChecker;
     @Resource
-    private List<IAchievementUnlockedEvent> eventList;
+    private List<IAchievementUnlockedEvent> unlockEventList;
 
     private IAchievementUnlockedEvent receivedEvent;
 
@@ -53,7 +53,7 @@ public class InternationalizationSteps {
 
     @Then("the title of the achievement is localized as $title")
     public void chechTitle(final String title) {
-        final Optional<IAchievementUnlockedEvent> relatedEvent = eventList.stream().filter(event -> event.getTitle().equals(title)).findAny();
+        final Optional<IAchievementUnlockedEvent> relatedEvent = unlockEventList.stream().filter(event -> event.getTitle().equals(title)).findAny();
         assertThat(relatedEvent.isPresent(), is(true));
         receivedEvent = relatedEvent.get();
         assertThat(receivedEvent.getTitle(), is(equalTo(title)));
@@ -61,7 +61,7 @@ public class InternationalizationSteps {
 
     @Then("the title of the achievement is the message property key $titleKey")
     public void chechTitleKey(final String titleKey) {
-        final Optional<IAchievementUnlockedEvent> relatedEvent = eventList.stream().filter(event -> event.getTitle().equals(titleKey)).findAny();
+        final Optional<IAchievementUnlockedEvent> relatedEvent = unlockEventList.stream().filter(event -> event.getTitle().equals(titleKey)).findAny();
         assertThat(relatedEvent.isPresent(), is(true));
         receivedEvent = relatedEvent.get();
         assertThat(receivedEvent.getTitle(), is(equalTo(titleKey)));

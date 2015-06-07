@@ -7,7 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 import net.csongradyp.badger.IAchievementController;
 import net.csongradyp.badger.annotations.AchievementId;
-import net.csongradyp.badger.annotations.AchievementTriggerValue;
+import net.csongradyp.badger.annotations.TriggerValue;
 import net.csongradyp.badger.annotations.AchievementUnlock;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -70,7 +70,7 @@ public class UnlockAspect extends AchievementAspect {
 
         final Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
         for (int i = 0; i < parameterAnnotations.length; i++) {
-            final AchievementTriggerValue paramAnnotation = getAnnotationByType(parameterAnnotations[i], AchievementTriggerValue.class);
+            final TriggerValue paramAnnotation = getAnnotationByType(parameterAnnotations[i], TriggerValue.class);
             if (paramAnnotation != null) {
                 return String.valueOf(parameterValues[i]);
             }

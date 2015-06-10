@@ -1,6 +1,6 @@
 # BadgeR achievement engine ![Image of BadgeR](https://dl.dropboxusercontent.com/u/6057082/BagdeR_icon.png)
 
-[![Build Status](https://travis-ci.org/csongradyp/badgeR.svg)](https://travis-ci.org/csongradyp/badgeR)
+[![Build Status](https://travis-ci.org/csongradyp/BadgeR.svg?branch=master)](https://travis-ci.org/csongradyp/BadgeR)
 [![Coverage Status](https://coveralls.io/repos/csongradyp/badgeR/badge.svg?branch=master)](https://coveralls.io/r/csongradyp/badgeR?branch=master)
 
 #### *Keep the codebase clean by separating achievement handling from your code.* ####

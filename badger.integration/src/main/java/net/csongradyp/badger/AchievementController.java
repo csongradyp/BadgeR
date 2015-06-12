@@ -55,7 +55,8 @@ public class AchievementController implements IAchievementController {
 
     @Override
     public void setInternationalizationBaseName(final String internationalizationBaseName) {
-        resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, Locale.ENGLISH);
+        final ResourceBundle resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, Locale.ENGLISH);
+        setResourceBundle(resourceBundle);
         this.internationalizationBaseName = internationalizationBaseName;
     }
 
@@ -71,8 +72,7 @@ public class AchievementController implements IAchievementController {
 
     @Override
     public void setLocale(final Locale locale) {
-        resourceBundle = ResourceBundle.getBundle(internationalizationBaseName, locale);
-        unlockedEventFactory.setResourceBundle(resourceBundle);
+        setResourceBundle(ResourceBundle.getBundle(internationalizationBaseName, locale));
     }
 
     @Override

@@ -27,6 +27,12 @@
             <email>csongrady.p@gmail.com</email>
         </developer>
     </developers>
+    <scm>
+        <url>git@github.com:csongradyp/BadgeR.git</url>
+        <connection>scm:git:git@github.com:csongradyp/BadgeR.git</connection>
+        <tag>BadgeR-1.0.0</tag>
+        <developerConnection>scm:git:git@github.com:csongradyp/BadgeR.gi</developerConnection>
+    </scm>
 
     <modules>
         <module>badger.core</module>

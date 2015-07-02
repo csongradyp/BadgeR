@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Set;
 import net.csongradyp.badger.domain.IAchievement;
 import net.csongradyp.badger.event.EventBus;
@@ -38,25 +39,11 @@ public class Badger {
     /**
      * Starts the BadgeR achievement engine without i18n support.
      *
-     * @param definitionFilePath Absolute path of the achievement definition file location.
-     * @param baseName           i18n properties file base name for internationalization support.<br/>
-     *                           See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
-     */
-    public Badger(final String definitionFilePath, final String baseName) {
-        this(new File(definitionFilePath), baseName);
-    }
-
-    /**
-     * Starts the BadgeR achievement engine without i18n support.
-     *
      * @param definitionFile {@link File} instance which represents the achievement definition file.
-     * @param baseName       i18n properties file base name for internationalization support.<br/>
-     *                       See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
      */
-    public Badger(final File definitionFile, final String baseName) {
+    public Badger(final File definitionFile) {
         this();
         controller.setAchievementDefinition(parser.parse(definitionFile));
-        controller.setInternationalizationBaseName(baseName);
     }
 
     /**
@@ -69,13 +56,18 @@ public class Badger {
     }
 
     /**
-     * Starts the BadgeR achievement engine without i18n support.
-     *
-     * @param definitionFile {@link File} instance which represents the achievement definition file.
+     * @param baseName i18n properties file base name for internationalization support.<br/>
+     *                 See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
      */
-    public Badger(final File definitionFile) {
-        this();
-        controller.setAchievementDefinition(parser.parse(definitionFile));
+    public void setInternationalizationBaseName(final String baseName) {
+        controller.setInternationalizationBaseName(baseName);
+    }
+    /**
+     * @param baseName i18n properties file base name for internationalization support.<br/>
+     *                 See more at <a href="http://csongradyp.github.io/badgeR/">BadgeR API documentation</a>.
+     */
+    public void setResourceBundle(final ResourceBundle resourceBundle) {
+        controller.setResourceBundle(resourceBundle);
     }
 
     /**
@@ -149,7 +141,7 @@ public class Badger {
     /**
      * Triggers the given event and sets its counter by the given score.
      *
-     * @param event Previously defined event in the achievement definition file.
+     * @param event     Previously defined event in the achievement definition file.
      * @param highScore new value of the event counter. New value will be only applied if its greater than the stored one.
      */
     public void triggerEventWithHighScore(final String event, final Long highScore) {

@@ -17,6 +17,7 @@ public class BeforeAfterSteps {
     @BeforeStories
     public void beforeStories() {
         controller.setAchievementDefinition(parser.parse("badger.bdd/src/main/resources/test.json"));
+        controller.setInternationalizationBaseName("msg");
     }
 
 }
